@@ -228,9 +228,11 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
                         <input type="checkbox" class="calc-item__checkbox" />
                         <span class="calc-item__name"><?php echo esc_html($settings['name']); ?></span>
                     </label>
-                    <?php if (isset($settings['tooltip_text'])) { ?>
+                    <?php if (!empty($settings['tooltip_text'])) { ?>
                         <div class="calc-item__tooltip">
-                            <?php echo $settings['tooltip_text']; ?>
+                            <div class="calc-item__tooltip-text">
+                                <?php echo $settings['tooltip_text']; ?>
+                            </div>
                         </div>
                     <?php } ?>
                     <?php if ($pricePerItemEnabled) { ?>
@@ -298,7 +300,9 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
                     </label>
                     <# if (settings.tooltip_text) { #>
                         <div class="calc-item__tooltip">
-                            {{ settings.tooltip_text }}
+                            <div class="calc-item__tooltip-text">
+                                {{ settings.tooltip_text }}
+                            </div>
                         </div>
                         <# } #>
                             <# if (settings.enable_price_per_item==='yes' ) { #>
