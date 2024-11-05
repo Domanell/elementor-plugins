@@ -31,12 +31,12 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
     public function get_script_depends()
     {
         return ['price-calculator-item'];
-        
     }
 
-    public function get_style_depends() {
-		return [ 'frontend-css' ];
-	}
+    public function get_style_depends()
+    {
+        return ['frontend-css'];
+    }
 
 
     protected function _register_controls()
@@ -72,14 +72,27 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
                 'input_type' => 'text',
                 'rows' => 4,
                 'placeholder' => esc_html__('Type your description here', 'price-calculator'),
+                'description' => esc_html__('Displayed below the slider', 'price-calculator'),
+            ]
+        );
+
+        // Tooltip
+        $this->add_control(
+            'tooltip_text',
+            [
+                'label' => esc_html__('Tooltip text', 'price-calculator'),
+                'type' => \Elementor\Controls_Manager::TEXTAREA,
+                'input_type' => 'text',
+                'rows' => 4,
+                'placeholder' => esc_html__('Type your tooltip here', 'price-calculator'),
             ]
         );
 
         // PRICE SECTION
         $this->add_control(
-            'price_options',
+            'price_settings',
             [
-                'label' => esc_html__('Price options', 'price-calculator'),
+                'label' => esc_html__('Price settings', 'price-calculator'),
                 'type' => \Elementor\Controls_Manager::HEADING,
                 'separator' => 'before',
             ]
@@ -170,15 +183,19 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
             ]
         );
 
-        // Custom panel notice
+        // Item price description
         $this->add_control(
-            'custom_panel_notice',
+            'item_price_description',
             [
-                'type' => \Elementor\Controls_Manager::NOTICE,
-                'notice_type' => 'warning',
-                'dismissible' => true,
-                'heading' => esc_html__('Custom Notice', 'price-calculator'),
-                'content' => esc_html__('Lorem ipsum dolor sit amet consectetur adipisicing elit.', 'price-calculator'),
+                'label' => esc_html__('Item price description', 'price-calculator'),
+                'type' => \Elementor\Controls_Manager::TEXTAREA,
+                'input_type' => 'text',
+                'rows' => 4,
+                'placeholder' => esc_html__('The {price} tag will be replaced with the price per item automatically', 'price-calculator'),
+                'description' => esc_html__('Use {price} text to display the price in the description', 'price-calculator'),
+                'condition' => [
+                    'enable_price_per_item' => 'yes',
+                ],
             ]
         );
 
@@ -195,12 +212,12 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
         $currency_symbol = '$';
         // Get the settings
         $pricePerItemEnabled = $settings['enable_price_per_item'] === 'yes';
-        $price = isset($settings['price']) ? $settings['price'] : 0;
-        $price_per_item = isset($settings['price_per_item']) ? $settings['price_per_item'] : 0;
-        $min_quantity = isset($settings['min_quantity']) ? $settings['min_quantity'] : 0;
-        $max_quantity = isset($settings['max_quantity']) ? $settings['max_quantity'] : 1;
-        $quantity = $min_quantity; // Default quantity
-        $included_quantity = isset($settings['included_quantity']) ? $settings['included_quantity'] : 0;
+        $price = empty($settings['price']) ? 0 : $settings['price'];
+        $price_per_item = empty($settings['price_per_item']) ? 0 : $settings['price_per_item'];
+        $min_quantity = empty($settings['min_quantity']) ? 0 : $settings['min_quantity'];
+        $max_quantity = empty($settings['max_quantity']) ? 1 : $settings['max_quantity'];
+        $quantity = $min_quantity;  // Set to min_quantity by default
+        $included_quantity = empty($settings['included_quantity']) ? 0 : $settings['included_quantity'];
         $additional_quantity = $pricePerItemEnabled && $quantity > $included_quantity ? $quantity - $included_quantity : 0;
 
 ?>
@@ -211,7 +228,11 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
                         <input type="checkbox" class="calc-item__checkbox" />
                         <span class="calc-item__name"><?php echo esc_html($settings['name']); ?></span>
                     </label>
-
+                    <?php if (isset($settings['tooltip_text'])) { ?>
+                        <div class="calc-item__tooltip">
+                            <?php echo $settings['tooltip_text']; ?>
+                        </div>
+                    <?php } ?>
                     <?php if ($pricePerItemEnabled) { ?>
                         <input
                             type="number"
@@ -223,8 +244,9 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
                             disabled />
                     <?php } ?>
                 </div>
-                <?php if ($pricePerItemEnabled) { ?>
-                    <!-- Quantity slider -->
+                <?php if ($pricePerItemEnabled) {
+                    //  Quantity slider 
+                ?>
                     <div class="calc-item__range">
                         <input
                             type="range"
@@ -245,13 +267,13 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
                 </p>
             </div>
             <div class="calc-item__price">
-                <!-- Price -->
                 <p>
                     <?php echo $currency_symbol . esc_html($price + $additional_quantity * $price_per_item); ?>
                 </p>
-                <?php if ($pricePerItemEnabled) { ?>
-                    <!-- Price per item -->
-                    <span class="calc-item__item-price">included<br> <span><?php echo $currency_symbol . esc_html($price_per_item); ?></span> per item</span>
+                <?php if ($pricePerItemEnabled && isset($settings['item_price_description'])) { ?>
+                    <span class="calc-item__item-price">
+                        <?php echo str_replace('{price}', '<span class="calc-item__price-value">' . $currency_symbol . esc_html($price_per_item) . '</span>', $settings['item_price_description']); ?>
+                    </span>
                 <?php } ?>
             </div>
         </div>
@@ -274,16 +296,21 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
                             {{ settings.name }}
                         </span>
                     </label>
-                    <# if (settings.enable_price_per_item==='yes' ) { #>
-                        <input
-                            type="number"
-                            name="quantity-number"
-                            class="calc-item__number-input"
-                            value="{{ settings.min_quantity }}"
-                            min="{{ settings.min_quantity }}"
-                            max="{{ settings.max_quantity }}"
-                            disabled />
+                    <# if (settings.tooltip_text) { #>
+                        <div class="calc-item__tooltip">
+                            {{ settings.tooltip_text }}
+                        </div>
                         <# } #>
+                            <# if (settings.enable_price_per_item==='yes' ) { #>
+                                <input
+                                    type="number"
+                                    name="quantity-number"
+                                    class="calc-item__number-input"
+                                    value="{{ settings.min_quantity }}"
+                                    min="{{ settings.min_quantity }}"
+                                    max="{{ settings.max_quantity }}"
+                                    disabled />
+                                <# } #>
                 </div>
                 <# if (settings.enable_price_per_item==='yes' ) { #>
                     <!-- Quantity slider -->
@@ -303,20 +330,20 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
                         </div>
                     </div>
                     <# } #>
-                    <p class="calc-item__description">
-                        {{ settings.description }}
-                    </p>
+                        <p class="calc-item__description">
+                            {{ settings.description }}
+                        </p>
             </div>
-                <div class="calc-item__price">
-                    <!-- Price -->
-                    <p >
-                        ${{ settings.price }}
-                    </p>
-                    <# if (settings.enable_price_per_item==='yes' ) { #>
-                        <!-- Price per item -->
-                        <span class="calc-item__item-price">Included <span>${{ settings.price_per_item }}</span> per item</span>
-                        <# } #>
-                </div>
+            <div class="calc-item__price">
+                <p>
+                    ${{ settings.price }}
+                </p>
+                <# if (settings.enable_price_per_item==='yes' && settings.item_price_description) { #>
+                    <span class="calc-item__item-price">
+                        {{{ settings.item_price_description.replace('{price}', '<span class="calc-item__price-value">$' + settings.price_per_item + '</span>') }}}
+                    </span>
+                    <# } #>
+            </div>
         </div>
 <?php
     }
