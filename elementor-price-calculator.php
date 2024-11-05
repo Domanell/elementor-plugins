@@ -41,3 +41,12 @@ function enqueue_price_calculator_dependencies()
 }
 
 add_action('wp_enqueue_scripts', 'enqueue_price_calculator_dependencies');
+
+function price_calculator_frontend_stylesheets() {
+
+	wp_register_style( 'frontend-css', plugins_url( 'css/calculator.css', __FILE__ ) );
+
+	// wp_enqueue_style( 'frontend-style' );
+
+}
+add_action( 'elementor/frontend/before_enqueue_styles', 'price_calculator_frontend_stylesheets' );

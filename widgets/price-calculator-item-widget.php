@@ -31,7 +31,12 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
     public function get_script_depends()
     {
         return ['price-calculator-item'];
+        
     }
+
+    public function get_style_depends() {
+		return [ 'frontend-css' ];
+	}
 
 
     protected function _register_controls()
@@ -49,7 +54,7 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
             'name',
             [
                 'label' => esc_html__('Title', 'price-calculator'),
-                'type' => \Elementor\Controls_Manager::TEXT,
+                'type' => \Elementor\Controls_Manager::TEXTAREA,
                 'input_type' => 'text',
                 'rows' => 2,
                 'default' => esc_html__('Item Name', 'price-calculator'),
@@ -64,6 +69,8 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
             [
                 'label' => esc_html__('Description', 'price-calculator'),
                 'type' => \Elementor\Controls_Manager::TEXTAREA,
+                'input_type' => 'text',
+                'rows' => 4,
                 'placeholder' => esc_html__('Type your description here', 'price-calculator'),
             ]
         );
@@ -198,51 +205,55 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
 
 ?>
         <div class="calc-item">
-            <div class="d-flex">
-                <input type="checkbox" class="calc-item__checkbox" />
-                <h3 class="calc-item__name">
-                    <?php echo esc_html($settings['name']); ?>
-                </h3>
+            <div>
+                <div class="calc-item__title">
+                    <label>
+                        <input type="checkbox" class="calc-item__checkbox" />
+                        <span class="calc-item__name"><?php echo esc_html($settings['name']); ?></span>
+                    </label>
+
+                    <?php if ($pricePerItemEnabled) { ?>
+                        <input
+                            type="number"
+                            name="quantity-number"
+                            class="calc-item__number-input"
+                            value="<?php echo esc_html($quantity); ?>"
+                            min="<?php echo esc_html($min_quantity); ?>"
+                            max="<?php echo esc_html($max_quantity); ?>"
+                            disabled />
+                    <?php } ?>
+                </div>
                 <?php if ($pricePerItemEnabled) { ?>
-                    <input
-                        type="number"
-                        name="quantity-number"
-                        class="calc-item__number-input"
-                        value="<?php echo esc_html($quantity); ?>"
-                        min="<?php echo esc_html($min_quantity); ?>"
-                        max="<?php echo esc_html($max_quantity); ?>"
-                        disabled />
+                    <!-- Quantity slider -->
+                    <div class="calc-item__range">
+                        <input
+                            type="range"
+                            name="quantity-range"
+                            class="calc-item__range-input"
+                            value="<?php echo esc_html($quantity); ?>"
+                            min="<?php echo esc_html($min_quantity); ?>"
+                            max="<?php echo esc_html($max_quantity); ?>"
+                            disabled />
+                        <div class="calc-item__range-values">
+                            <span><?php echo esc_html($min_quantity); ?></span>
+                            <span><?php echo esc_html($max_quantity); ?></span>
+                        </div>
+                    </div>
+                <?php } ?>
+                <p class="calc-item__description">
+                    <?php echo esc_html($settings['description']); ?>
+                </p>
+            </div>
+            <div class="calc-item__price">
+                <!-- Price -->
+                <p>
+                    <?php echo $currency_symbol . esc_html($price + $additional_quantity * $price_per_item); ?>
+                </p>
+                <?php if ($pricePerItemEnabled) { ?>
+                    <!-- Price per item -->
+                    <span class="calc-item__item-price">included<br> <span><?php echo $currency_symbol . esc_html($price_per_item); ?></span> per item</span>
                 <?php } ?>
             </div>
-            <?php if ($pricePerItemEnabled) { ?>
-                <!-- Quantity slider -->
-                <div class="calc-item__range">
-                    <input
-                        type="range"
-                        name="quantity-range"
-                        class="calc-item__range-input"
-                        value="<?php echo esc_html($quantity); ?>"
-                        min="<?php echo esc_html($min_quantity); ?>"
-                        max="<?php echo esc_html($max_quantity); ?>"
-                        disabled />
-                    <div class="calc-item__range-values">
-                        <span><?php echo esc_html($min_quantity); ?></span>
-                        <span><?php echo esc_html($max_quantity); ?></span>
-                    </div>
-                </div>
-            <?php } ?>
-            <p class="calc-item__description">
-                <?php echo esc_html($settings['description']); ?>
-            </p>
-
-            <!-- Price -->
-            <p class="calc-item__price">
-                <?php echo $currency_symbol . esc_html($price + $additional_quantity * $price_per_item); ?>
-            </p>
-            <?php if ($pricePerItemEnabled) { ?>
-                <!-- Price per item -->
-                <span class="calc-item__item-price">included <span><?php echo $currency_symbol . esc_html($price_per_item); ?></span> per item</span>
-            <?php } ?>
         </div>
     <?php
     }
@@ -255,52 +266,57 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
     {
     ?>
         <div class="calc-item">
-            <div class="d-flex">
-                <input type="checkbox" class="calc-item__checkbox" />
-                <h3 class="calc-item__name">
-                    {{ settings.name }}
-                </h3>
-                <# if (settings.enable_price_per_item==='yes' ) { #>
-                    <input
-                        type="number"
-                        name="quantity-number"
-                        class="calc-item__number-input"
-                        value="{{ settings.min_quantity }}"
-                        min="{{ settings.min_quantity }}"
-                        max="{{ settings.max_quantity }}"
-                        disabled />
-                    <# } #>
-            </div>
-            <# if (settings.enable_price_per_item==='yes' ) { #>
-                <!-- Quantity slider -->
-                <div class="calc-item__range">
-                    <input
-                        type="range"
-                        name="quantity-range"
-                        class="calc-item__range-input"
-                        value="{{ settings.min_quantity }}"
-                        min="{{ settings.min_quantity }}"
-                        max="{{ settings.max_quantity }}"
-                        disabled />
-                    <div class="calc-item__range-values">
-
-                        <span>{{ settings.min_quantity }}</span>
-                        <span>{{ settings.max_quantity }}</span>
-                    </div>
+            <div>
+                <div class="calc-item__title">
+                    <label>
+                        <input type="checkbox" class="calc-item__checkbox" />
+                        <span class="calc-item__name">
+                            {{ settings.name }}
+                        </span>
+                    </label>
+                    <# if (settings.enable_price_per_item==='yes' ) { #>
+                        <input
+                            type="number"
+                            name="quantity-number"
+                            class="calc-item__number-input"
+                            value="{{ settings.min_quantity }}"
+                            min="{{ settings.min_quantity }}"
+                            max="{{ settings.max_quantity }}"
+                            disabled />
+                        <# } #>
                 </div>
-                <# } #>
+                <# if (settings.enable_price_per_item==='yes' ) { #>
+                    <!-- Quantity slider -->
+                    <div class="calc-item__range">
+                        <input
+                            type="range"
+                            name="quantity-range"
+                            class="calc-item__range-input"
+                            value="{{ settings.min_quantity }}"
+                            min="{{ settings.min_quantity }}"
+                            max="{{ settings.max_quantity }}"
+                            disabled />
+                        <div class="calc-item__range-values">
+
+                            <span>{{ settings.min_quantity }}</span>
+                            <span>{{ settings.max_quantity }}</span>
+                        </div>
+                    </div>
+                    <# } #>
                     <p class="calc-item__description">
                         {{ settings.description }}
                     </p>
-
+            </div>
+                <div class="calc-item__price">
                     <!-- Price -->
-                    <p class="calc-item__price">
+                    <p >
                         ${{ settings.price }}
                     </p>
                     <# if (settings.enable_price_per_item==='yes' ) { #>
                         <!-- Price per item -->
                         <span class="calc-item__item-price">Included <span>${{ settings.price_per_item }}</span> per item</span>
                         <# } #>
+                </div>
         </div>
 <?php
     }

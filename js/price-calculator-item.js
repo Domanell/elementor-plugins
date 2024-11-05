@@ -111,7 +111,7 @@
 		const $switcher = $element.find('.calc-item__checkbox');
 		const $rangeInput = $element.find('.calc-item__range-input');
 		const $numberInput = $element.find('.calc-item__number-input');
-		const $priceText = $element.find('.calc-item__price');
+		const $priceText = $element.find('.calc-item__price p');
 		const $itemPriceText = $element.find('.calc-item__item-price span');
 
 		const elementData = {

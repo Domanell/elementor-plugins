@@ -33,6 +33,10 @@ class Price_Calculator_Total_Widget extends \Elementor\Widget_Base
         return ['price-calculator-total'];
     }
 
+    public function get_style_depends() {
+		return [ 'frontend-css' ];
+	}
+
     protected function _register_controls()
     {
         $this->start_controls_section(
