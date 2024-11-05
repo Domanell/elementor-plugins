@@ -241,7 +241,7 @@ class Price_Calculator_Item_Widget extends \Elementor\Widget_Base
                     </div>
                 <?php } ?>
                 <p class="calc-item__description">
-                    <?php echo esc_html($settings['description']); ?>
+                    <?php echo $settings['description']; ?>
                 </p>
             </div>
             <div class="calc-item__price">
