@@ -97,14 +97,7 @@ class Price_Calculator_Total_Widget extends \Elementor\Widget_Base
                 </li>
             </ul>
         </div>
-
-        <?php if (is_user_logged_in()) { ?>
-            <form class="calc-total__discount-form hidden">
-                <input type="number" name="discount-amount" min="0" class="calc-total__discount-input" />
-                <button class="calc-total__discount-button">Apply</button>
-            </form>
-        <?php } ?>
-
+        
         <div class="calc-total__info"
             <?php if (is_user_logged_in()) {
                 echo 'data-logged-in="true"';
@@ -114,6 +107,13 @@ class Price_Calculator_Total_Widget extends \Elementor\Widget_Base
                 <?php echo $currency_symbol . esc_html(empty($settings['base_price']) ? 0 : $settings['base_price']); ?>
             </p>
         </div>
+        <?php if (is_user_logged_in()) { ?>
+            <form class="calc-total__discount-form hidden">
+                <input type="number" name="discount-amount" min="0" class="calc-total__discount-input" placeholder="Discount" />
+                <button class="calc-total__discount-button">Apply</button>
+            </form>
+        <?php } ?>
+
     <?php
     }
 

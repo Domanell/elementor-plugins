@@ -176,8 +176,9 @@
 /*Calculator Total*/
 
 .calc-total__price {
-	font-size: 50px;
+	font-size: 30px;
 	color: var(--e-global-color-accent);
+	font-weight: 500;
 	margin-bottom: 0;
 	line-height: 1;
 }
@@ -199,14 +200,40 @@
 	font-weight: 500;
 	font-size: 18px;
 }
+.calc-total__info[data-logged-in="true"]{
+	cursor: pointer;
+}
+
+.calc-total__info{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+.calc-total__label{
+	font-size: 24px;
+	margin-bottom: 0;
+	font-weight: 500;
+}
 
 /* Discount */
 .calc-total__discount-form {
 	display: flex;
+	margin-top: 16px;
 }
 
 .calc-total__discount-form.hidden {
 	display: none;
+}
+
+.calc-total__discount-form .calc-total__discount-button{
+	margin-left: 8px;
+	background-color:transparent;
+	color:var(--e-global-color-accent);
+}
+
+.calc-total__discount-form .calc-total__discount-button:hover{
+	background-color: var(--e-global-color-accent);
+	color:#fff;
 }
 
 /* Responsive */
