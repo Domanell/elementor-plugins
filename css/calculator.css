@@ -200,6 +200,15 @@
 	font-size: 18px;
 }
 
+/* Discount */
+.calc-total__discount-form {
+	display: flex;
+}
+
+.calc-total__discount-form.hidden {
+	display: none;
+}
+
 /* Responsive */
 
 @media screen and (max-width: 768px) {

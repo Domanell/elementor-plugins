@@ -33,9 +33,10 @@ class Price_Calculator_Total_Widget extends \Elementor\Widget_Base
         return ['price-calculator-total'];
     }
 
-    public function get_style_depends() {
-		return [ 'frontend-css' ];
-	}
+    public function get_style_depends()
+    {
+        return ['frontend-css'];
+    }
 
     protected function _register_controls()
     {
@@ -80,11 +81,6 @@ class Price_Calculator_Total_Widget extends \Elementor\Widget_Base
         $settings = $this->get_settings_for_display();
         $currency_symbol = '$';
 ?>
-
-        <p class="calc-total__price">
-            <?php echo $currency_symbol . esc_html(isset($settings['base_price']) ? $settings['base_price'] : 0); ?>
-        </p>
-
         <?php if ($settings['description']) { ?>
             <p class="calc-description">
                 <?php echo esc_html($settings['description']); ?>
@@ -92,6 +88,31 @@ class Price_Calculator_Total_Widget extends \Elementor\Widget_Base
         <?php } ?>
 
         <div class="calc-total__details">
+            <ul class="calc-total__list">
+                <li class="calc-total-item">
+                    <span class="calc-total-item__name">Base price</span>
+                    <span class="calc-total-item__price">
+                        <?php echo $currency_symbol . esc_html(empty($settings['base_price']) ? 0 : $settings['base_price']); ?>
+                    </span>
+                </li>
+            </ul>
+        </div>
+
+        <?php if (is_user_logged_in()) { ?>
+            <form class="calc-total__discount-form hidden">
+                <input type="number" name="discount-amount" min="0" class="calc-total__discount-input" />
+                <button class="calc-total__discount-button">Apply</button>
+            </form>
+        <?php } ?>
+
+        <div class="calc-total__info"
+            <?php if (is_user_logged_in()) {
+                echo 'data-logged-in="true"';
+            } ?>>
+            <p class="calc-total__label">Total</p>
+            <p class="calc-total__price">
+                <?php echo $currency_symbol . esc_html(empty($settings['base_price']) ? 0 : $settings['base_price']); ?>
+            </p>
         </div>
     <?php
     }
@@ -102,10 +123,6 @@ class Price_Calculator_Total_Widget extends \Elementor\Widget_Base
     protected function content_template()
     {
     ?>
-        <p class="calc-total__price">
-            {{ settings.base_price }}
-        </p>
-
         <# if (settings.description) { #>
             <p class="calc-description">
                 {{ settings.description }}
@@ -113,6 +130,21 @@ class Price_Calculator_Total_Widget extends \Elementor\Widget_Base
             <# } #>
 
                 <div class="calc-total__details">
+                    <ul class="calc-total__list">
+                        <li class="calc-total-item">
+                            <span class="calc-total-item__name">Base price</span>
+                            <span class="calc-total-item__price">
+                                {{ settings.base_price }}
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="calc-total__info">
+                    <p class="calc-total__label">Total</p>
+                    <p class="calc-total__price">
+                        {{ settings.base_price }}
+                    </p>
                 </div>
         <?php
     }
