@@ -2,7 +2,7 @@
 	const ACTION_ADD = 'add-item';
 	const ACTION_REMOVE = 'remove-item';
 	const ACTION_UPDATE = 'update-item';
-	const currencySymbol = '$';
+	const currencyCode = 'USD';
 
 	const store = {};
 
@@ -101,8 +101,12 @@
 		}
 
 		updatePriceText() {
-			this.$priceText.text(`${currencySymbol}${this.totalPrice}`);
-			this.$itemPriceText?.text(`${currencySymbol}${this.pricePerItem}`);
+			this.$priceText.text(this.formatCurrency(this.totalPrice));
+			this.$itemPriceText?.text(this.formatCurrency(this.pricePerItem));
+		}
+
+		formatCurrency(amount, locale = 'en-US') {
+			return new Intl.NumberFormat(locale, { style: 'currency', currency: currencyCode, minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
 		}
 	}
 
