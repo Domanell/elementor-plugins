@@ -74,7 +74,7 @@
 				break;
 			case ACTION_UPDATE:
 				updateItem(payload, true);
-				return; // Skip rerender
+				break;
 		}
 
 		rerender();
@@ -86,8 +86,6 @@
 		if (targetItem) {
 			Object.assign(targetItem, updatedItem);
 		}
-
-		rerender();
 	};
 
 	const subscribeToMessages = () => {
@@ -107,6 +105,7 @@
 		event.preventDefault();
 		const discountAmount = new FormData(event.target).get('discount-amount') || 0;
 		updateItem({ id: DISCOUNT_ID, totalPrice: -discountAmount });
+		rerender();
 		handleToggleDiscountFormVisibility();
 	};
 
