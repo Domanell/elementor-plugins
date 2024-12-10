@@ -34,14 +34,14 @@ add_action('elementor/widgets/register', 'register_impact_calculator_widgets');
  */
 function enqueue_impact_calculator_dependencies()
 {
-    wp_register_script('impact-calculator', plugins_url('js/calculator.js', __FILE__));
+    wp_register_script('impact-calculator', plugins_url('js/impact-calculator.js', __FILE__));
 }
 
 add_action('wp_enqueue_scripts', 'enqueue_impact_calculator_dependencies');
 
-function impact_calculator_frontend_stylesheets() {
+function impact_calculator_frontend_stylesheets()
+{
 
-	wp_register_style( 'frontend-css', plugins_url( 'css/calculator.css', __FILE__ ) );
-
+    wp_register_style('frontend-css', plugins_url('css/calculator.css', __FILE__));
 }
-add_action( 'elementor/frontend/before_enqueue_styles', 'impact_calculator_frontend_stylesheets' );
+add_action('elementor/frontend/before_enqueue_styles', 'impact_calculator_frontend_stylesheets');
