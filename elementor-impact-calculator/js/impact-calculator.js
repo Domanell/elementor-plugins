@@ -38,7 +38,7 @@
 
 	const calculateImpactValue = (multiplier) => {
 		const number = Math.round(quantity * multiplier);
-		return new Intl.NumberFormat(_, {
+		return new Intl.NumberFormat('da-DK', {
 			maximumFractionDigits: 0,
 		}).format(number);
 	};

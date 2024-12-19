@@ -19,7 +19,7 @@
 	width: 100%;
 	height: 4px;
 	border-radius: 0;
-	background: var(--e-global-color-secondary, #4D8B55);
+	background: var(--e-global-color-secondary);
 	outline: none;
 	opacity: 1;
 	transition: opacity 0.2s;
@@ -33,16 +33,19 @@
 	width: 5px;
 	height: 24px;
 	border-radius: 0;
-	background: var(--e-global-color-secondary, #4D8B55);
+	background: var(--e-global-color-secondary);
 	cursor: pointer;
 }
+
 .calc__range-input::-moz-range-thumb {
-	width: 16px;
-	height: 16px;
-	border-radius: 50%;
-	background: #64caff;
+	width: 5px;
+	height: 24px;
+	border-radius: 0;
+	background-color: #4D8B55;
+	border:none;
 	cursor: pointer;
 }
+
 
 
 .impact-calculator .calc__number-input[type='number'] {
@@ -85,11 +88,10 @@
 	width: 5rem;
 	height: 5rem;
 	object-fit: cover;
-	margin-bottom: 8px;
+    margin-bottom: 8px;
 }
 
 .infobox__title_3{max-width: 19.375rem;}
-
 
 /*Calculator Total*/
 
@@ -105,7 +107,7 @@
 @media screen and (max-width: 768px) {
 	.infoboxes-row{
 		flex-wrap: wrap;
-		gap: .625rem;
+        gap: .625rem;
 	}
 	.infobox{
 		flex-basis: 45%;
