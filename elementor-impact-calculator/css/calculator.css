@@ -1,20 +1,25 @@
-.impact-calculator{
-	padding:3rem 0;
-}
 /*Calculator Item*/
-
-.calc__title {
-	flex-grow: 1;
+.impact-calculator__wrap{
+	display: flex;
+	align-items: center;
+	gap:1.875rem;
 }
 
-.impact-calculator .calc__range input[type='range'] {
+.impact-calculator__title{}
+.impact-calculator__range{
+	flex-grow: 1;
+	display: flex;
+}
+
+
+.impact-calculator .impact-calculator__range input[type='range'] {
 	-webkit-appearance: none;
 	-moz-appearance: none;
 	appearance: none;
 	width: 100%;
 	height: 4px;
 	border-radius: 0;
-	background: var(--e-global-color-secondary, #4D8B55);
+	background: var(--e-global-color-secondary);
 	outline: none;
 	opacity: 1;
 	transition: opacity 0.2s;
@@ -28,24 +33,27 @@
 	width: 5px;
 	height: 24px;
 	border-radius: 0;
-	background: var(--e-global-color-secondary, #4D8B55);
+	background: var(--e-global-color-secondary);
 	cursor: pointer;
 }
+
 .calc__range-input::-moz-range-thumb {
-	width: 16px;
-	height: 16px;
-	border-radius: 50%;
-	background: #64caff;
+	width: 5px;
+	height: 24px;
+	border-radius: 0;
+	background-color: #4D8B55;
+	border:none;
 	cursor: pointer;
 }
 
 
-.calc__number-input[type='number'] {
+
+.impact-calculator .calc__number-input[type='number'] {
 	height: 44px;
-	border: 1px solid #DCDCDC;
+	border: 1px solid #DCDCDC!important;
 	border-radius: 0;
 	max-width: 95px;
-	padding: 0 6px;
+	padding: 0 15px!important;
 }
 
 
@@ -55,28 +63,41 @@
 	display: flex;
 	justify-content: space-between;
 	gap: 20px;
+	margin-top: 2.5rem;
 }
 
 .infobox{
 	display: flex;
 	flex-direction: column;
 	text-align: center;
+	align-items: center;
 	flex-basis:27%;
 	padding: 20px;
+	gap: 10px;
 }
 
 .infobox:nth-child(3){
-	flex-basis:45%;
+	flex-basis:43%;
+	padding: 1.75rem;
+	justify-content: center;
 }
+
+.infobox p{margin-bottom: 0;}
+
+.infobox img{
+	width: 5rem;
+	height: 5rem;
+	object-fit: cover;
+    margin-bottom: 8px;
+}
+
+.infobox__title_3{max-width: 19.375rem;}
 
 /*Calculator Total*/
 
-.calc-total__price {
-	font-size: 30px;
-	color: var(--e-global-color-accent);
-	font-weight: 500;
-	margin-bottom: 0;
-	line-height: 1;
+.impact-value{
+	font-size: 1.875rem;
+	font-weight: 700;
 }
 
 
@@ -84,7 +105,29 @@
 /* Responsive */
 
 @media screen and (max-width: 768px) {
+	.infoboxes-row{
+		flex-wrap: wrap;
+        gap: .625rem;
+	}
+	.infobox{
+		flex-basis: 45%;
+		flex-grow: 1;
+	}
+	.infobox:nth-child(3){
+		flex-basis:100%;
+	}
 
+	.impact-calculator__wrap{
+		flex-wrap: wrap;
+		gap: 1.2rem;
+	}
+	.impact-calculator__range{
+		order: 1;
+		width: 100%;
+	}
+	.impact-calculator__title{
+		flex-grow: 1;
+	}
 }
 
 @media screen and (max-width: 380px) {

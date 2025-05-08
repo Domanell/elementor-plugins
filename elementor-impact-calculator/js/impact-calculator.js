@@ -38,7 +38,7 @@
 
 	const calculateImpactValue = (multiplier) => {
 		const number = Math.round(quantity * multiplier);
-		return new Intl.NumberFormat(_, {
+		return new Intl.NumberFormat('da-DK', {
 			maximumFractionDigits: 0,
 		}).format(number);
 	};
@@ -52,7 +52,7 @@
 		$sustainableValueText = $element.find('.impact-value_sustainable');
 		min = settings.min_quantity || 0;
 		max = settings.max_quantity || 10000;
-		quantity = min || 0;
+		quantity = settings.default_quantity || 0;
 		isEditMode = elementorFrontend.isEditMode();
 
 		initializeEventHandlers();

@@ -91,6 +91,17 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
                 'frontend_available' => true,
             ]
         );
+        // Default quantity
+        $this->add_control(
+            'default_quantity',
+            [
+                'label' => esc_html__('Default quantity', 'impact-calculator'),
+                'type' => \Elementor\Controls_Manager::NUMBER,
+                'default' => 1000,
+                'placeholder' => esc_html__('Enter default quantity', 'impact-calculator'),
+                'frontend_available' => true,
+            ]
+        );
 
         // Step quantity
         $this->add_control(
@@ -220,6 +231,36 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
                 'tab' => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
+        
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name' => 'box_1_typography',
+                'label' => esc_html__('Title Typography', 'impact-calculator'),
+                'selector' => '{{WRAPPER}} .infobox__title_1',
+            ]
+        );
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name' => 'box_1_number',
+                'label' => esc_html__('Number Typography', 'impact-calculator'),
+                'selector' => '{{WRAPPER}} .impact-value_standard',
+            ]
+        );
+        $this->add_control(
+            'box_1_number_color',
+            [
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'label' => esc_html__('Number Color', 'impact-calculator'),
+                'selectors' => [
+                    '{{WRAPPER}} .impact-value_standard' => 'color: {{VALUE}}',
+                ],
+                // 'global' => [
+                //     'default' => \Elementor\Core\Kits\Documents\Tabs\Global_Colors::COLOR_SECONDARY,
+                // ],
+            ]
+        );
         $this->add_control(
             'box_1_bg',
             [
@@ -228,14 +269,7 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
                 'selectors' => [
                     '{{WRAPPER}} .infobox_1' => 'background-color: {{VALUE}}',
                 ],
-            ]
-        );
-        $this->add_group_control(
-            \Elementor\Group_Control_Typography::get_type(),
-            [
-                'name' => 'box_1_typography',
-                'label' => esc_html__('Title Typography', 'impact-calculator'),
-                'selector' => '{{WRAPPER}} .infobox__title_1',
+                'separator' => 'before'
             ]
         );
         $this->add_group_control(
@@ -255,6 +289,36 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
                 'tab' => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name' => 'box_2_typography',
+                'label' => esc_html__('Title Typography', 'impact-calculator'),
+                'selector' => '{{WRAPPER}} .infobox__title_2',
+            ]
+        );
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name' => 'box_2_number',
+                'label' => esc_html__('Number Typography', 'impact-calculator'),
+                'selector' => '{{WRAPPER}} .impact-value_sustainable',
+            ]
+        );
+        $this->add_control(
+            'box_2_number_color',
+            [
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'label' => esc_html__('Number Color', 'impact-calculator'),
+                'selectors' => [
+                    '{{WRAPPER}} .impact-value_sustainable' => 'color: {{VALUE}}',
+                ],
+                // 'global' => [
+                //     'default' => \Elementor\Core\Kits\Documents\Tabs\Global_Colors::COLOR_SECONDARY,
+                // ],
+            ]
+        );
         $this->add_control(
             'box_2_bg',
             [
@@ -263,17 +327,7 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
                 'selectors' => [
                     '{{WRAPPER}} .infobox_2' => 'background-color: {{VALUE}}',
                 ],
-                // 'global' => [
-                //     'default' => \Elementor\Core\Kits\Documents\Tabs\Global_Colors::COLOR_SECONDARY,
-                // ],
-            ]
-        );
-        $this->add_group_control(
-            \Elementor\Group_Control_Typography::get_type(),
-            [
-                'name' => 'box_2_typography',
-                'label' => esc_html__('Title Typography', 'impact-calculator'),
-                'selector' => '{{WRAPPER}} .infobox__title_2',
+                'separator' => 'before'
             ]
         );
         $this->add_group_control(
@@ -295,6 +349,36 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
                 'tab' => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name' => 'box_result_typography',
+                'label' => esc_html__('Title Typography', 'impact-calculator'),
+                'selector' => '{{WRAPPER}} .infobox__title_3',
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Typography::get_type(),
+            [
+                'name' => 'box_result_number',
+                'label' => esc_html__('Number Typography', 'impact-calculator'),
+                'selector' => '{{WRAPPER}} .impact-value_result',
+            ]
+        );
+        $this->add_control(
+            'box_result_number_color',
+            [
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'label' => esc_html__('Number Color', 'impact-calculator'),
+                'selectors' => [
+                    '{{WRAPPER}} .impact-value_result' => 'color: {{VALUE}}',
+                ],
+                // 'global' => [
+                //     'default' => \Elementor\Core\Kits\Documents\Tabs\Global_Colors::COLOR_SECONDARY,
+                // ],
+            ]
+        );
         $this->add_control(
             'box_result_bg',
             [
@@ -303,17 +387,7 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
                 'selectors' => [
                     '{{WRAPPER}} .class' => 'background-color: {{VALUE}}',
                 ],
-                // 'global' => [
-                //     'default' => \Elementor\Core\Kits\Documents\Tabs\Global_Colors::COLOR_SECONDARY,
-                // ],
-            ]
-        );
-        $this->add_group_control(
-            \Elementor\Group_Control_Typography::get_type(),
-            [
-                'name' => 'box_result_typography',
-                'label' => esc_html__('Title Typography', 'impact-calculator'),
-                'selector' => '{{WRAPPER}} .infobox__title_3',
+                'separator' => 'before'
             ]
         );
         $this->add_group_control(
@@ -341,33 +415,35 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
         // Get the settings
         $min_quantity = empty($settings['min_quantity']) ? 0 : $settings['min_quantity'];
         $max_quantity = empty($settings['max_quantity']) ? 10000 : $settings['max_quantity'];
-        $quantity = $min_quantity;  // Set to min_quantity by default
+        $quantity = empty($settings['default_quantity']) ? 1000 : $settings['default_quantity'];;  // Set to min_quantity by default
         $step_quantity = empty($settings['step_quantity']) ? 1 : $settings['step_quantity'];
+        $units = 'kg CO'.'<sub>2</sub>' . 'e';
 ?>
         <div class="impact-calculator">
-            <div class="calc__title">
+            <div class="impact-calculator__wrap">
+                <div class="impact-calculator__title">
+                    <span <?php $this->print_render_attribute_string('title'); ?>><?php echo $settings['title']; ?></span>
+                </div>
 
-                <span <?php $this->print_render_attribute_string('title'); ?>><?php echo $settings['title']; ?></span>
-
-                <input
-                    type="number"
-                    name="quantity-number"
-                    class="calc__number-input"
-                    value="<?php echo esc_html($quantity); ?>"
-                    min="<?php echo esc_html($min_quantity); ?>"
-                    max="<?php echo esc_html($max_quantity); ?>" />
-            </div>
-
-            <div class="calc__range">
-                <input
-                    type="range"
-                    name="quantity-range"
-                    class="calc__range-input"
-                    value="<?php echo esc_html($quantity); ?>"
-                    min="<?php echo esc_html($min_quantity); ?>"
-                    max="<?php echo esc_html($max_quantity); ?>"
-                    step="<?php echo esc_html($step_quantity); ?>" />
-
+                <div class="impact-calculator__range">
+                    <input
+                        type="range"
+                        name="quantity-range"
+                        class="calc__range-input"
+                        value="<?php echo esc_html($quantity); ?>"
+                        min="<?php echo esc_html($min_quantity); ?>"
+                        max="<?php echo esc_html($max_quantity); ?>"
+                        step="<?php echo esc_html($step_quantity); ?>" />
+                </div>
+                <div class="impact-calculator__num">
+                    <input
+                        type="number"
+                        name="quantity-number"
+                        class="calc__number-input"
+                        value="<?php echo esc_html($quantity); ?>"
+                        min="<?php echo esc_html($min_quantity); ?>"
+                        max="<?php echo esc_html($max_quantity); ?>" />
+                </div>
             </div>
 
             <!-- <div <?php //$this->print_render_attribute_string( 'description' ); 
@@ -376,7 +452,6 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
 
             <div class="infoboxes-row">
                 <div class="infobox infobox_1">
-                    <!-- image -->
                     <?php
                     if (!empty($settings['box_1_image']['url'])) {
                         echo '<img src="' . $settings['box_1_image']['url'] . '" alt="Box 1 image">';
@@ -386,10 +461,10 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
                         <?php echo $settings['box_1_title']; ?>
                     </p>
                     <p class="impact-value impact-value_standard"><?php echo round($quantity * 15.33, 0); ?></p>
+                    <p class="impact-units"><?php echo $units ;?> </p>
                 </div>
 
                 <div class="infobox infobox_2">
-                    <!-- image 2-->
                     <?php
                     if (!empty($settings['box_2_image']['url'])) {
                         echo '<img src="' . $settings['box_2_image']['url'] . '" alt="Box 2 image">';
@@ -399,9 +474,9 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
                         <?php echo $settings['box_2_title']; ?>
                     </p>
                     <p class="impact-value impact-value_sustainable"><?php echo round($quantity * 3.51, 0); ?></p>
+                    <p class="impact-units"><?php echo $units ;?> </p>
                 </div>
                 <div class="infobox infobox_result">
-                    <!-- result image -->
                     <?php
                     if (!empty($settings['result_image']['url'])) {
                         echo '<img src="' . $settings['result_image']['url'] . '" alt="Result image">';
@@ -410,10 +485,9 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
                     <p class="infobox__title infobox__title_3">
                         <?php echo $settings['result_title']; ?>
                     </p>
+                    <p class="impact-value impact-value_result">77,1%</p>
                 </div>
             </div>
-
-
         </div>
     <?php
     }
@@ -430,27 +504,31 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
             view.addInlineEditingAttributes( 'description' , 'basic' );
             #>
             <div class="impact-calculator">
-                <div class="calc__title">
-                    <span {{{ view.getRenderAttributeString( 'title' ) }}}>{{{ settings.title }}}</span>
-                    <input
-                        type="number"
-                        name="quantity-number"
-                        class="calc__number-input"
-                        value="{{{ settings.min_quantity }}}"
-                        min="{{{ settings.min_quantity }}}"
-                        max="{{{ settings.max_quantity }}}" />
+                <div class="impact-calculator__wrap">
+                    <div class="impact-calculator__title">
+                        <span {{{ view.getRenderAttributeString( 'title' ) }}}>{{{ settings.title }}}</span>
+                        
+                    </div>
+                    <div class="impact-calculator__range">
+                        <input
+                            type="range"
+                            name="quantity-range"
+                            class="calc__range-input"
+                            value="{{{ settings.min_quantity }}}"
+                            min="{{{ settings.min_quantity }}}"
+                            max="{{{ settings.max_quantity }}}"
+                            step="{{{ settings.step_quantity }}}" />
+                    </div>
+                    <div class="impact-calculator__num">
+                        <input
+                            type="number"
+                            name="quantity-number"
+                            class="calc__number-input"
+                            value="{{{ settings.min_quantity }}}"
+                            min="{{{ settings.min_quantity }}}"
+                            max="{{{ settings.max_quantity }}}" />
+                    </div>
                 </div>
-                <div class="calc__range">
-                    <input
-                        type="range"
-                        name="quantity-range"
-                        class="calc__range-input"
-                        value="{{{ settings.min_quantity }}}"
-                        min="{{{ settings.min_quantity }}}"
-                        max="{{{ settings.max_quantity }}}"
-                        step="{{{ settings.step_quantity }}}" />
-                </div>
-                <!-- <div {{{ view.getRenderAttributeString( 'description' ) }}}>{{{ settings.description }}}</div> -->
                 <div class="infoboxes-row">
                     <div class="infobox infobox_1">
                         <!-- image -->
@@ -473,7 +551,12 @@ class Impact_Calculator_Widget extends \Elementor\Widget_Base
                         <# if (settings.result_image.url) { #>
                             <img src="{{{ settings.result_image.url }}}" alt="Result image">
                             <# } #>
-                                <p class="infobox__title infobox__title_
+                                <p class="infobox__title infobox__title_3">{{{ settings.box_3_title }}}</p>
+                                <p class="impact-value">77.1%</p>
+                    </div>
+                </div>
+            </div>
+            
     <?php
     }
 }
