@@ -1,6 +1,15 @@
-elementor/
-elementor-pro/
-create-block-theme/
-ultimate-member/
-wp-learn-wceu-2023/
-index.php
+# Ignore everything
+*
+
+# Do not ignore this .gitignore file itself
+!.gitignore
+
+# Do not ignore specific folders
+!elementor-impact-calculator/
+!elementor-price-calculator/
+!sellers-net-sheet-calculator/
+
+# Do not ignore everything inside those folders
+!elementor-impact-calculator/**
+!elementor-price-calculator/**
+!sellers-net-sheet-calculator/**
