@@ -156,7 +156,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'selector' => '{{WRAPPER}} .seller-net-sheet-calculator',
             ]
         );
-
+   
         $this->add_control(
             'section_heading_color',
             [
@@ -216,11 +216,10 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
 
         // Get default values from settings
         $commission_rate = $settings['default_commission_rate'] ?? 6;
-        $closing_fee = $settings['default_closing_fee'] ?? 495;
-        $doc_prep_fee = $settings['default_doc_prep_fee'] ?? 250;
-        $county_fee = $settings['default_county_fee'] ?? 5;
-        $courier_fee = $settings['default_courier_fee'] ?? 100;
-        $state_deed_tax_rate = $settings['state_deed_tax_rate'] ?? 0.34;
+        $settlement_fee = $settings['default_settlement_fee'] ?? 350;
+        $lien_release_tracking_fee = $settings['default_lien_release_tracking_fee'] ?? 45;
+        $security_fee = $settings['default_security_fee'] ?? 55;
+        $water_escrow = $settings['default_water_escrow'] ?? 300;
 
         // Unique ID for this instance
         $calculator_id = 'snsc-' . uniqid();
@@ -230,7 +229,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
             <form class="snsc-form">
                 <!-- Seller Credits Section -->
                 <div class="snsc-section">
-                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Seller Credits', 'sellers-net-sheet-calculator' ); ?></h3>
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Transaction Summary', 'sellers-net-sheet-calculator' ); ?></h3>
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-purchase-price">
@@ -264,7 +263,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-gross-proceeds">
-                            <?php echo esc_html__( 'Total Estimated Gross Proceeds Due to Seller', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Total Estimated Gross Proceeds', 'sellers-net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -277,14 +276,13 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                         </div>
                     </div>
                 </div>
-                
-                <!-- Selling Costs Section -->
+                <!-- Mortgage & Liens Section -->
                 <div class="snsc-section">
-                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Less Selling Costs', 'sellers-net-sheet-calculator' ); ?></h3>
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Mortgage & Liens', 'sellers-net-sheet-calculator' ); ?></h3>
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-mortgage-payoff">
-                            <?php echo esc_html__( 'Mortgage Payoff (with interest)', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Mortgage Payoff', 'sellers-net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -298,172 +296,245 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     </div>
                     
                     <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-second-mortgage">
-                            <?php echo esc_html__( '2nd Mortgage Payoff (with interest)', 'sellers-net-sheet-calculator' ); ?>
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-other-mortgage-payoff">
+                            <?php echo esc_html__( 'Second Mortgage Payoff ', 'sellers-net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
                                 class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-second-mortgage" 
-                                name="second_mortgage" 
-                                data-field="second_mortgage"
+                                id="<?php echo esc_attr( $calculator_id ); ?>-other-mortgage-payoff" 
+                                name="other_mortgage_payoff" 
+                                data-field="other_mortgage_payoff"
                                 placeholder="0"
                             >
                         </div>
                     </div>
                     
                     <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-commission-rate">
-                            <?php echo esc_html__( 'Realtor Commission %', 'sellers-net-sheet-calculator' ); ?>
-                        </label>
-                        <div class="snsc-input-wrap">
-                            <input type="number" 
-                                class="snsc-input snsc-number" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-commission-rate" 
-                                name="commission_rate" 
-                                data-field="commission_rate"
-                                value="<?php echo esc_attr( $commission_rate ); ?>"
-                                step="0.1"
-                                min="0"
-                            >
-                        </div>
-                    </div>
-                    
-                    <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-commission-total">
-                            <?php echo esc_html__( 'Realtor Commission Total', 'sellers-net-sheet-calculator' ); ?>
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-special-assessment-payoff">
+                            <?php echo esc_html__( 'Special Assessment Payoff', 'sellers-net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
                                 class="snsc-input snsc-calculated-field" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-commission-total" 
-                                name="commission_total" 
-                                data-field="commission_total"
+                                id="<?php echo esc_attr( $calculator_id ); ?>-special-assessment-payoff" 
+                                name="special_assessment_payoff" 
+                                data-field="special_assessment_payoff"  
+                            >
+                        </div>
+                    </div>
+                    <div class="snsc-field">
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-lien-release-tracking-fee">
+                            <?php echo esc_html__( 'Lien Release Tracking Fee', 'sellers-net-sheet-calculator' ); ?>
+                        </label>
+                        <div class="snsc-input-wrap">
+                            <input type="text" 
+                                class="snsc-input snsc-calculated-field" 
+                                id="<?php echo esc_attr( $calculator_id ); ?>-lien-release-tracking-fee" 
+                                name="lien_release_tracking_fee" 
+                                data-field="lien_release_tracking_fee"
+                                value="<?php echo esc_attr( $lien_release_tracking_fee ); ?>"
+                            >
+                        </div>
+                    </div>
+                </div>
+                <!-- Taxes & Government Fees Section -->
+                <div class="snsc-section">
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Taxes & Government Fees', 'sellers-net-sheet-calculator' ); ?></h3>
+                    
+                    <div class="snsc-field">
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-property-taxes-due">
+                            <?php echo esc_html__( 'Property Taxes Due', 'sellers-net-sheet-calculator' ); ?>
+                        </label>
+                        <div class="snsc-input-wrap">
+                            <input type="text" 
+                                class="snsc-input snsc-currency" 
+                                id="<?php echo esc_attr( $calculator_id ); ?>-property-taxes-due" 
+                                name="property_taxes_due" 
+                                data-field="property_taxes_due"
+                                placeholder="0"
                                 readonly
                             >
                         </div>
                     </div>
                     
                     <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-real-estate-taxes">
-                            <?php echo esc_html__( 'Real Estate Taxes Due at closing (proration)', 'sellers-net-sheet-calculator' ); ?>
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-michigan-transfer-tax">
+                            <?php echo esc_html__( 'Michigan Transfer Tax ', 'sellers-net-sheet-calculator' ); ?>
+                            <!-- Formula: (purchase price/500) * 3.75  -->
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
                                 class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-real-estate-taxes" 
-                                name="real_estate_taxes" 
-                                data-field="real_estate_taxes"
+                                id="<?php echo esc_attr( $calculator_id ); ?>-michigan-transfer-tax" 
+                                name="michigan_transfer_tax" 
+                                data-field="michigan_transfer_tax"
                                 placeholder="0"
+                                readonly
                             >
                         </div>
                     </div>
                     
                     <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-special-assessments">
-                            <?php echo esc_html__( 'Special Assessments due at closing', 'sellers-net-sheet-calculator' ); ?>
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-revenue-stamps">
+                            <?php echo esc_html__( 'Revenue Stamps', 'sellers-net-sheet-calculator' ); ?>
                         </label>
-                        <div class="snsc-input-wrap">
-                            <input type="text" 
-                                class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-special-assessments" 
-                                name="special_assessments" 
-                                data-field="special_assessments"
-                                placeholder="0"
-                            >
-                        </div>
-                    </div>
-                    
-                    <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-closing-fee">
-                            <?php echo esc_html__( 'Closing Fee ($495-$600)', 'sellers-net-sheet-calculator' ); ?>
-                        </label>
-                        <div class="snsc-input-wrap">
-                            <input type="text" 
-                                class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-closing-fee" 
-                                name="closing_fee" 
-                                data-field="closing_fee"
-                                value="<?php echo esc_attr( $closing_fee ); ?>"
-                            >
-                        </div>
-                    </div>
-                    
-                    <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-broker-fee">
-                            <?php echo esc_html__( 'Broker Administration Fee', 'sellers-net-sheet-calculator' ); ?>
-                        </label>
-                        <div class="snsc-input-wrap">
-                            <input type="text" 
-                                class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-broker-fee" 
-                                name="broker_fee" 
-                                data-field="broker_fee"
-                                placeholder="0"
-                            >
-                        </div>
-                    </div>
-                    
-                    <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-doc-prep-fee">
-                            <?php echo esc_html__( 'Document Preparation Fees ($200-$500)', 'sellers-net-sheet-calculator' ); ?>
-                        </label>
-                        <div class="snsc-input-wrap">
-                            <input type="text" 
-                                class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-doc-prep-fee" 
-                                name="doc_prep_fee" 
-                                data-field="doc_prep_fee"
-                                value="<?php echo esc_attr( $doc_prep_fee ); ?>"
-                            >
-                        </div>
-                    </div>
-                    
-                    <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-state-deed-tax">
-                            <?php echo esc_html__( 'State Deed Tax', 'sellers-net-sheet-calculator' ); ?>
-                        </label>
+                        <!-- Formula: (purchase price/500) * 0.55  -->
                         <div class="snsc-input-wrap">
                             <input type="text" 
                                 class="snsc-input snsc-calculated-field" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-state-deed-tax" 
-                                name="state_deed_tax" 
-                                data-field="state_deed_tax"
-                                readonly
-                                data-tax-rate="<?php echo esc_attr( $state_deed_tax_rate ); ?>"
+                                id="<?php echo esc_attr( $calculator_id ); ?>-revenue-stamps" 
+                                name="revenue_stamps" 
+                                data-field="revenue_stamps"  
+                            >
+                        </div>
+                    </div>
+                </div>
+                <!-- Title & Closing Fees Section -->
+                <div class="snsc-section">
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Title & Closing Fees', 'sellers-net-sheet-calculator' ); ?></h3>
+                
+                    <div class="snsc-field">
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-settlement-fee">
+                            <?php echo esc_html__( 'Settlement Fee', 'sellers-net-sheet-calculator' ); ?>
+                        </label>
+                        <div class="snsc-input-wrap">
+                            <input type="text" 
+                                class="snsc-input snsc-currency" 
+                                id="<?php echo esc_attr( $calculator_id ); ?>-settlement-fee" 
+                                name="settlement_fee" 
+                                data-field="settlement_fee"
+                                placeholder="0"
+                                value="<?php echo esc_attr( $settlement_fee ); ?>"
                             >
                         </div>
                     </div>
                     
                     <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-seller-paid-costs">
-                            <?php echo esc_html__( 'Seller Paid Closing Costs for Buyer', 'sellers-net-sheet-calculator' ); ?>
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-security-fee">
+                            <?php echo esc_html__( 'Security Fee', 'sellers-net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
                                 class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-seller-paid-costs" 
-                                name="seller_paid_costs" 
-                                data-field="seller_paid_costs"
+                                id="<?php echo esc_attr( $calculator_id ); ?>-security-fee" 
+                                name="security_fee" 
+                                data-field="security_fee"
+                                placeholder="0"
+                                readonly
+                                value="<?php echo esc_attr( $security_fee ); ?>"
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="snsc-field">
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-title-insurance-policy">
+                            <?php echo esc_html__( 'Title Insurance Policy', 'sellers-net-sheet-calculator' ); ?>
+                        </label>
+                        <!-- add field with description here, to insert URL -->
+
+                        <div class="snsc-input-wrap">
+                            <input type="text" 
+                                class="snsc-input snsc-calculated-field" 
+                                id="<?php echo esc_attr( $calculator_id ); ?>-title-insurance-policy" 
+                                name="title_insurance_policy" 
+                                data-field="title_insurance_policy"  
+                            >
+                        </div>
+                    </div>
+                </div>
+                <!-- Agent Commissions Section -->
+                <div class="snsc-section">
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Agent Commissions', 'sellers-net-sheet-calculator' ); ?></h3>
+                
+                    <div class="snsc-field">
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-comission-realtor">
+                            <?php echo esc_html__( 'Commission Due Realtor (6% standard)', 'sellers-net-sheet-calculator' ); ?>
+                        </label>
+                        <div class="snsc-input-wrap">
+                            <input type="text" 
+                                class="snsc-input snsc-currency" 
+                                id="<?php echo esc_attr( $calculator_id ); ?>-comission-realtor" 
+                                name="comission_realtor" 
+                                data-field="comission_realtor"
+                                placeholder="6"
+                                readonly
+                            >
+                        </div>
+                    </div>
+                    
+                    <div class="snsc-field">
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-comission-realtor-extra">
+                            <?php echo esc_html__( 'Commission Due Realtor', 'sellers-net-sheet-calculator' ); ?>
+                        </label>
+                        <div class="snsc-input-wrap">
+                            <input type="text" 
+                                class="snsc-input snsc-currency" 
+                                id="<?php echo esc_attr( $calculator_id ); ?>-comission-realtor-extra" 
+                                name="comission_realtor_extra" 
+                                data-field="comission_realtor_extra"
+                                placeholder="0"
+                            >
+                        </div>
+                    </div>
+                </div>
+                <!-- Utilities & HOA Section -->
+                <div class="snsc-section">
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Utilities & HOA', 'sellers-net-sheet-calculator' ); ?></h3>
+                
+                    <div class="snsc-field">
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-current-water">
+                            <?php echo esc_html__( 'Current Water/Sewer', 'sellers-net-sheet-calculator' ); ?>
+                        </label>
+                        <div class="snsc-input-wrap">
+                            <input type="text" 
+                                class="snsc-input snsc-currency" 
+                                id="<?php echo esc_attr( $calculator_id ); ?>-current-water" 
+                                name="current_water" 
+                                data-field="current_water"
                                 placeholder="0"
                             >
                         </div>
                     </div>
                     
                     <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-county-fee">
-                            <?php echo esc_html__( 'County Conservation Fee', 'sellers-net-sheet-calculator' ); ?>
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-hoa-assessment">
+                            <?php echo esc_html__( 'HOA Assessment', 'sellers-net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
                                 class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-county-fee" 
-                                name="county_fee" 
-                                data-field="county_fee"
-                                value="<?php echo esc_attr( $county_fee ); ?>"
+                                id="<?php echo esc_attr( $calculator_id ); ?>-hoa-assessment" 
+                                name="hoa_assessment" 
+                                data-field="hoa_assessment"
+                                placeholder="0"
                             >
                         </div>
                     </div>
+
+                    <div class="snsc-field">
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-water-escrow">
+                            <?php echo esc_html__( 'Water Escrow (Minimum $300)', 'sellers-net-sheet-calculator' ); ?>
+                            <!-- Minimum value is $300 -->
+                        </label>
+                        <div class="snsc-input-wrap">
+                            <input type="text" 
+                                class="snsc-input snsc-currency" 
+                                id="<?php echo esc_attr( $calculator_id ); ?>-water-escrow" 
+                                name="water_escrow" 
+                                data-field="water_escrow"
+                                placeholder="300"
+                                min="300"
+                                step="1"
+                                value ="<?php echo esc_attr( $water_escrow ); ?>"
+                            >
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Miscellaneous Seller Costs Section -->
+                <div class="snsc-section">
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Miscellaneous Seller Costs', 'sellers-net-sheet-calculator' ); ?></h3>
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-home-warranty">
@@ -481,176 +552,88 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     </div>
                     
                     <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-courier-fees">
-                            <?php echo esc_html__( 'Courier Fees/Payoff Processing ($50 per payoff)', 'sellers-net-sheet-calculator' ); ?>
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-fha">
+                            <?php echo esc_html__( 'FHA or VA Seller Paid Fees', 'sellers-net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
                                 class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-courier-fees" 
-                                name="courier_fees" 
-                                data-field="courier_fees"
-                                value="<?php echo esc_attr( $courier_fee ); ?>"
+                                id="<?php echo esc_attr( $calculator_id ); ?>-fha" 
+                                name="fha" 
+                                data-field="fha"
                                 placeholder="0"
                             >
                         </div>
                     </div>
                     
                     <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-work-orders">
-                            <?php echo esc_html__( 'Work Orders', 'sellers-net-sheet-calculator' ); ?>
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-misc-cost-seller">
+                            <?php echo esc_html__( 'Misc Cost to Seller', 'sellers-net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
-                            <input type="text" 
-                                class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-work-orders" 
-                                name="work_orders" 
-                                data-field="work_orders"
-                                placeholder="0"
+                            <input type="number" 
+                                class="snsc-input snsc-number" 
+                                id="<?php echo esc_attr( $calculator_id ); ?>-misc-cost-seller" 
+                                name="misc_cost_seller" 
+                                data-field="misc_cost_seller"
+                                value="<?php echo esc_attr( $commission_rate ); ?>"
                             >
                         </div>
                     </div>
                     
                     <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-association-dues">
-                            <?php echo esc_html__( 'Association Dues owing at closing', 'sellers-net-sheet-calculator' ); ?>
-                        </label>
-                        <div class="snsc-input-wrap">
-                            <input type="text" 
-                                class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-association-dues" 
-                                name="association_dues" 
-                                data-field="association_dues"
-                                placeholder="0"
-                            >
-                        </div>
-                    </div>
-                    
-                    <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-association-disclosure">
-                            <?php echo esc_html__( 'Association Disclosure/Dues Letter', 'sellers-net-sheet-calculator' ); ?>
-                        </label>
-                        <div class="snsc-input-wrap">
-                            <input type="text" 
-                                class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-association-disclosure" 
-                                name="association_disclosure" 
-                                data-field="association_disclosure"
-                                placeholder="0"
-                            >
-                        </div>
-                    </div>
-                    
-                    <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-misc-costs">
-                            <?php echo esc_html__( 'Misc. Costs to Seller', 'sellers-net-sheet-calculator' ); ?>
-                        </label>
-                        <div class="snsc-input-wrap">
-                            <input type="text" 
-                                class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-misc-costs" 
-                                name="misc_costs" 
-                                data-field="misc_costs"
-                                placeholder="0"
-                            >
-                        </div>
-                    </div>
-                    
-                    <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-misc-expenses-1">
-                            <?php echo esc_html__( 'Miscellaneous Expenses 1', 'sellers-net-sheet-calculator' ); ?>
-                        </label>
-                        <div class="snsc-input-wrap">
-                            <input type="text" 
-                                class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-misc-expenses-1" 
-                                name="misc_expenses_1" 
-                                data-field="misc_expenses_1"
-                                placeholder="0"
-                            >
-                        </div>
-                    </div>
-                    
-                    <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-misc-expenses-2">
-                            <?php echo esc_html__( 'Miscellaneous Expenses 2', 'sellers-net-sheet-calculator' ); ?>
-                        </label>
-                        <div class="snsc-input-wrap">
-                            <input type="text" 
-                                class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-misc-expenses-2" 
-                                name="misc_expenses_2" 
-                                data-field="misc_expenses_2"
-                                placeholder="0"
-                            >
-                        </div>
-                    </div>
-                    
-                    <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-misc-expenses-3">
-                            <?php echo esc_html__( 'Miscellaneous Expenses 3', 'sellers-net-sheet-calculator' ); ?>
-                        </label>
-                        <div class="snsc-input-wrap">
-                            <input type="text" 
-                                class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-misc-expenses-3" 
-                                name="misc_expenses_3" 
-                                data-field="misc_expenses_3"
-                                placeholder="0"
-                            >
-                        </div>
-                    </div>
-                    
-                    <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-misc-expenses-4">
-                            <?php echo esc_html__( 'Miscellaneous Expenses 4', 'sellers-net-sheet-calculator' ); ?>
-                        </label>
-                        <div class="snsc-input-wrap">
-                            <input type="text" 
-                                class="snsc-input snsc-currency" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-misc-expenses-4" 
-                                name="misc_expenses_4" 
-                                data-field="misc_expenses_4"
-                                placeholder="0"
-                            >
-                        </div>
-                    </div>
-                    
-                    <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-total-selling-costs">
-                            <?php echo esc_html__( 'Total Selling Costs', 'sellers-net-sheet-calculator' ); ?>
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-seller-attorney-fee">
+                            <?php echo esc_html__( 'Seller\'s Attorney Fee', 'sellers-net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
                                 class="snsc-input snsc-calculated-field" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-total-selling-costs" 
-                                name="total_selling_costs" 
-                                data-field="total_selling_costs"
-                                readonly
+                                id="<?php echo esc_attr( $calculator_id ); ?>-seller-attorney-fee" 
+                                name="seller_attorney_fee" 
+                                data-field="seller_attorney_fee"
                             >
                         </div>
                     </div>
                 </div>
                 
-                <!-- Estimated Proceeds Section -->
+                <!-- Final Totals Section -->
                 <div class="snsc-section">
-                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Estimated Proceeds', 'sellers-net-sheet-calculator' ); ?></h3>
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Final Totals', 'sellers-net-sheet-calculator' ); ?></h3>
                     
                     <div class="snsc-field">
-                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-net-proceeds">
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-total-closing-costs">
+                            <?php echo esc_html__( 'Total Closing Costs', 'sellers-net-sheet-calculator' ); ?>
+                        </label>
+                        <div class="snsc-input-wrap">
+                            <input type="text" 
+                                class="snsc-input snsc-calculated-field" 
+                                id="<?php echo esc_attr( $calculator_id ); ?>-total-closing-costs" 
+                                name="total_closing_costs" 
+                                data-field="total_closing_costs"
+                                readonly
+                            >
+                        </div>
+                    </div>
+                    <div class="snsc-field">
+                        <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-estimated-net-proceeds">
                             <?php echo esc_html__( 'Estimated Net Proceeds', 'sellers-net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
                                 class="snsc-input snsc-calculated-field" 
-                                id="<?php echo esc_attr( $calculator_id ); ?>-net-proceeds" 
-                                name="net_proceeds" 
-                                data-field="net_proceeds"
+                                id="<?php echo esc_attr( $calculator_id ); ?>-estimated-net-proceeds" 
+                                name="estimated_net_proceeds" 
+                                data-field="estimated_net_proceeds"
                                 readonly
                             >
                         </div>
                     </div>
                 </div>
+                <!-- Buttons for frontend -->
+                    <button>Download PDF</button>
+                    <input type="email" id="email" name="email" placeholder="Enter your email address">     
+                    <button>Send via email</button>
+                <!-- Buttons for frontend -->
             </form>
         </div>
         <?php
