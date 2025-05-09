@@ -1,73 +1,46 @@
 <?php
-/**
- * Seller's Net Sheet Calculator Widget
- *
- * @package SellerNetSheetCalculator
- */
-
 if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
 /**
- * Seller's Net Sheet Calculator Widget.
+ * Net Sheet Calculator Widget.
  */
-class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
-
-    /**
-     * Get widget name.
-     *
-     * @return string Widget name.
-     */
+class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
     public function get_name() {
-        return 'sellers_net_sheet_calculator';
+        return 'net_sheet_calculator_widget';
     }
 
-    /**
-     * Get widget title.
-     *
-     * @return string Widget title.
-     */
     public function get_title() {
-        return esc_html__( 'Seller\'s Net Sheet Calculator', 'sellers-net-sheet-calculator' );
+        return esc_html__( 'Net Sheet Calculator', 'net-sheet-calculator' );
     }
 
-    /**
-     * Get widget icon.
-     *
-     * @return string Widget icon.
-     */
     public function get_icon() {
-        return 'eicon-calculator';
+        return 'eicon-price-list';
     }
 
-    /**
-     * Get widget categories.
-     *
-     * @return array Widget categories.
-     */
     public function get_categories() {
         return [ 'general' ];
     }
 
-    /**
-     * Get widget keywords.
-     *
-     * @return array Widget keywords.
-     */
     public function get_keywords() {
         return [ 'real estate', 'calculator', 'seller', 'net sheet' ];
     }
+    
+    public function get_script_depends() {
+        return ['net-sheet-calculator-script'];
+    }
 
-    /**
-     * Register widget controls.
-     */
+    public function get_style_depends() {
+        return ['net-sheet-calculator-style'];
+    }
+
     protected function register_controls() {
         // Section for Default Values
         $this->start_controls_section(
             'section_defaults',
             [
-                'label' => esc_html__( 'Default Values', 'sellers-net-sheet-calculator' ),
+                'label' => esc_html__( 'Default Values', 'net-sheet-calculator' ),
                 'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
             ]
         );
@@ -75,66 +48,66 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'default_commission_rate',
             [
-                'label'       => esc_html__( 'Default Commission Rate (%)', 'sellers-net-sheet-calculator' ),
+                'label'       => esc_html__( 'Default Commission Rate (%)', 'net-sheet-calculator' ),
                 'type'        => \Elementor\Controls_Manager::NUMBER,
                 'default'     => 6,
                 'min'         => 0,
                 'max'         => 10,
                 'step'        => 0.1,
-                'description' => esc_html__( 'Set the default commission percentage.', 'sellers-net-sheet-calculator' ),
+                'description' => esc_html__( 'Set the default commission percentage.', 'net-sheet-calculator' ),
             ]
         );
 
         $this->add_control(
             'default_closing_fee',
             [
-                'label'       => esc_html__( 'Default Closing Fee', 'sellers-net-sheet-calculator' ),
+                'label'       => esc_html__( 'Default Closing Fee', 'net-sheet-calculator' ),
                 'type'        => \Elementor\Controls_Manager::NUMBER,
                 'default'     => 495,
-                'description' => esc_html__( 'Set the default closing fee.', 'sellers-net-sheet-calculator' ),
+                'description' => esc_html__( 'Set the default closing fee.', 'net-sheet-calculator' ),
             ]
         );
 
         $this->add_control(
             'default_doc_prep_fee',
             [
-                'label'       => esc_html__( 'Default Document Prep Fee', 'sellers-net-sheet-calculator' ),
+                'label'       => esc_html__( 'Default Document Prep Fee', 'net-sheet-calculator' ),
                 'type'        => \Elementor\Controls_Manager::NUMBER,
                 'default'     => 250,
-                'description' => esc_html__( 'Set the default document preparation fee.', 'sellers-net-sheet-calculator' ),
+                'description' => esc_html__( 'Set the default document preparation fee.', 'net-sheet-calculator' ),
             ]
         );
 
         $this->add_control(
             'default_county_fee',
             [
-                'label'       => esc_html__( 'Default County Conservation Fee', 'sellers-net-sheet-calculator' ),
+                'label'       => esc_html__( 'Default County Conservation Fee', 'net-sheet-calculator' ),
                 'type'        => \Elementor\Controls_Manager::NUMBER,
                 'default'     => 5,
-                'description' => esc_html__( 'Set the default county conservation fee.', 'sellers-net-sheet-calculator' ),
+                'description' => esc_html__( 'Set the default county conservation fee.', 'net-sheet-calculator' ),
             ]
         );
 
         $this->add_control(
             'default_courier_fee',
             [
-                'label'       => esc_html__( 'Default Courier/Payoff Fee', 'sellers-net-sheet-calculator' ),
+                'label'       => esc_html__( 'Default Courier/Payoff Fee', 'net-sheet-calculator' ),
                 'type'        => \Elementor\Controls_Manager::NUMBER,
                 'default'     => 0,
-                'description' => esc_html__( 'Set the default courier/payoff processing fee.', 'sellers-net-sheet-calculator' ),
+                'description' => esc_html__( 'Set the default courier/payoff processing fee.', 'net-sheet-calculator' ),
             ]
         );
 
         $this->add_control(
             'state_deed_tax_rate',
             [
-                'label'       => esc_html__( 'State Deed Tax Rate (%)', 'sellers-net-sheet-calculator' ),
+                'label'       => esc_html__( 'State Deed Tax Rate (%)', 'net-sheet-calculator' ),
                 'type'        => \Elementor\Controls_Manager::NUMBER,
                 'default'     => 0.34,
                 'min'         => 0,
                 'max'         => 5,
                 'step'        => 0.01,
-                'description' => esc_html__( 'Set the state deed tax rate (as percentage).', 'sellers-net-sheet-calculator' ),
+                'description' => esc_html__( 'Set the state deed tax rate (as percentage).', 'net-sheet-calculator' ),
             ]
         );
 
@@ -144,7 +117,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         $this->start_controls_section(
             'section_style',
             [
-                'label' => esc_html__( 'Form Style', 'sellers-net-sheet-calculator' ),
+                'label' => esc_html__( 'Form Style', 'net-sheet-calculator' ),
                 'tab'   => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
@@ -160,7 +133,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'section_heading_color',
             [
-                'label'     => esc_html__( 'Section Heading Color', 'sellers-net-sheet-calculator' ),
+                'label'     => esc_html__( 'Section Heading Color', 'net-sheet-calculator' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'default'   => '#333333',
                 'selectors' => [
@@ -172,7 +145,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'label_color',
             [
-                'label'     => esc_html__( 'Field Label Color', 'sellers-net-sheet-calculator' ),
+                'label'     => esc_html__( 'Field Label Color', 'net-sheet-calculator' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'default'   => '#555555',
                 'selectors' => [
@@ -184,7 +157,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'input_background_color',
             [
-                'label'     => esc_html__( 'Input Background Color', 'sellers-net-sheet-calculator' ),
+                'label'     => esc_html__( 'Input Background Color', 'net-sheet-calculator' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'default'   => '#ffffff',
                 'selectors' => [
@@ -196,7 +169,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         $this->add_control(
             'calculated_field_background',
             [
-                'label'     => esc_html__( 'Calculated Field Background', 'sellers-net-sheet-calculator' ),
+                'label'     => esc_html__( 'Calculated Field Background', 'net-sheet-calculator' ),
                 'type'      => \Elementor\Controls_Manager::COLOR,
                 'default'   => '#f5f5f5',
                 'selectors' => [
@@ -229,11 +202,11 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
             <form class="snsc-form">
                 <!-- Seller Credits Section -->
                 <div class="snsc-section">
-                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Transaction Summary', 'sellers-net-sheet-calculator' ); ?></h3>
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Transaction Summary', 'net-sheet-calculator' ); ?></h3>
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-purchase-price">
-                            <?php echo esc_html__( 'Purchase Price', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Purchase Price', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -248,7 +221,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-other-credits">
-                            <?php echo esc_html__( 'Other Credits to Seller', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Other Credits to Seller', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -263,7 +236,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-gross-proceeds">
-                            <?php echo esc_html__( 'Total Estimated Gross Proceeds', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Total Estimated Gross Proceeds', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -278,11 +251,11 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 </div>
                 <!-- Mortgage & Liens Section -->
                 <div class="snsc-section">
-                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Mortgage & Liens', 'sellers-net-sheet-calculator' ); ?></h3>
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Mortgage & Liens', 'net-sheet-calculator' ); ?></h3>
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-mortgage-payoff">
-                            <?php echo esc_html__( 'Mortgage Payoff', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Mortgage Payoff', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -297,7 +270,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-other-mortgage-payoff">
-                            <?php echo esc_html__( 'Second Mortgage Payoff ', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Second Mortgage Payoff ', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -312,7 +285,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-special-assessment-payoff">
-                            <?php echo esc_html__( 'Special Assessment Payoff', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Special Assessment Payoff', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -325,7 +298,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     </div>
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-lien-release-tracking-fee">
-                            <?php echo esc_html__( 'Lien Release Tracking Fee', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Lien Release Tracking Fee', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -340,11 +313,11 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 </div>
                 <!-- Taxes & Government Fees Section -->
                 <div class="snsc-section">
-                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Taxes & Government Fees', 'sellers-net-sheet-calculator' ); ?></h3>
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Taxes & Government Fees', 'net-sheet-calculator' ); ?></h3>
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-property-taxes-due">
-                            <?php echo esc_html__( 'Property Taxes Due', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Property Taxes Due', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -360,7 +333,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-michigan-transfer-tax">
-                            <?php echo esc_html__( 'Michigan Transfer Tax ', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Michigan Transfer Tax ', 'net-sheet-calculator' ); ?>
                             <!-- Formula: (purchase price/500) * 3.75  -->
                         </label>
                         <div class="snsc-input-wrap">
@@ -377,7 +350,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-revenue-stamps">
-                            <?php echo esc_html__( 'Revenue Stamps', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Revenue Stamps', 'net-sheet-calculator' ); ?>
                         </label>
                         <!-- Formula: (purchase price/500) * 0.55  -->
                         <div class="snsc-input-wrap">
@@ -392,11 +365,11 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 </div>
                 <!-- Title & Closing Fees Section -->
                 <div class="snsc-section">
-                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Title & Closing Fees', 'sellers-net-sheet-calculator' ); ?></h3>
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Title & Closing Fees', 'net-sheet-calculator' ); ?></h3>
                 
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-settlement-fee">
-                            <?php echo esc_html__( 'Settlement Fee', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Settlement Fee', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -412,7 +385,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-security-fee">
-                            <?php echo esc_html__( 'Security Fee', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Security Fee', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -429,7 +402,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-title-insurance-policy">
-                            <?php echo esc_html__( 'Title Insurance Policy', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Title Insurance Policy', 'net-sheet-calculator' ); ?>
                         </label>
                         <!-- add field with description here, to insert URL -->
 
@@ -445,11 +418,11 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 </div>
                 <!-- Agent Commissions Section -->
                 <div class="snsc-section">
-                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Agent Commissions', 'sellers-net-sheet-calculator' ); ?></h3>
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Agent Commissions', 'net-sheet-calculator' ); ?></h3>
                 
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-comission-realtor">
-                            <?php echo esc_html__( 'Commission Due Realtor (6% standard)', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Commission Due Realtor (6% standard)', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -465,7 +438,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-comission-realtor-extra">
-                            <?php echo esc_html__( 'Commission Due Realtor', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Commission Due Realtor', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -480,11 +453,11 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 </div>
                 <!-- Utilities & HOA Section -->
                 <div class="snsc-section">
-                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Utilities & HOA', 'sellers-net-sheet-calculator' ); ?></h3>
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Utilities & HOA', 'net-sheet-calculator' ); ?></h3>
                 
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-current-water">
-                            <?php echo esc_html__( 'Current Water/Sewer', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Current Water/Sewer', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -499,7 +472,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-hoa-assessment">
-                            <?php echo esc_html__( 'HOA Assessment', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'HOA Assessment', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -514,7 +487,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
 
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-water-escrow">
-                            <?php echo esc_html__( 'Water Escrow (Minimum $300)', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Water Escrow (Minimum $300)', 'net-sheet-calculator' ); ?>
                             <!-- Minimum value is $300 -->
                         </label>
                         <div class="snsc-input-wrap">
@@ -534,11 +507,11 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 
                 <!-- Miscellaneous Seller Costs Section -->
                 <div class="snsc-section">
-                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Miscellaneous Seller Costs', 'sellers-net-sheet-calculator' ); ?></h3>
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Miscellaneous Seller Costs', 'net-sheet-calculator' ); ?></h3>
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-home-warranty">
-                            <?php echo esc_html__( 'Home Warranty', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Home Warranty', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -553,7 +526,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-fha">
-                            <?php echo esc_html__( 'FHA or VA Seller Paid Fees', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'FHA or VA Seller Paid Fees', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -568,7 +541,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-misc-cost-seller">
-                            <?php echo esc_html__( 'Misc Cost to Seller', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Misc Cost to Seller', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="number" 
@@ -583,7 +556,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-seller-attorney-fee">
-                            <?php echo esc_html__( 'Seller\'s Attorney Fee', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Seller\'s Attorney Fee', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -598,11 +571,11 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 
                 <!-- Final Totals Section -->
                 <div class="snsc-section">
-                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Final Totals', 'sellers-net-sheet-calculator' ); ?></h3>
+                    <h3 class="snsc-section-title"><?php echo esc_html__( 'Final Totals', 'net-sheet-calculator' ); ?></h3>
                     
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-total-closing-costs">
-                            <?php echo esc_html__( 'Total Closing Costs', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Total Closing Costs', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 
@@ -616,7 +589,7 @@ class Sellers_Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     </div>
                     <div class="snsc-field">
                         <label class="snsc-field-label" for="<?php echo esc_attr( $calculator_id ); ?>-estimated-net-proceeds">
-                            <?php echo esc_html__( 'Estimated Net Proceeds', 'sellers-net-sheet-calculator' ); ?>
+                            <?php echo esc_html__( 'Estimated Net Proceeds', 'net-sheet-calculator' ); ?>
                         </label>
                         <div class="snsc-input-wrap">
                             <input type="text" 

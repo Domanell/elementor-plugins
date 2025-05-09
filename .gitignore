@@ -7,9 +7,9 @@
 # Do not ignore specific folders
 !elementor-impact-calculator/
 !elementor-price-calculator/
-!sellers-net-sheet-calculator/
+!net-sheet-calculator/
 
 # Do not ignore everything inside those folders
 !elementor-impact-calculator/**
 !elementor-price-calculator/**
-!sellers-net-sheet-calculator/**
+!net-sheet-calculator/**
