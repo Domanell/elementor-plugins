@@ -3,7 +3,7 @@
  * Plugin Name: Net Sheet Calculator
  * Description: An Elementor widget that calculates estimated proceeds from a real estate transaction.
  * Version: 1.0.0
- * Author: Developer
+ * Author: Optimize5
  * Text Domain: net-sheet-calculator
  */
 

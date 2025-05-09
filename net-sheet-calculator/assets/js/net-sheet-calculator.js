@@ -1,144 +1,144 @@
 /**
- * Seller's Net Sheet Calculator JavaScript
+ * Net Sheet Calculator JavaScript
  */
 (function ($) {
 	'use strict';
 
-	/**
-	 * Format a number as currency
-	 */
-	function formatCurrency(number) {
-		if (isNaN(number)) {
-			number = 0;
-		}
-		return (
-			'$' +
-			number.toLocaleString('en-US', {
-				minimumFractionDigits: 2,
-				maximumFractionDigits: 2,
-			})
+	$(window).on('elementor/frontend/init', () => {
+		elementorFrontend.hooks.addAction('frontend/element_ready/net_sheet_calculator_widget.default', initCalculator);
+	});
+
+	// Format number as currency
+	const formatCurrency = (number) =>
+		`$${(isNaN(number) ? 0 : number).toLocaleString('en-US', {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2,
+		})}`;
+
+	// Parse currency string to float
+	const parseCurrency = (value) => parseFloat(String(value).replace(/[^0-9.-]+/g, '')) || 0;
+
+	// Validate email format
+	const validateEmail = (email) =>
+		/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+			String(email).toLowerCase()
 		);
+
+	function initCalculator($calculator) {
+		const $inputs = $calculator.find('.nsc-input');
+
+		initCurrencyInputs($calculator);
+		bindButtons($calculator);
+		$inputs.on('input change', () => calculate($calculator));
+		calculate($calculator);
 	}
 
-	/**
-	 * Parse currency value to number
-	 */
-	function parseCurrency(value) {
-		if (!value) return 0;
-		return parseFloat(value.replace(/[^0-9.-]+/g, '')) || 0;
-	}
-
-	/**
-	 * Initialize calculator
-	 */
-	function initCalculator(calculator) {
-		const $calculator = $(calculator);
-		const calculatorId = $calculator.attr('id');
-		const $inputs = $calculator.find('.snsc-input');
-
-		// Initialize currency inputs
-		$calculator.find('.snsc-currency').each(function () {
-			const $this = $(this);
-			if ($this.val()) {
-				$this.val(formatCurrency(parseCurrency($this.val())));
+	function initCurrencyInputs($container) {
+		$container.find('.nsc-input--currency').each(function () {
+			const $input = $(this);
+			if ($input.val()) {
+				$input.val(formatCurrency(parseCurrency($input.val())));
 			}
 
-			// Format currency on blur
-			$this.on('blur', function () {
+			$input.on('blur', function () {
 				const value = parseCurrency($(this).val());
 				$(this).val(value ? formatCurrency(value) : '');
 			});
 
-			// Clear formatting on focus
-			$this.on('focus', function () {
-				const value = parseCurrency($(this).val());
-				$(this).val(value || '');
+			$input.on('focus', function () {
+				$(this).val(parseCurrency($(this).val()) || '');
 			});
 		});
-
-		// Calculate function
-		function calculate() {
-			// Get values
-			const purchasePrice = parseCurrency($calculator.find('[data-field="purchase_price"]').val());
-			const otherCredits = parseCurrency($calculator.find('[data-field="other_credits"]').val());
-			const mortgagePayoff = parseCurrency($calculator.find('[data-field="mortgage_payoff"]').val());
-			const secondMortgage = parseCurrency($calculator.find('[data-field="second_mortgage"]').val());
-			const commissionRate = parseFloat($calculator.find('[data-field="commission_rate"]').val()) || 0;
-			const realEstateTaxes = parseCurrency($calculator.find('[data-field="real_estate_taxes"]').val());
-			const specialAssessments = parseCurrency($calculator.find('[data-field="special_assessments"]').val());
-			const closingFee = parseCurrency($calculator.find('[data-field="closing_fee"]').val());
-			const brokerFee = parseCurrency($calculator.find('[data-field="broker_fee"]').val());
-			const docPrepFee = parseCurrency($calculator.find('[data-field="doc_prep_fee"]').val());
-			const stateDeedTaxRate = parseFloat($calculator.find('[data-field="state_deed_tax"]').data('tax-rate')) || 0.34;
-			const sellerPaidCosts = parseCurrency($calculator.find('[data-field="seller_paid_costs"]').val());
-			const countyFee = parseCurrency($calculator.find('[data-field="county_fee"]').val());
-			const homeWarranty = parseCurrency($calculator.find('[data-field="home_warranty"]').val());
-			const courierFees = parseCurrency($calculator.find('[data-field="courier_fees"]').val());
-			const workOrders = parseCurrency($calculator.find('[data-field="work_orders"]').val());
-			const associationDues = parseCurrency($calculator.find('[data-field="association_dues"]').val());
-			const associationDisclosure = parseCurrency($calculator.find('[data-field="association_disclosure"]').val());
-			const miscCosts = parseCurrency($calculator.find('[data-field="misc_costs"]').val());
-			const miscExpenses1 = parseCurrency($calculator.find('[data-field="misc_expenses_1"]').val());
-			const miscExpenses2 = parseCurrency($calculator.find('[data-field="misc_expenses_2"]').val());
-			const miscExpenses3 = parseCurrency($calculator.find('[data-field="misc_expenses_3"]').val());
-			const miscExpenses4 = parseCurrency($calculator.find('[data-field="misc_expenses_4"]').val());
-
-			// Calculate gross proceeds
-			const grossProceeds = purchasePrice + otherCredits;
-			$calculator.find('[data-field="gross_proceeds"]').val(formatCurrency(grossProceeds));
-
-			// Calculate commission
-			const commissionTotal = purchasePrice * (commissionRate / 100);
-			$calculator.find('[data-field="commission_total"]').val(formatCurrency(commissionTotal));
-
-			// Calculate state deed tax
-			const stateDeedTax = purchasePrice * (stateDeedTaxRate / 100);
-			$calculator.find('[data-field="state_deed_tax"]').val(formatCurrency(stateDeedTax));
-
-			// Calculate total selling costs
-			const totalSellingCosts =
-				mortgagePayoff +
-				secondMortgage +
-				commissionTotal +
-				realEstateTaxes +
-				specialAssessments +
-				closingFee +
-				brokerFee +
-				docPrepFee +
-				stateDeedTax +
-				sellerPaidCosts +
-				countyFee +
-				homeWarranty +
-				courierFees +
-				workOrders +
-				associationDues +
-				associationDisclosure +
-				miscCosts +
-				miscExpenses1 +
-				miscExpenses2 +
-				miscExpenses3 +
-				miscExpenses4;
-
-			$calculator.find('[data-field="total_selling_costs"]').val(formatCurrency(totalSellingCosts));
-
-			// Calculate net proceeds
-			const netProceeds = grossProceeds - totalSellingCosts;
-			$calculator.find('[data-field="net_proceeds"]').val(formatCurrency(netProceeds));
-		}
-
-		// Calculate on input change
-		$inputs.on('input change', function () {
-			calculate();
-		});
-
-		// Initial calculation
-		calculate();
 	}
 
-	// Initialize all calculators on page
-	$(document).ready(function () {
-		$('.seller-net-sheet-calculator').each(function () {
-			initCalculator(this);
+	function calculate($calc) {
+		const getVal = (field) => parseCurrency($calc.find(`[data-field="${field}"]`).val());
+
+		const getRate = (field, fallback) => parseFloat($calc.find(`[data-field="${field}"]`).val()) || fallback;
+
+		// Input values
+		const purchasePrice = getVal('purchase_price');
+		const otherCredits = getVal('other_credits');
+
+		const mortgagePayoff = getVal('mortgage_payoff');
+		const secondMortgagePayoff = getVal('other_mortgage_payoff');
+		const specialAssessmentPayoff = getVal('special_assessment_payoff');
+		const lienReleaseTrackingFee = getVal('lien_release_tracking_fee');
+
+		const propertyTaxesDue = getVal('property_taxes_due');
+		const michiganTransferTaxRate = getRate('michigan_transfer_tax_rate', 3.75);
+		const revenueStampsRate = getRate('revenue_stamps_rate', 0.55);
+
+		const settlementFee = getVal('settlement_fee');
+		const securityFee = getVal('security_fee');
+		const titleInsurancePolicy = getVal('title_insurance_policy');
+
+		const commissionRate = getRate('comission_rate', 6); // typo preserved from original
+		const commissionDueRealtor = purchasePrice * (commissionRate / 100);
+		const commissionDueRealtorExtra = getVal('comission_realtor_extra');
+
+		const currentWaterSewer = getVal('current_water');
+		const hoaAssessment = getVal('hoa_assessment');
+		const waterEscrow = getVal('water_escrow');
+
+		const homeWarranty = getVal('home_warranty');
+		const fhaVaFees = getVal('fha');
+		const miscCostSeller = getVal('misc_cost_seller');
+		const sellerAttorneyFee = getVal('seller_attorney_fee');
+
+		// Calculations
+		const michiganTransferTax = (purchasePrice / 500) * michiganTransferTaxRate;
+		const revenueStamps = (purchasePrice / 500) * revenueStampsRate;
+		const grossProceeds = purchasePrice + otherCredits;
+
+		const totalClosingCosts =
+			mortgagePayoff +
+			secondMortgagePayoff +
+			specialAssessmentPayoff +
+			lienReleaseTrackingFee +
+			propertyTaxesDue +
+			michiganTransferTax +
+			revenueStamps +
+			settlementFee +
+			securityFee +
+			titleInsurancePolicy +
+			commissionDueRealtor +
+			commissionDueRealtorExtra +
+			currentWaterSewer +
+			hoaAssessment +
+			waterEscrow +
+			homeWarranty +
+			fhaVaFees +
+			miscCostSeller +
+			sellerAttorneyFee;
+
+		const netProceeds = grossProceeds - totalClosingCosts;
+
+		// Output fields
+		const setField = (field, value) => $calc.find(`[data-field="${field}"]`).val(formatCurrency(value));
+
+		setField('michigan_transfer_tax', michiganTransferTax);
+		setField('revenue_stamps', revenueStamps);
+		setField('comission_realtor', commissionDueRealtor);
+		setField('gross_proceeds', grossProceeds);
+		setField('total_closing_costs', totalClosingCosts);
+		setField('estimated_net_proceeds', netProceeds);
+	}
+
+	function bindButtons($calc) {
+		$calc.find('.nsc-button--download').on('click', (e) => {
+			e.preventDefault();
+			alert('PDF download functionality will be implemented here.');
 		});
-	});
+
+		$calc.find('.nsc-button--send').on('click', (e) => {
+			e.preventDefault();
+			const email = $calc.find('input[name="email"]').val();
+			if (!email || !validateEmail(email)) {
+				alert('Please enter a valid email address.');
+				return;
+			}
+			alert(`Email would be sent to: ${email}`);
+		});
+	}
 })(jQuery);
