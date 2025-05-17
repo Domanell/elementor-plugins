@@ -1,33 +1,32 @@
 /* Main wrapper */
 .nsc-calculator {
-	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+	font-family: Poppins, sans-serif;
 	max-width: 100%;
 	margin: 0 auto;
 	padding: 20px;
 	box-sizing: border-box;
+
 }
 
 /* Block: Section */
 .nsc-section {
-	margin-bottom: 30px;
+	margin-bottom: 12px;
 	padding: 20px;
-	background-color: #fff;
-	border-radius: 5px;
-	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	background-color: #F9FBFB;
 }
 
 .nsc-section__title {
-	margin: 0 0 20px;
+	margin: 0;
 	padding-bottom: 10px;
-	font-size: 1.4em;
-	font-weight: 600;
-	border-bottom: 1px solid #e5e5e5;
-	color: #333;
+	font-size: 16px;
+	font-weight: 700;
+	text-transform: uppercase;
+	color: var(--e-global-color-primary);
 }
 
 /* Block: Field */
 .nsc-field {
-	margin-bottom: 15px;
+	margin-bottom: 8px;
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
@@ -37,15 +36,15 @@
 	flex: 0 0 100%;
 	max-width: 100%;
 	margin-bottom: 5px;
-	font-weight: 500;
-	color: #555;
+	font-weight: 400;
+	color: var(--e-global-color-primary);
 	position: relative;
 }
 
 .nsc-field__label small {
 	display: block;
 	font-weight: 400;
-	font-size: 0.85em;
+	font-size: 14px;
 	color: #777;
 	margin-top: 2px;
 }
@@ -53,8 +52,8 @@
 .nsc-field__description {
 	display: block;
 	font-weight: 400;
-	font-size: 0.85em;
-	color: #777;
+	font-size: 16px;
+	color: var(--e-global-color-secondary);
 	margin-top: 2px;
 	font-style: italic;
 }
@@ -66,22 +65,28 @@
 }
 
 /* Block: Input */
-.nsc-input {
+.nsc-field__input-wrap input[type=date], 
+.nsc-field__input-wrap input[type=email], 
+.nsc-field__input-wrap input[type=number], 
+.nsc-field__input-wrap input[type=search], 
+.nsc-field__input-wrap input[type=tel], 
+.nsc-field__input-wrap input[type=text], 
+.nsc-field__input-wrap input[type=url] {
 	width: 100%;
-	padding: 10px;
-	border: 1px solid #d5d5d5;
+	padding: 7px;
+	border: 1px solid var(--e-global-color-primary);
 	border-radius: 4px;
-	font-size: 1em;
-	color: #333;
+	font-size: 1rem;
+	color: var(--e-global-color-primary);
 	background-color: #fff;
 	box-sizing: border-box;
 	transition: border-color 0.2s ease;
 }
 
 .nsc-input:focus {
-	border-color: #2271b1;
+	border-color: var(--e-global-color-secondary);
 	outline: none;
-	box-shadow: 0 0 0 1px #2271b1;
+	box-shadow: 0 0 0 1px  var(--e-global-color-secondary);
 }
 
 .nsc-input--calculated {
@@ -137,7 +142,7 @@
 	padding: 10px;
 	border: 1px solid #d5d5d5;
 	border-radius: 4px;
-	font-size: 1em;
+	font-size: 16px;
 }
 
 /* Responsive styling */
