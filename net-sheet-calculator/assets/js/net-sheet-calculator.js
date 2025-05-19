@@ -76,7 +76,6 @@
 
 		showError(message) {
 			this.$error.text(message).show();
-			this.$input.addClass('nsc-input--error').focus();
 		},
 
 		hideError() {
@@ -96,14 +95,14 @@
 	const updateCalculatedField = (field, value = 0) => {
 		$calculator.find(`.nsc-input[data-field="${field}"]`).val(formatCurrency(value));
 	};
-
 	// Calculate all values and update fields
 	const calculate = () => {
 		// Perform all calculations
 		const commission = values.purchase_price * ((values.comission_rate || 0) / 100);
+		console.log(commission);
 		const grossProceeds = values.purchase_price + (values.other_credits || 0);
-		const michiganTransferTax = (values.purchase_price / 500) * (values.michigan_transfer_tax_rate || 3.75);
-		const revenueStamps = (values.purchase_price / 500) * (values.revenue_stamps_rate || 0.55);
+		const michiganTransferTax = Math.ceil(values.purchase_price / 500) * (values.michigan_transfer_tax_rate || 3.75);
+		const revenueStamps = Math.ceil(values.purchase_price / 500) * (values.revenue_stamps_rate || 0.55);
 
 		const totalClosingCosts = [
 			commission,
@@ -127,15 +126,17 @@
 			values.seller_attorney_fee,
 		].reduce((sum, val) => sum + (val || 0), 0);
 
-		const netProceeds = grossProceeds - totalClosingCosts;
+		const netProceeds = grossProceeds - totalClosingCosts < 0 ? 0 : grossProceeds - totalClosingCosts;
 
 		// Update calculated fields
 		updateCalculatedField('gross_proceeds', grossProceeds);
 		updateCalculatedField('michigan_transfer_tax', michiganTransferTax);
 		updateCalculatedField('revenue_stamps', revenueStamps);
 		updateCalculatedField('comission_realtor', commission);
-		updateCalculatedField('total_closing_costs', totalClosingCosts);
-		updateCalculatedField('estimated_net_proceeds', netProceeds);
+
+		// Update text output fields
+		$calculator.find(`[data-field="total_closing_costs"]`).text(formatCurrency(totalClosingCosts));
+		$calculator.find(`[data-field="estimated_net_proceeds"]`).text(formatCurrency(netProceeds));
 	};
 
 	const handleDownload = (e) => {
@@ -156,7 +157,7 @@
 		alert(`Email would be sent to: ${EmailHandler.email}`);
 	};
 	const initElements = () => {
-		$inputs = $calculator.find('.nsc-input');
+		$inputs = $calculator.find('input');
 		$currencyInputs = $calculator.find('.nsc-input--currency');
 		$downloadBtn = $calculator.find('.nsc-button--download');
 		$sendBtn = $calculator.find('.nsc-button--send');
