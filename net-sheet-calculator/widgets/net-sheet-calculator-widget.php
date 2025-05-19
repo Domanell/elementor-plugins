@@ -63,7 +63,6 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'min'         => 0,
                 'max'         => 10,
                 'step'        => 0.1,
-                'description' => esc_html__('Set the default commission percentage.', 'net-sheet-calculator'),
             ]
         );
 
@@ -82,7 +81,6 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Default Settlement Fee', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::NUMBER,
                 'default'     => 350,
-                'description' => esc_html__('Set the default settlement fee.', 'net-sheet-calculator'),
             ]
         );
 
@@ -92,7 +90,6 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Default Lien Release Tracking Fee', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::NUMBER,
                 'default'     => 45,
-                'description' => esc_html__('Set the default lien release tracking fee.', 'net-sheet-calculator'),
             ]
         );
 
@@ -102,7 +99,6 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Default Security Fee', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::NUMBER,
                 'default'     => 55,
-                'description' => esc_html__('Set the default security fee.', 'net-sheet-calculator'),
             ]
         );
 
@@ -116,13 +112,13 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         );
 
         $this->add_control(
-            'default_water_escrow',
+            'min_water_escrow',
             [
                 'label'       => esc_html__('Default Water Escrow', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::NUMBER,
                 'default'     => 300,
                 'min'         => 300,
-                'description' => esc_html__('Set the default water escrow (minimum $300).', 'net-sheet-calculator'),
+                'description' => esc_html__('Set the minimum water escrow value', 'net-sheet-calculator'),
             ]
         );
 
@@ -937,8 +933,9 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         $settlement_fee = $settings['default_settlement_fee'] ?? 350;
         $lien_release_tracking_fee = $settings['default_lien_release_tracking_fee'] ?? 45;
         $security_fee = $settings['default_security_fee'] ?? 55;
-        $water_escrow = $settings['default_water_escrow'] ?? 300;
-        $michigan_transfer_tax_rate = $settings['michigan_transfer_tax_rate'] ?? 3.75;        $revenue_stamps_rate = $settings['revenue_stamps_rate'] ?? 0.55;
+        $min_water_escrow = $settings['min_water_escrow'] ?? 300;
+        $michigan_transfer_tax_rate = $settings['michigan_transfer_tax_rate'] ?? 3.75;        
+        $revenue_stamps_rate = $settings['revenue_stamps_rate'] ?? 0.55;
         
         // Unique ID for this instance
         $calculator_id = 'nsc-' . uniqid();?>
@@ -1265,8 +1262,8 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                 id="<?php echo esc_attr($calculator_id); ?>-water-escrow"
                                 name="water_escrow"
                                 data-field="water_escrow"
-                                min="300"
-                                value="<?php echo esc_attr($water_escrow); ?>">
+                                min="<?php echo esc_attr($min_water_escrow); ?>"
+                                value="<?php echo esc_attr($min_water_escrow); ?>">
                         </div>
                     </div>
                 </div>
@@ -1379,9 +1376,9 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
 
                 <!-- Action Buttons -->
                 <div class="nsc-actions">
-                    <button type="button" class="nsc-button nsc-button--download"><?php echo esc_html__('Download PDF', 'net-sheet-calculator'); ?></button>
-                    <div class="nsc-email-form">
+                    <button type="button" class="nsc-button nsc-button--download"><?php echo esc_html__('Download PDF', 'net-sheet-calculator'); ?></button>                    <div class="nsc-email-form">
                         <input type="email" id="<?php echo esc_attr($calculator_id); ?>-email" name="email" placeholder="<?php echo esc_attr__('Enter your email address', 'net-sheet-calculator'); ?>">
+                        <div class="nsc-email-error"></div>
                         <button type="button" class="nsc-button nsc-button--send"><?php echo esc_html__('Send via email', 'net-sheet-calculator'); ?></button>
                     </div>
                 </div>
