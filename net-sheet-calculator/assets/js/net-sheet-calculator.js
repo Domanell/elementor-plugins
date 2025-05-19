@@ -1,144 +1,224 @@
-/**
- * Net Sheet Calculator JavaScript
- */
 (function ($) {
 	'use strict';
 
-	$(window).on('elementor/frontend/init', () => {
-		elementorFrontend.hooks.addAction('frontend/element_ready/net_sheet_calculator_widget.default', initCalculator);
-	});
-
-	// Format number as currency
+	// Utility functions
 	const formatCurrency = (number) =>
 		`$${(isNaN(number) ? 0 : number).toLocaleString('en-US', {
 			minimumFractionDigits: 2,
 			maximumFractionDigits: 2,
 		})}`;
 
-	// Parse currency string to float
 	const parseCurrency = (value) => parseFloat(String(value).replace(/[^0-9.-]+/g, '')) || 0;
+	const parseInputValue = ($input) => ($input.hasClass('nsc-input--currency') ? parseCurrency($input.val()) : parseFloat($input.val()) || 0);
 
-	// Validate email format
-	const validateEmail = (email) =>
-		/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-			String(email).toLowerCase()
-		);
+	// EmailHandler for validation and error handling
+	const EmailHandler = {
+		email: '',
+		init($container) {
+			this.$input = $container.find('input[name="email"]');
+			this.$error = $container.find('.nsc-email-error');
+			this.email = this.$input.val().trim();
 
-	function initCalculator($calculator) {
-		const $inputs = $calculator.find('.nsc-input');
+			// Bind events
+			this.$input
+				.on('input', (e) => {
+					// Update email property
+					this.email = this.$input.val().trim();
 
-		initCurrencyInputs($calculator);
-		bindButtons($calculator);
-		$inputs.on('input change', () => calculate($calculator));
-		calculate($calculator);
-	}
+					// Clear error on valid input if email is valid
+					if (this.$input.hasClass('nsc-input--error') && this.validateValue().isValid) {
+						this.$error.hide();
+						this.$input.removeClass('nsc-input--error');
+					}
+				})
+				.on('blur', (e) => {
+					const { isValid, message } = this.validateValue();
+					isValid ? this.hideError() : this.showError(message);
+				});
 
-	function initCurrencyInputs($container) {
-		$container.find('.nsc-input--currency').each(function () {
-			const $input = $(this);
-			if ($input.val()) {
-				$input.val(formatCurrency(parseCurrency($input.val())));
+			return this;
+		},
+
+		getEmail() {
+			return this.email;
+		},
+
+		validateValue(emailToValidate = null) {
+			// Use provided email or the email property
+			const email = emailToValidate !== null ? emailToValidate : this.email;
+
+			// Required check
+			if (!email || email.trim() === '') {
+				return { isValid: false, message: 'Email is required' };
 			}
 
-			$input.on('blur', function () {
-				const value = parseCurrency($(this).val());
-				$(this).val(value ? formatCurrency(value) : '');
-			});
+			// Format check
+			const isValid =
+				/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+					email.toLowerCase()
+				);
 
-			$input.on('focus', function () {
-				$(this).val(parseCurrency($(this).val()) || '');
-			});
-		});
-	}
+			return {
+				isValid,
+				message: isValid ? '' : 'Please enter a valid email address',
+			};
+		},
 
-	function calculate($calc) {
-		const getVal = (field) => parseCurrency($calc.find(`[data-field="${field}"]`).val());
+		validate() {
+			const { isValid } = this.validateValue();
 
-		const getRate = (field, fallback) => parseFloat($calc.find(`[data-field="${field}"]`).val()) || fallback;
+			if (!isValid) {
+				this.showError(message);
+			}
 
-		// Input values
-		const purchasePrice = getVal('purchase_price');
-		const otherCredits = getVal('other_credits');
+			return isValid;
+		},
 
-		const mortgagePayoff = getVal('mortgage_payoff');
-		const secondMortgagePayoff = getVal('other_mortgage_payoff');
-		const specialAssessmentPayoff = getVal('special_assessment_payoff');
-		const lienReleaseTrackingFee = getVal('lien_release_tracking_fee');
+		showError(message) {
+			this.$error.text(message).show();
+			this.$input.addClass('nsc-input--error').focus();
+		},
 
-		const propertyTaxesDue = getVal('property_taxes_due');
-		const michiganTransferTaxRate = getRate('michigan_transfer_tax_rate', 3.75);
-		const revenueStampsRate = getRate('revenue_stamps_rate', 0.55);
+		hideError() {
+			this.$error.hide();
+			this.$input.removeClass('nsc-input--error');
+		},
+	};
+	// Main calculator state object
+	let $calculator,
+		values = {},
+		$inputs,
+		$currencyInputs,
+		$downloadBtn,
+		$sendBtn;
 
-		const settlementFee = getVal('settlement_fee');
-		const securityFee = getVal('security_fee');
-		const titleInsurancePolicy = getVal('title_insurance_policy');
+	// Update calculated field with formatted value
+	const updateCalculatedField = (field, value = 0) => {
+		$calculator.find(`.nsc-input[data-field="${field}"]`).val(formatCurrency(value));
+	};
 
-		const commissionRate = getRate('comission_rate', 6); // typo preserved from original
-		const commissionDueRealtor = purchasePrice * (commissionRate / 100);
-		const commissionDueRealtorExtra = getVal('comission_realtor_extra');
+	// Calculate all values and update fields
+	const calculate = () => {
+		// Perform all calculations
+		const commission = values.purchase_price * ((values.comission_rate || 0) / 100);
+		const grossProceeds = values.purchase_price + (values.other_credits || 0);
+		const michiganTransferTax = (values.purchase_price / 500) * (values.michigan_transfer_tax_rate || 3.75);
+		const revenueStamps = (values.purchase_price / 500) * (values.revenue_stamps_rate || 0.55);
 
-		const currentWaterSewer = getVal('current_water');
-		const hoaAssessment = getVal('hoa_assessment');
-		const waterEscrow = getVal('water_escrow');
-
-		const homeWarranty = getVal('home_warranty');
-		const fhaVaFees = getVal('fha');
-		const miscCostSeller = getVal('misc_cost_seller');
-		const sellerAttorneyFee = getVal('seller_attorney_fee');
-
-		// Calculations
-		const michiganTransferTax = (purchasePrice / 500) * michiganTransferTaxRate;
-		const revenueStamps = (purchasePrice / 500) * revenueStampsRate;
-		const grossProceeds = purchasePrice + otherCredits;
-
-		const totalClosingCosts =
-			mortgagePayoff +
-			secondMortgagePayoff +
-			specialAssessmentPayoff +
-			lienReleaseTrackingFee +
-			propertyTaxesDue +
-			michiganTransferTax +
-			revenueStamps +
-			settlementFee +
-			securityFee +
-			titleInsurancePolicy +
-			commissionDueRealtor +
-			commissionDueRealtorExtra +
-			currentWaterSewer +
-			hoaAssessment +
-			waterEscrow +
-			homeWarranty +
-			fhaVaFees +
-			miscCostSeller +
-			sellerAttorneyFee;
+		const totalClosingCosts = [
+			commission,
+			michiganTransferTax,
+			revenueStamps,
+			values.mortgage_payoff,
+			values.other_mortgage_payoff,
+			values.special_assessment_payoff,
+			values.lien_release_tracking_fee,
+			values.property_taxes_due,
+			values.settlement_fee,
+			values.security_fee,
+			values.title_insurance_policy,
+			values.comission_realtor_extra,
+			values.current_water,
+			values.hoa_assessment,
+			values.water_escrow,
+			values.home_warranty,
+			values.fha,
+			values.misc_cost_seller,
+			values.seller_attorney_fee,
+		].reduce((sum, val) => sum + (val || 0), 0);
 
 		const netProceeds = grossProceeds - totalClosingCosts;
 
-		// Output fields
-		const setField = (field, value) => $calc.find(`[data-field="${field}"]`).val(formatCurrency(value));
+		// Update calculated fields
+		updateCalculatedField('gross_proceeds', grossProceeds);
+		updateCalculatedField('michigan_transfer_tax', michiganTransferTax);
+		updateCalculatedField('revenue_stamps', revenueStamps);
+		updateCalculatedField('comission_realtor', commission);
+		updateCalculatedField('total_closing_costs', totalClosingCosts);
+		updateCalculatedField('estimated_net_proceeds', netProceeds);
+	};
 
-		setField('michigan_transfer_tax', michiganTransferTax);
-		setField('revenue_stamps', revenueStamps);
-		setField('comission_realtor', commissionDueRealtor);
-		setField('gross_proceeds', grossProceeds);
-		setField('total_closing_costs', totalClosingCosts);
-		setField('estimated_net_proceeds', netProceeds);
-	}
+	const handleDownload = (e) => {
+		e.preventDefault();
+		alert('PDF download functionality will be implemented here.');
+	};
+	const handleSendEmail = (e) => {
+		e.preventDefault();
 
-	function bindButtons($calc) {
-		$calc.find('.nsc-button--download').on('click', (e) => {
-			e.preventDefault();
-			alert('PDF download functionality will be implemented here.');
-		});
+		// Use the email handler to validate
+		const validation = EmailHandler.validate();
 
-		$calc.find('.nsc-button--send').on('click', (e) => {
-			e.preventDefault();
-			const email = $calc.find('input[name="email"]').val();
-			if (!email || !validateEmail(email)) {
-				alert('Please enter a valid email address.');
-				return;
+		if (!validation.isValid) {
+			return;
+		}
+
+		// Proceed with sending the email
+		alert(`Email would be sent to: ${EmailHandler.email}`);
+	};
+	const initElements = () => {
+		$inputs = $calculator.find('.nsc-input');
+		$currencyInputs = $calculator.find('.nsc-input--currency');
+		$downloadBtn = $calculator.find('.nsc-button--download');
+		$sendBtn = $calculator.find('.nsc-button--send');
+
+		// Initialize email handler
+		EmailHandler.init($calculator);
+	};
+
+	const initValues = () => {
+		// Initialize all input values
+		$inputs.each((index, element) => {
+			const $input = $(element);
+			const field = $input.data('field');
+
+			if (field) {
+				values[field] = parseInputValue($input);
+			} else {
+				console.error(`Input field "${$input.attr('name')}" is missing a data-field attribute.`);
 			}
-			alert(`Email would be sent to: ${email}`);
 		});
-	}
+	};
+	const initEventHandlers = () => {
+		// Handle all input changes
+		$inputs.on('input change', (e) => {
+			const $input = $(e.currentTarget);
+			const field = $input.data('field');
+
+			if (field) {
+				// Update values object based on input type
+				values[field] = parseInputValue($input);
+				calculate();
+			}
+		});
+
+		// Special handling for currency fields
+		$currencyInputs
+			.on('blur', (e) => {
+				const $input = $(e.currentTarget);
+				const field = $input.data('field');
+				values[field] = parseCurrency($input.val());
+				$input.val(formatCurrency(values[field]));
+			})
+			.on('focus', (e) => {
+				const $input = $(e.currentTarget);
+				$input.val(values[$input.data('field')] || '');
+			});
+
+		// Button handlers
+		$downloadBtn.on('click', handleDownload);
+		$sendBtn.on('click', handleSendEmail);
+	};
+
+	const init = (calculatorElement) => {
+		$calculator = calculatorElement;
+		initElements();
+		initValues();
+		initEventHandlers();
+		calculate();
+	};
+
+	// Initialize calculator when Elementor is ready
+	$(window).on('elementor/frontend/init', () => {
+		elementorFrontend.hooks.addAction('frontend/element_ready/net_sheet_calculator_widget.default', ($calculator) => init($calculator));
+	});
 })(jQuery);

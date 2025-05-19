@@ -5,14 +5,13 @@
 	margin: 0 auto;
 	padding: 20px;
 	box-sizing: border-box;
-
 }
 
 /* Block: Section */
 .nsc-section {
 	margin-bottom: 12px;
 	padding: 20px;
-	background-color: #F9FBFB;
+	background-color: #f9fbfb;
 }
 
 .nsc-section__title {
@@ -65,13 +64,13 @@
 }
 
 /* Block: Input */
-.nsc-field__input-wrap input[type=date], 
-.nsc-field__input-wrap input[type=email], 
-.nsc-field__input-wrap input[type=number], 
-.nsc-field__input-wrap input[type=search], 
-.nsc-field__input-wrap input[type=tel], 
-.nsc-field__input-wrap input[type=text], 
-.nsc-field__input-wrap input[type=url] {
+.nsc-field__input-wrap input[type='date'],
+.nsc-field__input-wrap input[type='email'],
+.nsc-field__input-wrap input[type='number'],
+.nsc-field__input-wrap input[type='search'],
+.nsc-field__input-wrap input[type='tel'],
+.nsc-field__input-wrap input[type='text'],
+.nsc-field__input-wrap input[type='url'] {
 	width: 100%;
 	padding: 7px;
 	border: 1px solid var(--e-global-color-primary);
@@ -86,7 +85,7 @@
 .nsc-input:focus {
 	border-color: var(--e-global-color-secondary);
 	outline: none;
-	box-shadow: 0 0 0 1px  var(--e-global-color-secondary);
+	box-shadow: 0 0 0 1px var(--e-global-color-secondary);
 }
 
 .nsc-input--calculated {
@@ -134,6 +133,7 @@
 	flex-wrap: wrap;
 	gap: 10px;
 	flex: 1;
+	position: relative;
 }
 
 .nsc-email-form input[type='email'] {
@@ -143,6 +143,19 @@
 	border: 1px solid #d5d5d5;
 	border-radius: 4px;
 	font-size: 16px;
+}
+
+.nsc-email-form input[type='email'].nsc-input--error {
+	border-color: #dc3232;
+}
+
+.nsc-email-error {
+	color: #dc3232;
+	font-size: 14px;
+	margin-top: -5px;
+	margin-bottom: 5px;
+	width: 100%;
+	display: none;
 }
 
 /* Responsive styling */
