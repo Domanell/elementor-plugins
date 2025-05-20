@@ -25,10 +25,29 @@ add_action('elementor/widgets/register', 'net_sheet_calculator_register_widgets'
  * Register dependencies. Registers all the scripts and styles to be enqueued later.
  */
 function net_sheet_calculator_register_scripts() {
+    // Register PDF-Lib library
+    wp_register_script(
+        'pdf-lib',
+        plugins_url('assets/lib/pdf-lib.min.js', __FILE__),
+        array(),
+        '1.17.1',
+        true
+    );
+
+    // Register PDF generator script
+    wp_register_script(
+        'net-sheet-calculator-pdf-generator',
+        plugins_url('assets/js/pdf-generator.js', __FILE__),
+        array('pdf-lib'),
+        '1.0.0',
+        true
+    );
+    
+    // Register main calculator script
     wp_register_script(
         'net-sheet-calculator-script', 
         plugins_url('assets/js/net-sheet-calculator.js', __FILE__), 
-        array('jquery'), 
+        array('jquery', 'net-sheet-calculator-pdf-generator'), 
         '1.0.0',
         true
     );

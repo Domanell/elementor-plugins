@@ -86,6 +86,7 @@
 	// Main calculator state object
 	let $calculator,
 		values = {},
+		labels = {}, // Store field labels
 		$inputs,
 		$currencyInputs,
 		$downloadBtn,
@@ -98,16 +99,15 @@
 	// Calculate all values and update fields
 	const calculate = () => {
 		// Perform all calculations
-		const commission = values.purchase_price * ((values.comission_rate || 0) / 100);
-		console.log(commission);
-		const grossProceeds = values.purchase_price + (values.other_credits || 0);
-		const michiganTransferTax = Math.ceil(values.purchase_price / 500) * (values.michigan_transfer_tax_rate || 3.75);
-		const revenueStamps = Math.ceil(values.purchase_price / 500) * (values.revenue_stamps_rate || 0.55);
+		values.comission_realtor = values.purchase_price * ((values.comission_rate || 0) / 100);
+		values.michigan_transfer_tax = Math.ceil(values.purchase_price / 500) * (values.michigan_transfer_tax_rate || 3.75);
+		values.revenue_stamps = Math.ceil(values.purchase_price / 500) * (values.revenue_stamps_rate || 0.55);
+		values.gross_proceeds = values.purchase_price + (values.other_credits || 0);
 
 		const totalClosingCosts = [
-			commission,
-			michiganTransferTax,
-			revenueStamps,
+			values.comission_realtor,
+			values.michigan_transfer_tax,
+			values.revenue_stamps,
 			values.mortgage_payoff,
 			values.other_mortgage_payoff,
 			values.special_assessment_payoff,
@@ -126,23 +126,39 @@
 			values.seller_attorney_fee,
 		].reduce((sum, val) => sum + (val || 0), 0);
 
-		const netProceeds = grossProceeds - totalClosingCosts < 0 ? 0 : grossProceeds - totalClosingCosts;
+		const netProceeds = values.gross_proceeds - totalClosingCosts < 0 ? 0 : values.gross_proceeds - totalClosingCosts;
 
-		// Update calculated fields
-		updateCalculatedField('gross_proceeds', grossProceeds);
-		updateCalculatedField('michigan_transfer_tax', michiganTransferTax);
-		updateCalculatedField('revenue_stamps', revenueStamps);
-		updateCalculatedField('comission_realtor', commission);
+		// Update input display for calculated fields
+		['gross_proceeds', 'michigan_transfer_tax', 'revenue_stamps', 'comission_realtor'].forEach((field) => {
+			updateCalculatedField(field, values[field]);
+		});
 
 		// Update text output fields
 		$calculator.find(`[data-field="total_closing_costs"]`).text(formatCurrency(totalClosingCosts));
 		$calculator.find(`[data-field="estimated_net_proceeds"]`).text(formatCurrency(netProceeds));
 	};
-
 	const handleDownload = (e) => {
 		e.preventDefault();
-		alert('PDF download functionality will be implemented here.');
+
+		// Add calculated totals to values
+		values.total_closing_costs = parseCurrency($calculator.find(`[data-field="total_closing_costs"]`).text());
+		values.estimated_net_proceeds = parseCurrency($calculator.find(`[data-field="estimated_net_proceeds"]`).text());
+
+		// Create simple PDF data object with values and labels
+		const pdfData = { values, labels };
+		// Generate PDF using PDFGenerator
+		PDFGenerator.downloadPDF(pdfData, 'net-sheet-calculator-results.pdf')
+			.then((success) => {
+				if (!success) {
+					alert('There was an error generating the PDF. Please try again.');
+				}
+			})
+			.catch((error) => {
+				console.error('PDF generation error:', error);
+				alert('There was an error generating the PDF. Please try again.');
+			});
 	};
+
 	const handleSendEmail = (e) => {
 		e.preventDefault();
 
@@ -171,14 +187,12 @@
 		$inputs.each((index, element) => {
 			const $input = $(element);
 			const field = $input.data('field');
-
 			if (field) {
 				values[field] = parseInputValue($input);
-			} else {
-				console.error(`Input field "${$input.attr('name')}" is missing a data-field attribute.`);
 			}
 		});
 	};
+
 	const initEventHandlers = () => {
 		// Handle all input changes
 		$inputs.on('input change', (e) => {
@@ -210,8 +224,42 @@
 		$sendBtn.on('click', handleSendEmail);
 	};
 
+	const initLabels = (settings) => {
+		labels = {
+			purchase_price: settings.purchase_price_label,
+			other_credits: settings.other_credits_label,
+			gross_proceeds: settings.gross_proceeds_label,
+			mortgage_payoff: settings.mortgage_payoff_label,
+			other_mortgage_payoff: settings.other_mortgage_payoff_label,
+			special_assessment_payoff: settings.special_assessment_payoff_label,
+			lien_release_tracking_fee: settings.lien_release_tracking_fee_label,
+			property_taxes_due: settings.property_taxes_due_label,
+			michigan_transfer_tax: settings.michigan_transfer_tax_label,
+			revenue_stamps: settings.revenue_stamps_label,
+			settlement_fee: settings.settlement_fee_label,
+			security_fee: settings.security_fee_label,
+			title_insurance_policy: settings.title_insurance_policy_label,
+			comission_realtor: settings.comission_realtor_label,
+			comission_realtor_extra: settings.comission_realtor_extra_label,
+			current_water: settings.current_water_label,
+			hoa_assessment: settings.hoa_assessment_label,
+			water_escrow: settings.water_escrow_label,
+			home_warranty: settings.home_warranty_label,
+			fha: settings.fha_label,
+			misc_cost_seller: settings.misc_cost_seller_label,
+			seller_attorney_fee: settings.seller_attorney_fee_label,
+			total_closing_costs: settings.total_closing_costs_label,
+			estimated_net_proceeds: settings.estimated_net_proceeds_label,
+		};
+	};
+
 	const init = (calculatorElement) => {
 		$calculator = calculatorElement;
+
+		// Get settings directly from Elementor widget
+		const settings = { ...$calculator.data('settings') };
+		initLabels(settings);
+
 		initElements();
 		initValues();
 		initEventHandlers();

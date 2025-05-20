@@ -25,10 +25,8 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
 
     public function get_keywords() {
         return ['real estate', 'calculator', 'seller', 'net sheet'];
-    }
-
-    public function get_script_depends() {
-        return ['net-sheet-calculator-script'];
+    }    public function get_script_depends() {
+        return ['net-sheet-calculator-pdf-generator', 'net-sheet-calculator-script'];
     }
 
     public function get_style_depends() {
@@ -172,6 +170,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Purchase Price', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -198,6 +197,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Other Credits to Seller', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -224,6 +224,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Total Estimated Gross Proceeds', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -261,6 +262,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Mortgage Payoff', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -287,6 +289,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Second Mortgage Payoff', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -313,6 +316,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Special Assessment Payoff', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -339,6 +343,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Lien Release Tracking Fee', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -375,6 +380,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Property Taxes Due', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -401,6 +407,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Michigan Transfer Tax', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -427,6 +434,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Revenue Stamps', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -463,6 +471,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Settlement Fee', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -470,7 +479,6 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
             [
                 'label'       => esc_html__('Description', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
-                'default'     => '',
             ]
         );
 
@@ -489,6 +497,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Security Fee', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -515,6 +524,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Title Insurance Policy', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -551,6 +561,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Commission Due Realtor (6% standard)', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -577,6 +588,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Commission Due Realtor (Extra $)', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -614,6 +626,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Current Water/Sewer', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -640,6 +653,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('HOA Assessment', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -666,6 +680,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Water Escrow (Minimum $300)', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -702,6 +717,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Home Warranty', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -728,6 +744,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('FHA or VA Seller Paid Fees', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -754,6 +771,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Misc Cost to Seller', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -780,6 +798,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Seller\'s Attorney Fee', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -817,6 +836,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Total Closing Costs', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
 
@@ -836,6 +856,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
                 'default'     => esc_html__('Estimated Net Proceeds', 'net-sheet-calculator'),
+                'frontend_available' => true,
             ]
         );
         $this->add_control(
@@ -931,13 +952,13 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         $settings = $this->get_settings_for_display();
 
         // Get default values from settings
-        $commission_rate = $settings['default_commission_rate'] ?? 6;
-        $settlement_fee = $settings['default_settlement_fee'] ?? 350;
-        $lien_release_tracking_fee = $settings['default_lien_release_tracking_fee'] ?? 45;
-        $security_fee = $settings['default_security_fee'] ?? 55;
-        $min_water_escrow = $settings['min_water_escrow'] ?? 300;
-        $michigan_transfer_tax_rate = $settings['michigan_transfer_tax_rate'] ?? 3.75;        
-        $revenue_stamps_rate = $settings['revenue_stamps_rate'] ?? 0.55;
+        $commission_rate = $settings['default_commission_rate'] ?? 0;
+        $settlement_fee = $settings['default_settlement_fee'] ?? 0;
+        $lien_release_tracking_fee = $settings['default_lien_release_tracking_fee'] ?? 0;
+        $security_fee = $settings['default_security_fee'] ?? 0;
+        $min_water_escrow = $settings['min_water_escrow'] ?? 0;
+        $michigan_transfer_tax_rate = $settings['michigan_transfer_tax_rate'] ?? 0;        
+        $revenue_stamps_rate = $settings['revenue_stamps_rate'] ?? 0;
         
         // Unique ID for this instance
         $calculator_id = 'nsc-' . uniqid();?>
