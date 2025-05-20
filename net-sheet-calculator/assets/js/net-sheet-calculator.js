@@ -157,7 +157,7 @@
 		alert(`Email would be sent to: ${EmailHandler.email}`);
 	};
 	const initElements = () => {
-		$inputs = $calculator.find('input');
+		$inputs = $calculator.find('.nsc-fields-wrap input');
 		$currencyInputs = $calculator.find('.nsc-input--currency');
 		$downloadBtn = $calculator.find('.nsc-button--download');
 		$sendBtn = $calculator.find('.nsc-button--send');

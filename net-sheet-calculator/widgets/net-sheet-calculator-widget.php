@@ -1337,14 +1337,15 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                     </div>
                 </div>
 
-                <div class="nsc-total-wrap">                    <!-- Final Totals Section -->
+                <div class="nsc-total-wrap">                    
+                    <!-- Final Totals Section -->
                     <div class="nsc-section nsc-section--totals">
                         <h5 class="nsc-section__title"><?php echo esc_html__('Final Totals', 'net-sheet-calculator'); ?></h5>
                         <div class="nsc-field">
                             <div class="nsc-field__label">
                                 <?php echo esc_html($settings['total_closing_costs_label'] ?? esc_html__('Total Closing Costs', 'net-sheet-calculator')); ?>
                             </div>
-                            <div class="nsc-field__output" id="<?php echo esc_attr($calculator_id); ?>-total-closing-costs" data-field="total_closing_costs">
+                            <div class="nsc-field__output" data-field="total_closing_costs">
                                 $0.00
                             </div>
                         </div>
@@ -1352,7 +1353,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                             <div class="nsc-field__label">
                                 <?php echo esc_html($settings['estimated_net_proceeds_label'] ?? esc_html__('Estimated Net Proceeds', 'net-sheet-calculator')); ?>
                             </div>
-                            <div class="nsc-field__output" id="<?php echo esc_attr($calculator_id); ?>-estimated-net-proceeds" data-field="estimated_net_proceeds">
+                            <div class="nsc-field__output" data-field="estimated_net_proceeds">
                                 $0.00
                             </div>
                         </div>
@@ -1360,13 +1361,13 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
     
                     <!-- Action Buttons -->
                     <div class="nsc-actions">
-                        <button type="button" class="nsc-button nsc-button--download"><?php echo esc_html__('Download PDF', 'net-sheet-calculator'); ?></button>                    
+                        <button type="button" class="nsc-button nsc-button--download">Download PDF</button>                    
                         <div class="nsc-email-form">
                             <div>
-                                <input type="email" id="<?php echo esc_attr($calculator_id); ?>-email" name="email" placeholder="<?php echo esc_attr__('Enter your email address', 'net-sheet-calculator'); ?>">
+                                <input type="email" name="email" placeholder="Enter your email address">
                                 <div class="nsc-email-error"></div>
                             </div>
-                            <button type="button" class="nsc-button nsc-button--send"><?php echo esc_html__('Send via email', 'net-sheet-calculator'); ?></button>
+                            <button type="button" class="nsc-button nsc-button--send">Send via email</button>
                         </div>
                     </div>
                     <div class="nsc-disclaimer">
