@@ -1259,7 +1259,6 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     name="commission_realtor"
                                     data-field="commission_realtor"
                                     value="<?php echo esc_attr($settings['default_realtor_commission']); ?>"
-                                    min="0"
                                     max="100"
                                     >
                             </div>

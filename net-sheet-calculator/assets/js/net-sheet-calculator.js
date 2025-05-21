@@ -229,7 +229,7 @@
 				// Update values object based on input type
 				values[field] = value;
 				// Update input value to make sure that it is in min-max range
-				$input.val(value);
+				$input.val(value || '');
 				// Update calculated fields
 				calculate();
 			}
