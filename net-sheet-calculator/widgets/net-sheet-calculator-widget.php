@@ -34,6 +34,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
     }
 
     protected function register_controls() {
+        $repeater = new \Elementor\Repeater();
         // Section for Default Values
         $this->start_controls_section(
             'section_defaults',
@@ -42,6 +43,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
             ]
         );
+        
 
         $this->add_control(
             'commissions_defaults_heading',
@@ -145,6 +147,49 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         );
 
         $this->end_controls_section();
+
+        // Section for Insurance rates
+        $this->start_controls_section(
+            'section_insurance_rates',
+            [
+                'label' => esc_html__('Insurance Rates', 'net-sheet-calculator'),
+                'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $repeater->add_control('range_from', [
+        'label' => 'From ($)',
+        'type' => \Elementor\Controls_Manager::NUMBER,
+        'min' => 0,
+        'step' => 1,
+        'default' => 0,
+      ]);
+
+      $repeater->add_control('range_to', [
+        'label' => 'To ($)',
+        'type' => \Elementor\Controls_Manager::NUMBER,
+        'min' => 0,
+        'step' => 1,
+        'default' => 100000,
+      ]);
+
+      $repeater->add_control('rate', [
+        'label' => 'Rate per $1000',
+        'type' => \Elementor\Controls_Manager::NUMBER,
+        'step' => 0.01,
+        'default' => 5.0,
+      ]);
+
+
+      $this->add_control('ranges', [
+        'label' => '',
+        'type' => \Elementor\Controls_Manager::REPEATER,
+        'fields' => $repeater->get_controls(),
+        'title_field' => '${{range_from}} - ${{range_to}} : ${{rate}}',
+      ]);
+
+        $this->end_controls_section();
+
 
         // Transaction Summary Fields
         $this->start_controls_section(
@@ -873,6 +918,9 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
             [
                 'label'       => esc_html__('Add disclaimer text', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::WYSIWYG,
+                'default'     => esc_html__('Disclaimer:
+The figures provided in this Estimated Seller Net Proceeds Sheet are for informational and illustrative purposes only. All amounts, costs, and totals listed are estimates and do not represent actual closing costs or final settlement amounts. The accuracy of the information is not guaranteed, and the final figures may vary. All amounts are subject to change at the discretion of the title and escrow company listed above. No warranty, express or implied, is made regarding the accuracy, reliability, or completeness of this information. Sellers are advised to consult directly with their title, escrow, or financial professionals for actual closing figures.
+', 'net-sheet-calculator'),
             ]
         );
     
@@ -1209,11 +1257,12 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                             </label>
                             <div class="nsc-field__input-wrap">
                                 <input type="text"
-                                    class="nsc-input nsc-input--calculated"
+                                    class="nsc-input"
                                     id="<?php echo esc_attr($calculator_id); ?>-comission-realtor"
                                     name="comission_realtor"
                                     data-field="comission_realtor"
-                                    readonly>
+                                    default="6"
+                                    >
                             </div>
                         </div>
                         <div class="nsc-field">
