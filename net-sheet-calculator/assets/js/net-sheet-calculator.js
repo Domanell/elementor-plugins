@@ -1,7 +1,19 @@
 (function ($) {
 	'use strict';
 
-	// Utility functions
+	let $calculator;
+	let values = {};
+	let labels = {};
+	let insuranceRates = [];
+	let $inputs;
+	let $currencyInputs;
+	let $percentageInputs;
+	let $downloadBtn;
+	let $sendBtn;
+
+	//==========
+	// Utilities
+	//==========
 	const formatCurrency = (number) =>
 		`$${(isNaN(number) ? 0 : number).toLocaleString('en-US', {
 			minimumFractionDigits: 2,
@@ -33,7 +45,27 @@
 		return parseValue($input.val());
 	};
 
-	// EmailHandler for validation and error handling
+	const calculateHomeownersRate = (amount) => {
+		let total = 0;
+
+		for (const { min, max, rate, isFixed } of insuranceRates) {
+			if (amount >= min) {
+				if (isFixed) {
+					total += rate;
+				} else {
+					const upperBound = Math.min(amount, max);
+					const thousands = Math.ceil((upperBound - min) / 1000);
+					total += thousands * rate;
+				}
+			}
+		}
+
+		return Math.ceil(total);
+	};
+
+	//=========
+	// Handlers
+	//=========
 	const EmailHandler = {
 		email: '',
 		init($container) {
@@ -105,15 +137,6 @@
 			this.$input.removeClass('nsc-input--error');
 		},
 	};
-	// Main calculator state object
-	let $calculator,
-		values = {},
-		labels = {}, // Store field labels
-		$inputs,
-		$currencyInputs,
-		$percentageInputs,
-		$downloadBtn,
-		$sendBtn;
 
 	// Update calculated field with formatted value
 	const updateCalculatedField = (field, value = 0) => {
@@ -131,6 +154,7 @@
 		values.michigan_transfer_tax = Math.ceil(values.purchase_price / 500) * (values.michigan_transfer_tax_rate || 3.75);
 		values.revenue_stamps = Math.ceil(values.purchase_price / 500) * (values.revenue_stamps_rate || 0.55);
 		values.gross_proceeds = values.purchase_price + (values.other_credits || 0);
+		values.homeowners_rate = calculateHomeownersRate(values.title_insurance_policy);
 
 		values.total_closing_costs = [
 			values.commission_realtor_amount,
@@ -143,7 +167,7 @@
 			values.property_taxes_due,
 			values.settlement_fee,
 			values.security_fee,
-			values.title_insurance_policy,
+			values.homeowners_rate,
 			values.commission_realtor_extra,
 			values.current_water,
 			values.hoa_assessment,
@@ -165,6 +189,7 @@
 		updateTextOutput('total_closing_costs', values.total_closing_costs);
 		updateTextOutput('estimated_net_proceeds', values.estimated_net_proceeds);
 	};
+
 	const handleDownload = (e) => {
 		e.preventDefault();
 
@@ -196,6 +221,10 @@
 		// Proceed with sending the email
 		alert(`Email would be sent to: ${EmailHandler.email}`);
 	};
+
+	//===============
+	// Initialization
+	//===============
 	const initElements = () => {
 		$inputs = $calculator.find('.nsc-fields-wrap input');
 		$currencyInputs = $calculator.find('.nsc-input--currency');
@@ -295,13 +324,24 @@
 		};
 	};
 
+	const initInsuranceRates = (settings) => {
+		const rates = settings.insurance_rates || [];
+		insuranceRates = rates.map(({ insurance_is_fixed, insurance_range_from, insurance_range_to, insurance_rate }) => ({
+			isFixed: insurance_is_fixed === 'yes',
+			min: insurance_range_from || 0,
+			max: insurance_range_to || Infinity,
+			rate: insurance_rate || 0,
+		}));
+	};
+
 	const init = (calculatorElement) => {
 		$calculator = calculatorElement;
 
 		// Get settings directly from Elementor widget
 		const settings = { ...$calculator.data('settings') };
-		initLabels(settings);
 
+		initLabels(settings);
+		initInsuranceRates(settings);
 		initElements();
 		initValues();
 		initEventHandlers();

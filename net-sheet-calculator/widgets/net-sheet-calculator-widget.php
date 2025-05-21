@@ -189,12 +189,13 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
             'default' => 'no',
         ]);       
         
-        $this->add_control('ranges', [
+        $this->add_control('insurance_rates', [
             'label' => '',
             'type' => \Elementor\Controls_Manager::REPEATER,
             'fields' => $repeater->get_controls(),
-            'title_field' => '{{ insurance_range_from }} - {{ insurance_range_to }}: ${{ insurance_rate }}{{ insurance_is_fixed === "yes" ? " fixed" : " per $1000" }}',
+            'title_field' => '{{ insurance_range_from ? insurance_range_from : "0" }} - {{ insurance_range_to ? insurance_range_to : " Infinity" }}: ${{ insurance_rate ? insurance_rate : "0" }}{{ insurance_is_fixed === "yes" ? " fixed" : " per $1000" }}',
             'prevent_empty' => true,
+            'frontend_available' => true,
             'default' => [
                 [
                     'insurance_range_from' => 0,
