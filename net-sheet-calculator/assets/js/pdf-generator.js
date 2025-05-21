@@ -7,6 +7,16 @@ const PDFGenerator = (function () {
 	'use strict';
 
 	let rgb;
+	// Configuration variables for font sizes and spacing
+	const config = {
+		titleFontSize: 14,
+		sectionTitleFontSize: 10,
+		contentFontSize: 9,
+		footerFontSize: 7,
+		lineHeight: 16,
+		sectionSpacing: 12,
+		margin: 40,
+	};
 
 	// Sections in order of appearance
 	const sections = [
@@ -24,31 +34,21 @@ const PDFGenerator = (function () {
 		const { PDFDocument, rgb: rgbFunc, StandardFonts } = PDFLib;
 		rgb = rgbFunc;
 		const pdfDoc = await PDFDocument.create();
-		let page = pdfDoc.addPage([612, 792]); // US Letter size
+		let page = pdfDoc.addPage([595.28, 841.89]); // A4 size
 		const { width, height } = page.getSize();
 
 		const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-		const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-		// Count total items for auto-scaling
-		const totalItems = sections.reduce((sum, section) => sum + section.fields.length, 0);
-
-		// Page margins (40px from all sides)
-		const margin = 40;
+		const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold); // Page margins and spacing
+		const margin = config.margin;
 		let currentY = height - margin;
 
-		// Calculate available vertical space
-		const availableHeight = height - margin * 2;
-
-		// Minimum line height for readability
-		const minLineHeight = 10;
-
-		// Auto-scale line height based on content amount
-		const lineHeight = Math.max(minLineHeight, Math.floor(availableHeight / (totalItems + sections.length * 2)));
+		// Using fixed sizes from config
+		const lineHeight = config.lineHeight;
 
 		// X-coordinates for labels and values
 		const labelX = margin;
-		const valueX = width / 2; // Title font size (scales between 12-16pt based on available space)
-		const titleSize = Math.min(16, Math.max(12, lineHeight * 1.2));
+		const valueX = width / 2;
+		const titleSize = config.titleFontSize;
 		page.drawText(documentTitle, {
 			x: margin,
 			y: currentY,
@@ -63,11 +63,12 @@ const PDFGenerator = (function () {
 			page.drawText(section.title, {
 				x: margin,
 				y: currentY,
-				size: 11, // Slightly smaller font
+				size: config.sectionTitleFontSize, // Slightly smaller font
 				font: boldFont,
 				color: rgb(0, 0, 0),
 			});
-			currentY -= lineHeight; // Draw fields
+			currentY -= lineHeight;
+			// Draw fields
 			for (const field of section.fields) {
 				const label = data.labels[field] || field;
 				const value = data.values[field];
@@ -77,22 +78,22 @@ const PDFGenerator = (function () {
 				page.drawText(label + ':', {
 					x: labelX + 20,
 					y: currentY,
-					size: 9, // Smaller font size
-					font: boldFont,
+					size: config.contentFontSize,
+					font: font,
 					color: rgb(0, 0, 0),
 				});
 
 				page.drawText(formattedValue, {
 					x: valueX,
 					y: currentY,
-					size: 9, // Smaller font size
-					font: font,
+					size: config.contentFontSize,
+					font: boldFont,
 					color: rgb(0, 0, 0),
 				});
 
 				currentY -= lineHeight;
 			}
-			currentY -= lineHeight * 0.5; // Spacing between sections
+			currentY -= config.sectionSpacing; // Spacing between sections
 
 			// Draw separator line except for last section
 			if (section.title !== 'Totals') {
@@ -103,18 +104,9 @@ const PDFGenerator = (function () {
 					color: rgb(0.7, 0.7, 0.7), // Light gray color
 				});
 				// Add more space after the separator line
-				currentY -= lineHeight * 0.5;
+				currentY -= config.sectionSpacing;
 			}
 		}
-
-		// Add generation date at the bottom
-		page.drawText(`Generated on: ${new Date().toLocaleDateString()}`, {
-			x: margin,
-			y: margin / 2,
-			size: 8,
-			font: font,
-			color: rgb(0.5, 0.5, 0.5),
-		});
 
 		const pdfBytes = await pdfDoc.save();
 		return new Blob([pdfBytes], { type: 'application/pdf' });
