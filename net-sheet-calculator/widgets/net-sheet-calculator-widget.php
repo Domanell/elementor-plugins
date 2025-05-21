@@ -55,7 +55,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         );
 
         $this->add_control(
-            'default_commission_rate',
+            'default_realtor_commission',
             [
                 'label'       => esc_html__('Default Commission Rate (%)', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::NUMBER,
@@ -158,35 +158,35 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         );
 
         $repeater->add_control('range_from', [
-        'label' => 'From ($)',
-        'type' => \Elementor\Controls_Manager::NUMBER,
-        'min' => 0,
-        'step' => 1,
-        'default' => 0,
-      ]);
+            'label' => 'From ($)',
+            'type' => \Elementor\Controls_Manager::NUMBER,
+            'min' => 0,
+            'step' => 1,
+            'default' => 0,
+        ]);
 
-      $repeater->add_control('range_to', [
-        'label' => 'To ($)',
-        'type' => \Elementor\Controls_Manager::NUMBER,
-        'min' => 0,
-        'step' => 1,
-        'default' => 100000,
-      ]);
+        $repeater->add_control('range_to', [
+            'label' => 'To ($)',
+            'type' => \Elementor\Controls_Manager::NUMBER,
+            'min' => 0,
+            'step' => 1,
+            'default' => 100000,
+        ]);
 
-      $repeater->add_control('rate', [
-        'label' => 'Rate per $1000',
-        'type' => \Elementor\Controls_Manager::NUMBER,
-        'step' => 0.01,
-        'default' => 5.0,
-      ]);
+        $repeater->add_control('rate', [
+            'label' => 'Rate per $1000',
+            'type' => \Elementor\Controls_Manager::NUMBER,
+            'step' => 0.01,
+            'default' => 5.0,
+        ]);
 
 
-      $this->add_control('ranges', [
-        'label' => '',
-        'type' => \Elementor\Controls_Manager::REPEATER,
-        'fields' => $repeater->get_controls(),
-        'title_field' => '${{range_from}} - ${{range_to}} : ${{rate}}',
-      ]);
+        $this->add_control('ranges', [
+            'label' => '',
+            'type' => \Elementor\Controls_Manager::REPEATER,
+            'fields' => $repeater->get_controls(),
+            'title_field' => '${{range_from}} - ${{range_to}} : ${{rate}}',
+        ]);
 
         $this->end_controls_section();
 
@@ -592,7 +592,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         );
 
         $this->add_control(
-            'comission_realtor_heading',
+            'commission_realtor_heading',
             [
                 'label'       => esc_html__('Commission Due Realtor', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::HEADING,
@@ -601,7 +601,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         );
 
         $this->add_control(
-            'comission_realtor_label',
+            'commission_realtor_label',
             [
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
@@ -610,7 +610,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
             ]
         );
         $this->add_control(
-            'comission_realtor_description',
+            'commission_realtor_description',
             [
                 'label'       => esc_html__('Description', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
@@ -619,7 +619,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         );
 
         $this->add_control(
-            'comission_realtor_extra_heading',
+            'commission_realtor_extra_heading',
             [
                 'label'       => esc_html__('Commission Due Realtor Extra', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::HEADING,
@@ -628,7 +628,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
         );
 
         $this->add_control(
-            'comission_realtor_extra_label',
+            'commission_realtor_extra_label',
             [
                 'label'       => esc_html__('Label', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
@@ -637,7 +637,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
             ]
         );
         $this->add_control(
-            'comission_realtor_extra_description',
+            'commission_realtor_extra_description',
             [
                 'label'       => esc_html__('Description', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::TEXT,
@@ -919,8 +919,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'label'       => esc_html__('Add disclaimer text', 'net-sheet-calculator'),
                 'type'        => \Elementor\Controls_Manager::WYSIWYG,
                 'default'     => esc_html__('Disclaimer:
-The figures provided in this Estimated Seller Net Proceeds Sheet are for informational and illustrative purposes only. All amounts, costs, and totals listed are estimates and do not represent actual closing costs or final settlement amounts. The accuracy of the information is not guaranteed, and the final figures may vary. All amounts are subject to change at the discretion of the title and escrow company listed above. No warranty, express or implied, is made regarding the accuracy, reliability, or completeness of this information. Sellers are advised to consult directly with their title, escrow, or financial professionals for actual closing figures.
-', 'net-sheet-calculator'),
+                                                The figures provided in this Estimated Seller Net Proceeds Sheet are for informational and illustrative purposes only. All amounts, costs, and totals listed are estimates and do not represent actual closing costs or final settlement amounts. The accuracy of the information is not guaranteed, and the final figures may vary. All amounts are subject to change at the discretion of the title and escrow company listed above. No warranty, express or implied, is made regarding the accuracy, reliability, or completeness of this information. Sellers are advised to consult directly with their title, escrow, or financial professionals for actual closing figures.', 'net-sheet-calculator'),
             ]
         );
     
@@ -1000,13 +999,12 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
         $settings = $this->get_settings_for_display();
 
         // Get default values from settings
-        $commission_rate = $settings['default_commission_rate'] ?? 0;
-        $settlement_fee = $settings['default_settlement_fee'] ?? 0;
-        $lien_release_tracking_fee = $settings['default_lien_release_tracking_fee'] ?? 0;
-        $security_fee = $settings['default_security_fee'] ?? 0;
-        $min_water_escrow = $settings['min_water_escrow'] ?? 0;
-        $michigan_transfer_tax_rate = $settings['michigan_transfer_tax_rate'] ?? 0;        
-        $revenue_stamps_rate = $settings['revenue_stamps_rate'] ?? 0;
+        $settlement_fee = $settings['default_settlement_fee'];
+        $lien_release_tracking_fee = $settings['default_lien_release_tracking_fee'];
+        $security_fee = $settings['default_security_fee'];
+        $min_water_escrow = $settings['min_water_escrow'];
+        $michigan_transfer_tax_rate = $settings['michigan_transfer_tax_rate'];        
+        $revenue_stamps_rate = $settings['revenue_stamps_rate'];
         
         // Unique ID for this instance
         $calculator_id = 'nsc-' . uniqid();?>
@@ -1014,7 +1012,6 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
             <form class="nsc-form">
                 <div class="nsc-fields-wrap">
                     <!-- Hidden fields for calculations -->
-                    <input type="hidden" data-field="comission_rate" value="<?php echo esc_attr($commission_rate); ?>">
                     <input type="hidden" data-field="michigan_transfer_tax_rate" value="<?php echo esc_attr($michigan_transfer_tax_rate); ?>">
                     <input type="hidden" data-field="revenue_stamps_rate" value="<?php echo esc_attr($revenue_stamps_rate); ?>">
                     <!-- Transaction Summary Section -->
@@ -1022,7 +1019,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         <h5 class="nsc-section__title"><?php echo esc_html__('Transaction Summary', 'net-sheet-calculator'); ?></h5>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-purchase-price">
-                                <?php echo esc_html($settings['purchase_price_label'] ?? esc_html__('Purchase Price', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['purchase_price_label']); ?>
                                 <?php if (!empty($settings['purchase_price_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['purchase_price_description']); ?></div>
                                 <?php endif; ?>
@@ -1039,7 +1036,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-other-credits">
-                                <?php echo esc_html($settings['other_credits_label'] ?? esc_html__('Other Credits to Seller', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['other_credits_label']); ?>
                                 <?php if (!empty($settings['other_credits_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['other_credits_description']); ?></div>
                                 <?php endif; ?>
@@ -1055,7 +1052,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-gross-proceeds">
-                                <?php echo esc_html($settings['gross_proceeds_label'] ?? esc_html__('Total Estimated Gross Proceeds', 'net-sheet-calculator')); ?> <?php if (!empty($settings['gross_proceeds_description'])): ?>
+                                <?php echo esc_html($settings['gross_proceeds_label']); ?> <?php if (!empty($settings['gross_proceeds_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['gross_proceeds_description']); ?></div>
                                 <?php endif; ?>
                             </label>
@@ -1075,7 +1072,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         <h5 class="nsc-section__title"><?php echo esc_html__('Mortgage & Liens', 'net-sheet-calculator'); ?></h5>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-mortgage-payoff">
-                                <?php echo esc_html($settings['mortgage_payoff_label'] ?? esc_html__('Mortgage Payoff', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['mortgage_payoff_label']); ?>
                                 <?php if (!empty($settings['mortgage_payoff_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['mortgage_payoff_description']); ?></div>
                                 <?php endif; ?>
@@ -1091,7 +1088,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-other-mortgage-payoff">
-                                <?php echo esc_html($settings['other_mortgage_payoff_label'] ?? esc_html__('Second Mortgage Payoff', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['other_mortgage_payoff_label']); ?>
                                 <?php if (!empty($settings['other_mortgage_payoff_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['other_mortgage_payoff_description']); ?></div>
                                 <?php endif; ?>
@@ -1107,7 +1104,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-special-assessment-payoff">
-                                <?php echo esc_html($settings['special_assessment_payoff_label'] ?? esc_html__('Special Assessment Payoff', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['special_assessment_payoff_label']); ?>
                                 <?php if (!empty($settings['special_assessment_payoff_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['special_assessment_payoff_description']); ?></div>
                                 <?php endif; ?>
@@ -1123,7 +1120,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-lien-release-tracking-fee">
-                                <?php echo esc_html($settings['lien_release_tracking_fee_label'] ?? esc_html__('Lien Release Tracking Fee', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['lien_release_tracking_fee_label']); ?>
                                 <?php if (!empty($settings['lien_release_tracking_fee_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['lien_release_tracking_fee_description']); ?></div>
                                 <?php endif; ?>
@@ -1144,7 +1141,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         <h5 class="nsc-section__title"><?php echo esc_html__('Taxes & Government Fees', 'net-sheet-calculator'); ?></h5>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-property-taxes-due">
-                                <?php echo esc_html($settings['property_taxes_due_label'] ?? esc_html__('Property Taxes Due', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['property_taxes_due_label']); ?>
                                 <?php if (!empty($settings['property_taxes_due_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['property_taxes_due_description']); ?></div>
                                 <?php endif; ?>
@@ -1160,7 +1157,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-michigan-transfer-tax">
-                                <?php echo esc_html($settings['michigan_transfer_tax_label'] ?? esc_html__('Michigan Transfer Tax', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['michigan_transfer_tax_label']); ?>
                                 <?php if (!empty($settings['michigan_transfer_tax_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['michigan_transfer_tax_description']); ?></div>
                                 <?php endif; ?>
@@ -1176,7 +1173,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-revenue-stamps">
-                                <?php echo esc_html($settings['revenue_stamps_label'] ?? esc_html__('Revenue Stamps', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['revenue_stamps_label']); ?>
                                 <?php if (!empty($settings['revenue_stamps_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['revenue_stamps_description']); ?></div>
                                 <?php endif; ?>
@@ -1197,7 +1194,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         <h5 class="nsc-section__title"><?php echo esc_html__('Title & Closing Fees', 'net-sheet-calculator'); ?></h5>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-settlement-fee">
-                                <?php echo esc_html($settings['settlement_fee_label'] ?? esc_html__('Settlement Fee', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['settlement_fee_label']); ?>
                                 <?php if (!empty($settings['settlement_fee_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['settlement_fee_description']); ?></div>
                                 <?php endif; ?>
@@ -1213,7 +1210,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-security-fee">
-                                <?php echo esc_html($settings['security_fee_label'] ?? esc_html__('Security Fee', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['security_fee_label']); ?>
                                 <?php if (!empty($settings['security_fee_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['security_fee_description']); ?></div>
                                 <?php endif; ?>
@@ -1229,7 +1226,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-title-insurance-policy">
-                                <?php echo esc_html($settings['title_insurance_policy_label'] ?? esc_html__('Title Insurance Policy', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['title_insurance_policy_label']); ?>
                                 <?php if (!empty($settings['title_insurance_policy_description'])): ?>
                                     <div class="nsc-field__description"><?php echo $settings['title_insurance_policy_description']; ?></div>
                                 <?php endif; ?>
@@ -1249,35 +1246,37 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                     <div class="nsc-section">
                         <h5 class="nsc-section__title"><?php echo esc_html__('Agent Commissions', 'net-sheet-calculator'); ?></h5>
                         <div class="nsc-field">
-                            <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-comission-realtor">
-                                <?php echo esc_html($settings['comission_realtor_label'] ?? esc_html__('Commission Due Realtor (6% standard)', 'net-sheet-calculator')); ?>
-                                <?php if (!empty($settings['comission_realtor_description'])): ?>
-                                    <div class="nsc-field__description"><?php echo esc_html($settings['comission_realtor_description']); ?></div>
-                                <?php endif; ?>
-                            </label>
-                            <div class="nsc-field__input-wrap">
-                                <input type="text"
-                                    class="nsc-input"
-                                    id="<?php echo esc_attr($calculator_id); ?>-comission-realtor"
-                                    name="comission_realtor"
-                                    data-field="comission_realtor"
-                                    default="6"
+                            <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-commission-realtor">
+                                <?php echo esc_html($settings['commission_realtor_label']); ?>
+                                <?php if (!empty($settings['commission_realtor_description'])): ?>
+                                    <div class="nsc-field__description"><?php echo esc_html($settings['commission_realtor_description']); ?></div>
+                                    <?php endif; ?>
+                                </label>
+                                <div class="nsc-field__input-wrap">
+                                    <input type="text"
+                                    class="nsc-input nsc-input--percentage"
+                                    id="<?php echo esc_attr($calculator_id); ?>-commission-realtor"
+                                    name="commission_realtor"
+                                    data-field="commission_realtor"
+                                    value="<?php echo esc_attr($settings['default_realtor_commission']); ?>"
+                                    min="0"
+                                    max="100"
                                     >
                             </div>
                         </div>
                         <div class="nsc-field">
-                            <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-comission-realtor-extra">
-                                <?php echo esc_html($settings['comission_realtor_extra_label'] ?? esc_html__('Commission Due Realtor (Extra $)', 'net-sheet-calculator')); ?>
-                                <?php if (!empty($settings['comission_realtor_extra_description'])): ?>
-                                    <div class="nsc-field__description"><?php echo esc_html($settings['comission_realtor_extra_description']); ?></div>
+                            <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-commission-realtor-extra">
+                                <?php echo esc_html($settings['commission_realtor_extra_label']); ?>
+                                <?php if (!empty($settings['commission_realtor_extra_description'])): ?>
+                                    <div class="nsc-field__description"><?php echo esc_html($settings['commission_realtor_extra_description']); ?></div>
                                 <?php endif; ?>
                             </label>
                             <div class="nsc-field__input-wrap">
                                 <input type="text"
                                     class="nsc-input nsc-input--currency"
-                                    id="<?php echo esc_attr($calculator_id); ?>-comission-realtor-extra"
-                                    name="comission_realtor_extra"
-                                    data-field="comission_realtor_extra"
+                                    id="<?php echo esc_attr($calculator_id); ?>-commission-realtor-extra"
+                                    name="commission_realtor_extra"
+                                    data-field="commission_realtor_extra"
                                     placeholder="0">
                             </div>
                         </div>
@@ -1288,7 +1287,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         <h5 class="nsc-section__title"><?php echo esc_html__('Utilities & HOA', 'net-sheet-calculator'); ?></h5>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-current-water">
-                                <?php echo esc_html($settings['current_water_label'] ?? esc_html__('Current Water/Sewer', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['current_water_label']); ?>
                                 <?php if (!empty($settings['current_water_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['current_water_description']); ?></div>
                                 <?php endif; ?>
@@ -1304,7 +1303,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-hoa-assessment">
-                                <?php echo esc_html($settings['hoa_assessment_label'] ?? esc_html__('HOA Assessment', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['hoa_assessment_label']); ?>
                                 <?php if (!empty($settings['hoa_assessment_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['hoa_assessment_description']); ?></div>
                                 <?php endif; ?>
@@ -1320,7 +1319,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-water-escrow">
-                                <?php echo esc_html($settings['water_escrow_label'] ?? esc_html__('Water Escrow (Minimum $300)', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['water_escrow_label']); ?>
                                 <?php if (!empty($settings['water_escrow_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['water_escrow_description']); ?></div>
                                 <?php endif; ?>
@@ -1342,7 +1341,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         <h5 class="nsc-section__title"><?php echo esc_html__('Miscellaneous Seller Costs', 'net-sheet-calculator'); ?></h5>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-home-warranty">
-                                <?php echo esc_html($settings['home_warranty_label'] ?? esc_html__('Home Warranty', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['home_warranty_label']); ?>
                                 <?php if (!empty($settings['home_warranty_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['home_warranty_description']); ?></div>
                                 <?php endif; ?>
@@ -1358,7 +1357,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-fha">
-                                <?php echo esc_html($settings['fha_label'] ?? esc_html__('FHA or VA Seller Paid Fees', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['fha_label']); ?>
                                 <?php if (!empty($settings['fha_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['fha_description']); ?></div>
                                 <?php endif; ?>
@@ -1374,7 +1373,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-misc-cost-seller">
-                                <?php echo esc_html($settings['misc_cost_seller_label'] ?? esc_html__('Misc Cost to Seller', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['misc_cost_seller_label']); ?>
                                 <?php if (!empty($settings['misc_cost_seller_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['misc_cost_seller_description']); ?></div>
                                 <?php endif; ?>
@@ -1390,7 +1389,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <label class="nsc-field__label" for="<?php echo esc_attr($calculator_id); ?>-seller-attorney-fee">
-                                <?php echo esc_html($settings['seller_attorney_fee_label'] ?? esc_html__('Seller\'s Attorney Fee', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['seller_attorney_fee_label']); ?>
                                 <?php if (!empty($settings['seller_attorney_fee_description'])): ?>
                                     <div class="nsc-field__description"><?php echo esc_html($settings['seller_attorney_fee_description']); ?></div>
                                 <?php endif; ?>
@@ -1413,7 +1412,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         <h5 class="nsc-section__title"><?php echo esc_html__('Final Totals', 'net-sheet-calculator'); ?></h5>
                         <div class="nsc-field">
                             <div class="nsc-field__label">
-                                <?php echo esc_html($settings['total_closing_costs_label'] ?? esc_html__('Total Closing Costs', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['total_closing_costs_label']); ?>
                             </div>
                             <div class="nsc-field__output" data-field="total_closing_costs">
                                 $0.00
@@ -1421,7 +1420,7 @@ The figures provided in this Estimated Seller Net Proceeds Sheet are for informa
                         </div>
                         <div class="nsc-field">
                             <div class="nsc-field__label">
-                                <?php echo esc_html($settings['estimated_net_proceeds_label'] ?? esc_html__('Estimated Net Proceeds', 'net-sheet-calculator')); ?>
+                                <?php echo esc_html($settings['estimated_net_proceeds_label']); ?>
                             </div>
                             <div class="nsc-field__output" data-field="estimated_net_proceeds">
                                 $0.00

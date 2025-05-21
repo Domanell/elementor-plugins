@@ -8,8 +8,30 @@
 			maximumFractionDigits: 2,
 		})}`;
 
-	const parseCurrency = (value) => parseFloat(String(value).replace(/[^0-9.-]+/g, '')) || 0;
-	const parseInputValue = ($input) => ($input.hasClass('nsc-input--currency') ? parseCurrency($input.val()) : parseFloat($input.val()) || 0);
+	const formatPercentage = (number) =>
+		`${(isNaN(number) ? 0 : number).toLocaleString('en-US', {
+			minimumFractionDigits: 1,
+			maximumFractionDigits: 2,
+		})}%`;
+
+	const parseValue = (value) => parseFloat(String(value).replace(/[^0-9.-]+/g, '')) || 0;
+
+	const parseInputValue = ($input) => {
+		// check if input has min and max attributes
+		const min = $input.attr('min');
+		const max = $input.attr('max');
+		const value = parseValue($input.val());
+
+		// check if value is less than min or greater than max
+		if (min && value < parseValue(min)) {
+			return parseValue(min);
+		}
+		if (max && value > parseValue(max)) {
+			return parseValue(max);
+		}
+
+		return parseValue($input.val());
+	};
 
 	// EmailHandler for validation and error handling
 	const EmailHandler = {
@@ -89,6 +111,7 @@
 		labels = {}, // Store field labels
 		$inputs,
 		$currencyInputs,
+		$percentageInputs,
 		$downloadBtn,
 		$sendBtn;
 
@@ -96,16 +119,21 @@
 	const updateCalculatedField = (field, value = 0) => {
 		$calculator.find(`.nsc-input[data-field="${field}"]`).val(formatCurrency(value));
 	};
+
+	const updateTextOutput = (dataSelector, value) => {
+		$calculator.find(`[data-field="${dataSelector}"]`).text(formatCurrency(value));
+	};
+
 	// Calculate all values and update fields
 	const calculate = () => {
 		// Perform all calculations
-		values.comission_realtor = values.purchase_price * ((values.comission_rate || 0) / 100);
+		values.commission_realtor_amount = values.purchase_price * ((values.commission_realtor || 0) / 100);
 		values.michigan_transfer_tax = Math.ceil(values.purchase_price / 500) * (values.michigan_transfer_tax_rate || 3.75);
 		values.revenue_stamps = Math.ceil(values.purchase_price / 500) * (values.revenue_stamps_rate || 0.55);
 		values.gross_proceeds = values.purchase_price + (values.other_credits || 0);
 
-		const totalClosingCosts = [
-			values.comission_realtor,
+		values.total_closing_costs = [
+			values.commission_realtor_amount,
 			values.michigan_transfer_tax,
 			values.revenue_stamps,
 			values.mortgage_payoff,
@@ -116,7 +144,7 @@
 			values.settlement_fee,
 			values.security_fee,
 			values.title_insurance_policy,
-			values.comission_realtor_extra,
+			values.commission_realtor_extra,
 			values.current_water,
 			values.hoa_assessment,
 			values.water_escrow,
@@ -126,23 +154,19 @@
 			values.seller_attorney_fee,
 		].reduce((sum, val) => sum + (val || 0), 0);
 
-		const netProceeds = values.gross_proceeds - totalClosingCosts < 0 ? 0 : values.gross_proceeds - totalClosingCosts;
+		values.estimated_net_proceeds = values.gross_proceeds - values.total_closing_costs < 0 ? 0 : values.gross_proceeds - values.total_closing_costs;
 
 		// Update input display for calculated fields
-		['gross_proceeds', 'michigan_transfer_tax', 'revenue_stamps', 'comission_realtor'].forEach((field) => {
+		['gross_proceeds', 'michigan_transfer_tax', 'revenue_stamps'].forEach((field) => {
 			updateCalculatedField(field, values[field]);
 		});
 
 		// Update text output fields
-		$calculator.find(`[data-field="total_closing_costs"]`).text(formatCurrency(totalClosingCosts));
-		$calculator.find(`[data-field="estimated_net_proceeds"]`).text(formatCurrency(netProceeds));
+		updateTextOutput('total_closing_costs', values.total_closing_costs);
+		updateTextOutput('estimated_net_proceeds', values.estimated_net_proceeds);
 	};
 	const handleDownload = (e) => {
 		e.preventDefault();
-
-		// Add calculated totals to values
-		values.total_closing_costs = parseCurrency($calculator.find(`[data-field="total_closing_costs"]`).text());
-		values.estimated_net_proceeds = parseCurrency($calculator.find(`[data-field="estimated_net_proceeds"]`).text());
 
 		// Create simple PDF data object with values and labels
 		const pdfData = { values, labels };
@@ -175,6 +199,7 @@
 	const initElements = () => {
 		$inputs = $calculator.find('.nsc-fields-wrap input');
 		$currencyInputs = $calculator.find('.nsc-input--currency');
+		$percentageInputs = $calculator.find('.nsc-input--percentage');
 		$downloadBtn = $calculator.find('.nsc-button--download');
 		$sendBtn = $calculator.find('.nsc-button--send');
 
@@ -200,8 +225,12 @@
 			const field = $input.data('field');
 
 			if (field) {
+				const value = parseInputValue($input);
 				// Update values object based on input type
-				values[field] = parseInputValue($input);
+				values[field] = value;
+				// Update input value to make sure that it is in min-max range
+				$input.val(value);
+				// Update calculated fields
 				calculate();
 			}
 		});
@@ -211,12 +240,25 @@
 			.on('blur', (e) => {
 				const $input = $(e.currentTarget);
 				const field = $input.data('field');
-				values[field] = parseCurrency($input.val());
+				values[field] = parseValue($input.val());
 				$input.val(formatCurrency(values[field]));
 			})
 			.on('focus', (e) => {
 				const $input = $(e.currentTarget);
-				$input.val(values[$input.data('field')] || '');
+				$input.val(parseValue($input.val()) || '');
+			});
+
+		// Special handling for percentage fields
+		$percentageInputs
+			.on('blur', (e) => {
+				const $input = $(e.currentTarget);
+				const field = $input.data('field');
+				values[field] = parseValue($input.val());
+				$input.val(formatPercentage(values[field]));
+			})
+			.on('focus', (e) => {
+				const $input = $(e.currentTarget);
+				$input.val(parseValue($input.val()) || '');
 			});
 
 		// Button handlers
@@ -239,8 +281,8 @@
 			settlement_fee: settings.settlement_fee_label,
 			security_fee: settings.security_fee_label,
 			title_insurance_policy: settings.title_insurance_policy_label,
-			comission_realtor: settings.comission_realtor_label,
-			comission_realtor_extra: settings.comission_realtor_extra_label,
+			commission_realtor: settings.commission_realtor_label,
+			commission_realtor_extra: settings.commission_realtor_extra_label,
 			current_water: settings.current_water_label,
 			hoa_assessment: settings.hoa_assessment_label,
 			water_escrow: settings.water_escrow_label,

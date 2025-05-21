@@ -14,7 +14,7 @@ const PDFGenerator = (function () {
 		{ title: 'Mortgage Payoffs', fields: ['mortgage_payoff', 'other_mortgage_payoff', 'special_assessment_payoff', 'lien_release_tracking_fee'] },
 		{ title: 'Taxes', fields: ['property_taxes_due', 'michigan_transfer_tax', 'revenue_stamps'] },
 		{ title: 'Title Fees', fields: ['settlement_fee', 'security_fee', 'title_insurance_policy'] },
-		{ title: 'Commission Fees', fields: ['comission_realtor', 'comission_realtor_extra'] },
+		{ title: 'Commission Fees', fields: ['commission_realtor', 'commission_realtor_extra'] },
 		{ title: 'Other Fees', fields: ['current_water', 'hoa_assessment', 'water_escrow', 'home_warranty', 'fha', 'misc_cost_seller', 'seller_attorney_fee'] },
 		{ title: 'Totals', fields: ['total_closing_costs', 'estimated_net_proceeds'] },
 	];
