@@ -148,7 +148,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
 
         $this->end_controls_section();
 
-        // Section for Insurance rates
+        // Insurance Rates Section
         $this->start_controls_section(
             'section_insurance_rates',
             [
@@ -157,7 +157,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
             ]
         );
 
-        $repeater->add_control('range_from', [
+        $repeater->add_control('insurance_range_from', [
             'label' => 'From ($)',
             'type' => \Elementor\Controls_Manager::NUMBER,
             'min' => 0,
@@ -165,7 +165,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
             'default' => 0,
         ]);
 
-        $repeater->add_control('range_to', [
+        $repeater->add_control('insurance_range_to', [
             'label' => 'To ($)',
             'type' => \Elementor\Controls_Manager::NUMBER,
             'min' => 0,
@@ -173,19 +173,66 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
             'default' => 100000,
         ]);
 
-        $repeater->add_control('rate', [
-            'label' => 'Rate per $1000',
+        $repeater->add_control('insurance_rate', [
+            'label' => 'Rate',
             'type' => \Elementor\Controls_Manager::NUMBER,
             'step' => 0.01,
-            'default' => 5.0,
+            'default' => 0,
         ]);
 
-
+        $repeater->add_control('insurance_is_fixed', [
+            'label' => 'Fixed Rate or Per $1000',
+            'type' => \Elementor\Controls_Manager::SWITCHER,
+            'label_on' => 'Fixed',
+            'label_off' => '$1000',
+            'return_value' => 'yes',
+            'default' => 'no',
+        ]);       
+        
         $this->add_control('ranges', [
             'label' => '',
             'type' => \Elementor\Controls_Manager::REPEATER,
             'fields' => $repeater->get_controls(),
-            'title_field' => '${{range_from}} - ${{range_to}} : ${{rate}}',
+            'title_field' => '{{ insurance_range_from }} - {{ insurance_range_to }}: ${{ insurance_rate }}{{ insurance_is_fixed === "yes" ? " fixed" : " per $1000" }}',
+            'prevent_empty' => true,
+            'default' => [
+                [
+                    'insurance_range_from' => 0,
+                    'insurance_range_to' => 20000,
+                    'insurance_rate' => 500,
+                    'insurance_is_fixed' => 'yes',
+                ],
+                [
+                    'insurance_range_from' => 20001,
+                    'insurance_range_to' => 100000,
+                    'insurance_rate' => 6.70,
+                    'insurance_is_fixed' => 'no',
+                ],
+                [
+                    'insurance_range_from' => 100001,
+                    'insurance_range_to' => 200000,
+                    'insurance_rate' => 5.35,
+                    'insurance_is_fixed' => 'no',
+                ],
+                [
+                    'insurance_range_from' => 200001,
+                    'insurance_range_to' => 300000,
+                    'insurance_rate' => 4.55,
+                    'insurance_is_fixed' => 'no',
+                ],
+                [
+                    'insurance_range_from' => 300001,
+                    'insurance_range_to' => 1000000,
+                    'insurance_rate' => 3.48,
+                    'insurance_is_fixed' => 'no',
+                ],
+                [
+                    'insurance_range_from' => 1000001,
+                    'insurance_range_to' => '',
+                    'insurance_rate' => 2.84,
+                    'insurance_is_fixed' => 'no',
+                ],
+            ],
         ]);
 
         $this->end_controls_section();
