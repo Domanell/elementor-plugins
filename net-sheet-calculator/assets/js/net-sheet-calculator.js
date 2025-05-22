@@ -10,6 +10,7 @@
 	let $percentageInputs;
 	let $downloadBtn;
 	let $sendBtn;
+	// let fields = new Map();
 
 	//==========
 	// Utilities
@@ -247,6 +248,32 @@
 		});
 	};
 
+	// !!!!!! test
+	// const initFields = () => {
+	// 	$inputs.each((index, element) => {
+	// 		const $input = $(element);
+	// 		const field = $input.data('field');
+	// 		if (field) {
+	// 			fields.set(field, {
+	// 				value: parseInputValue($input),
+	// 				isPercentage: $input.hasClass('nsc-input--percentage'),
+	// 				isCurrency: $input.hasClass('nsc-input--currency'),
+	// 				label: labels[field],
+	// 				$input: $input,
+	// 				setValue(value) {
+	// 					this.value = value;
+	// 				},
+	// 				setInputValue(value) {
+	// 					this.$input.val(value);
+	// 				},
+	// 				setFormattedValue(value) {
+	// 					this.$input.val(this.isPercentage ? formatPercentage(value) : this.isCurrency ? formatCurrency(value) : value);
+	// 				},
+	// 			});
+	// 		}
+	// 	});
+	// };
+
 	const initEventHandlers = () => {
 		// Handle all input changes
 		$inputs.on('input change', (e) => {
@@ -345,6 +372,10 @@
 		initElements();
 		initValues();
 		initEventHandlers();
+
+		//!! TEST
+		// initFields();
+
 		calculate();
 	};
 
