@@ -111,7 +111,6 @@ const PDFGenerator = (function () {
 		const pdfBytes = await pdfDoc.save();
 		return new Blob([pdfBytes], { type: 'application/pdf' });
 	};
-
 	const downloadPDF = async (data, filename = 'net-sheet-calculator-results.pdf') => {
 		try {
 			const pdfBlob = await generatePDF(data);
@@ -132,7 +131,31 @@ const PDFGenerator = (function () {
 		}
 	};
 
-	return { generatePDF, downloadPDF };
+	/**
+	 * Convert PDF to base64 string for sending via AJAX
+	 *
+	 * @param {Object} data - The calculator data
+	 * @returns {Promise<string>} - Base64 encoded PDF
+	 */
+	const getPDFAsBase64 = async (data) => {
+		try {
+			const pdfBlob = await generatePDF(data);
+
+			return new Promise((resolve, reject) => {
+				const reader = new FileReader();
+				reader.readAsDataURL(pdfBlob);
+				reader.onloadend = () => {
+					resolve(reader.result);
+				};
+				reader.onerror = reject;
+			});
+		} catch (error) {
+			console.error('Error generating PDF as base64:', error);
+			throw error;
+		}
+	};
+
+	return { generatePDF, downloadPDF, getPDFAsBase64 };
 })();
 
 if (typeof module !== 'undefined' && module.exports) {

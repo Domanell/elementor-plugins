@@ -58,3 +58,19 @@ function net_sheet_calculator_register_styles() {
     wp_register_style('net-sheet-calculator-style', plugins_url('assets/css/net-sheet-calculator.css', __FILE__));
 }
 add_action('elementor/frontend/before_enqueue_styles', 'net_sheet_calculator_register_styles');
+
+/**
+ * Include the email handler functionality
+ */
+require_once(__DIR__ . '/includes/email-handler.php');
+
+/**
+ * Add email nonce to the page
+ */
+function net_sheet_calculator_add_email_nonce() {
+    wp_localize_script('net-sheet-calculator-script', 'nscEmailData', array(
+        'ajaxUrl' => admin_url('admin-ajax.php'),
+        'nonce' => wp_create_nonce('nsc_email_nonce')
+    ));
+}
+add_action('wp_enqueue_scripts', 'net_sheet_calculator_add_email_nonce');

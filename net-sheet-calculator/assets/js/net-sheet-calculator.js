@@ -120,7 +120,7 @@
 		},
 
 		validate() {
-			const { isValid } = this.validateValue();
+			const { isValid, message } = this.validateValue();
 
 			if (!isValid) {
 				this.showError(message);
@@ -131,6 +131,7 @@
 
 		showError(message) {
 			this.$error.text(message).show();
+			this.$input.addClass('nsc-input--error');
 		},
 
 		hideError() {
@@ -213,14 +214,62 @@
 		e.preventDefault();
 
 		// Use the email handler to validate
-		const validation = EmailHandler.validate();
+		const validation = EmailHandler.validateValue();
 
 		if (!validation.isValid) {
+			EmailHandler.showError(validation.message);
 			return;
 		}
 
-		// Proceed with sending the email
-		alert(`Email would be sent to: ${EmailHandler.email}`);
+		// Show loading state
+		const $sendBtn = $(e.currentTarget);
+		const originalBtnText = $sendBtn.text();
+		$sendBtn.prop('disabled', true).text('Sending...');
+
+		// Create PDF data object with values and labels
+		const pdfData = { values, labels };
+
+		// First generate the PDF as base64
+		PDFGenerator.getPDFAsBase64(pdfData)
+			.then((pdfBase64) => {
+				// Now send the PDF to the server
+				$.ajax({
+					url: nscEmailData.ajaxUrl,
+					type: 'POST',
+					data: {
+						action: 'nsc_send_email',
+						nonce: nscEmailData.nonce,
+						email: EmailHandler.getEmail(),
+						pdfBase64: pdfBase64,
+						pdfData: pdfData,
+					},
+					dataType: 'json',
+					success: function (response) {
+						$sendBtn.prop('disabled', false).text(originalBtnText);
+
+						if (response.success) {
+							// Show success message
+							alert('Email sent successfully!');
+
+							// Clear the email field
+							EmailHandler.$input.val('');
+						} else {
+							// Show error message
+							alert('Error: ' + (response.data.message || 'Failed to send email. Please try again.'));
+						}
+					},
+					error: function (xhr, status, error) {
+						$sendBtn.prop('disabled', false).text(originalBtnText);
+						console.error('AJAX error:', error);
+						alert('There was an error sending your email. Please try again.');
+					},
+				});
+			})
+			.catch((error) => {
+				$sendBtn.prop('disabled', false).text(originalBtnText);
+				console.error('Error generating PDF:', error);
+				alert('There was an error generating the PDF. Please try again.');
+			});
 	};
 
 	//===============

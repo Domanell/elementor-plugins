@@ -1480,7 +1480,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                         <button type="button" class="nsc-button nsc-button--download">Download PDF</button>                    
                         <div class="nsc-email-form">
                             <div>
-                                <input type="email" name="email" placeholder="Enter your email address">
+                                <input type="email" name="email" placeholder="Enter your email address" required>
                                 <div class="nsc-email-error"></div>
                             </div>
                             <button type="button" class="nsc-button nsc-button--send">Send via email</button>
