@@ -62,10 +62,18 @@ class NSC_Email_Handler {
         $subject = apply_filters('nsc_email_subject', 'Your Net Sheet Calculator Results');
         $message = self::get_email_body($pdf_data);
         
-        // Set up attachment
+        // Set up attachment with unique folder
         $upload_dir = wp_upload_dir();
-        $pdf_filename = 'net-sheet-calculator-' . time() . '.pdf';
-        $pdf_path = $upload_dir['path'] . '/' . $pdf_filename;
+        $unique_folder_name = 'net-sheet-calculator-' . time();
+        $unique_folder_path = $upload_dir['path'] . '/' . $unique_folder_name;
+        
+        // Create unique folder if it doesn't exist
+        if (!file_exists($unique_folder_path)) {
+            wp_mkdir_p($unique_folder_path);
+        }
+        
+        $pdf_filename = 'net-sheet-calculator.pdf';
+        $pdf_path = $unique_folder_path . '/' . $pdf_filename;
         
         // Save PDF file temporarily
         file_put_contents($pdf_path, $pdf_content);
@@ -79,8 +87,9 @@ class NSC_Email_Handler {
         // Send email with attachment
         $mail_sent = wp_mail($to, $subject, $message, $headers, array($pdf_path));
         
-        // Delete the temporary file
+        // Delete the temporary file and folder
         @unlink($pdf_path);
+        @rmdir($unique_folder_path);
         
         if ($mail_sent) {
             wp_send_json_success(array('message' => 'Email sent successfully!'));
