@@ -1074,13 +1074,13 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     <div class="nsc-field__description"><?php echo esc_html($settings['purchase_price_description']); ?></div>
                                 <?php endif; ?>
                             </label>
-                            <div class="nsc-field__input-wrap">
+                            <div class="nsc-field__input-wrap">                   
                                 <input type="text"
                                     class="nsc-input nsc-input--currency"
                                     id="<?php echo esc_attr($calculator_id); ?>-purchase-price"
                                     name="purchase_price"
                                     data-field="purchase_price"
-                                    placeholder="0"
+                                    placeholder="$0"
                                     max="9999999999">
                             </div>
                         </div>
@@ -1097,7 +1097,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-other-credits"
                                     name="other_credits"
                                     data-field="other_credits"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                         <div class="nsc-field">
@@ -1133,7 +1133,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-mortgage-payoff"
                                     name="mortgage_payoff"
                                     data-field="mortgage_payoff"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                         <div class="nsc-field">
@@ -1149,7 +1149,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-other-mortgage-payoff"
                                     name="other_mortgage_payoff"
                                     data-field="other_mortgage_payoff"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                         <div class="nsc-field">
@@ -1165,7 +1165,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-special-assessment-payoff"
                                     name="special_assessment_payoff"
                                     data-field="special_assessment_payoff"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                         <div class="nsc-field">
@@ -1181,7 +1181,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-lien-release-tracking-fee"
                                     name="lien_release_tracking_fee"
                                     data-field="lien_release_tracking_fee"
-                                    value="<?php echo esc_attr($lien_release_tracking_fee); ?>">
+                                    value="$<?php echo esc_attr($lien_release_tracking_fee); ?>">
                             </div>
                         </div>
                     </div>
@@ -1202,7 +1202,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-property-taxes-due"
                                     name="property_taxes_due"
                                     data-field="property_taxes_due"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                         <div class="nsc-field">
@@ -1255,7 +1255,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-settlement-fee"
                                     name="settlement_fee"
                                     data-field="settlement_fee"
-                                    value="<?php echo esc_attr($settlement_fee); ?>">
+                                    value="$<?php echo esc_attr($settlement_fee); ?>">
                             </div>
                         </div>
                         <div class="nsc-field">
@@ -1271,7 +1271,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-security-fee"
                                     name="security_fee"
                                     data-field="security_fee"
-                                    value="<?php echo esc_attr($security_fee); ?>">
+                                    value="$<?php echo esc_attr($security_fee); ?>">
                             </div>
                         </div>
                         <div class="nsc-field">
@@ -1287,7 +1287,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-title-insurance-policy"
                                     name="title_insurance_policy"
                                     data-field="title_insurance_policy"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                     </div>
@@ -1308,7 +1308,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-commission-realtor"
                                     name="commission_realtor"
                                     data-field="commission_realtor"
-                                    value="<?php echo esc_attr($settings['default_realtor_commission']); ?>"
+                                    value="<?php echo esc_attr($settings['default_realtor_commission']); ?>%"
                                     max="100"
                                     >
                             </div>
@@ -1326,7 +1326,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-commission-realtor-extra"
                                     name="commission_realtor_extra"
                                     data-field="commission_realtor_extra"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                     </div>
@@ -1347,7 +1347,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-current-water"
                                     name="current_water"
                                     data-field="current_water"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                         <div class="nsc-field">
@@ -1363,7 +1363,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-hoa-assessment"
                                     name="hoa_assessment"
                                     data-field="hoa_assessment"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                         <div class="nsc-field">
@@ -1380,7 +1380,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     name="water_escrow"
                                     data-field="water_escrow"
                                     min="<?php echo esc_attr($min_water_escrow); ?>"
-                                    value="<?php echo esc_attr($min_water_escrow); ?>">
+                                    value="$<?php echo esc_attr($min_water_escrow); ?>">
                             </div>
                         </div>
                     </div>
@@ -1401,7 +1401,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-home-warranty"
                                     name="home_warranty"
                                     data-field="home_warranty"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                         <div class="nsc-field">
@@ -1417,7 +1417,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-fha"
                                     name="fha"
                                     data-field="fha"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                         <div class="nsc-field">
@@ -1433,7 +1433,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-misc-cost-seller"
                                     name="misc_cost_seller"
                                     data-field="misc_cost_seller"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                         <div class="nsc-field">
@@ -1449,7 +1449,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     id="<?php echo esc_attr($calculator_id); ?>-seller-attorney-fee"
                                     name="seller_attorney_fee"
                                     data-field="seller_attorney_fee"
-                                    placeholder="0">
+                                    placeholder="$0">
                             </div>
                         </div>
                     </div>
