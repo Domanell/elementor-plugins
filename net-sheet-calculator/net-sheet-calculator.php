@@ -89,12 +89,42 @@ add_action('elementor/frontend/before_enqueue_styles', 'net_sheet_calculator_reg
 require_once(__DIR__ . '/includes/email-handler.php');
 
 /**
- * Add email nonce to the page
+ * Add data needed for PDF generation and email operations
  */
-function net_sheet_calculator_add_email_nonce() {
+function net_sheet_calculator_add_localized_data() {
+    // Get site logo information
+    $logo_data = array(
+        'url' => '',
+        'width' => 150, // Width limit for PDF logo
+        'height' => 60, // Height limit for PDF logo
+    );
+      // Get site logo ID
+    $custom_logo_id = get_theme_mod('custom_logo');
+    if ($custom_logo_id) {
+        // Use medium size logo - optimal for PDFs to reduce file size
+        $logo_size = 'medium';
+        
+        // Get the logo image URL
+        $logo_url = wp_get_attachment_image_url($custom_logo_id, $logo_size);
+        
+        if ($logo_url) {
+            $logo_data['url'] = $logo_url;
+            
+            // Get the actual image size if available
+            $image_metadata = wp_get_attachment_metadata($custom_logo_id);
+            if (isset($image_metadata['width']) && isset($image_metadata['height'])) {                
+                // Calculate aspect ratio to maintain proportions
+                $aspect_ratio = $image_metadata['width'] / $image_metadata['height'];
+                $logo_data['height'] = min($logo_data['height'], round($logo_data['width'] / $aspect_ratio));
+            }
+        }
+    }
+    
+    // Localize script with all necessary data
     wp_localize_script('net-sheet-calculator-script', 'nscEmailData', array(
         'ajaxUrl' => admin_url('admin-ajax.php'),
-        'nonce' => wp_create_nonce('nsc_email_nonce')
+        'nonce' => wp_create_nonce('nsc_email_nonce'),
+        'siteLogo' => $logo_data
     ));
 }
-add_action('wp_enqueue_scripts', 'net_sheet_calculator_add_email_nonce');
+add_action('wp_enqueue_scripts', 'net_sheet_calculator_add_localized_data');

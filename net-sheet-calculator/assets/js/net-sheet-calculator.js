@@ -13,6 +13,7 @@
 	let emailHandler; // Instance of EmailHandler
 	let downloadMessageHandler; // Instance for download messages
 	let emailMessageHandler; // Instance for email messages
+	let siteLogo = null; // Store site logo information
 
 	const calculateHomeownersRate = (amount) => {
 		let total = 0;
@@ -90,7 +91,7 @@
 		e.preventDefault();
 
 		// Create simple PDF data object with values and labels
-		const pdfData = { values, labels };
+		const pdfData = { values, labels, siteLogo };
 		const $downloadBtn = $(e.currentTarget);
 
 		// Disable button to prevent multiple clicks
@@ -123,7 +124,7 @@
 		}
 
 		// Create PDF data object with values and labels
-		const pdfData = { values, labels };
+		const pdfData = { values, labels, siteLogo };
 		// Show loading state
 		const $sendBtn = $(e.currentTarget);
 		const originalBtnText = $sendBtn.text();
@@ -322,21 +323,22 @@
 		}));
 	};
 
+	const initSiteLogo = () => {
+		// Get logo data directly from the localized script data
+		siteLogo = nscEmailData?.siteLogo || null;
+	};
+
 	const init = (calculatorElement) => {
 		$calculator = calculatorElement;
 
 		// Get settings directly from Elementor widget
 		const settings = { ...$calculator.data('settings') };
-
 		initLabels(settings);
 		initInsuranceRates(settings);
 		initElements();
 		initValues();
 		initEventHandlers();
-
-		// //!! TEST
-		// // initFields();
-
+		initSiteLogo(); // Initialize site logo from localized data
 		calculate();
 	};
 

@@ -46,13 +46,51 @@ const PDFGenerator = (function () {
 			let currentY = height - margin;
 
 			// Using fixed sizes from config
-			const lineHeight = config.lineHeight;
-
-			// X-coordinates for labels and values
+			const lineHeight = config.lineHeight; // X-coordinates for labels and values
 			const labelX = margin;
 			const valueX = width / 2;
 			const titleSize = config.titleFontSize;
 
+			// Add logo if available
+			if (data.siteLogo && data.siteLogo.url) {
+				try {
+					// Fetch logo image
+					const logoResponse = await fetch(data.siteLogo.url);
+					const logoArrayBuffer = await logoResponse.arrayBuffer();
+
+					let logoImage;
+					// Check image format based on URL
+					const isJpg = data.siteLogo.url.toLowerCase().endsWith('.jpg') || data.siteLogo.url.toLowerCase().endsWith('.jpeg');
+
+					if (isJpg) {
+						logoImage = await pdfDoc.embedJpg(logoArrayBuffer);
+					} else {
+						// Default to PNG
+						logoImage = await pdfDoc.embedPng(logoArrayBuffer);
+					}
+
+					// Calculate logo dimensions while preserving aspect ratio
+					const logoWidth = data.siteLogo.width || 150;
+					const logoHeight = data.siteLogo.height || 60;
+
+					// Set the top margin for content after the logo
+					const contentStartY = height - margin - logoHeight - 20; // 20px additional space between logo and content
+
+					// Draw the logo at the top of the content area, not at the very top of the page
+					page.drawImage(logoImage, {
+						x: margin,
+						y: height - margin - logoHeight, // Position logo at the top of content area
+						width: logoWidth,
+						height: logoHeight,
+					});
+
+					// Set currentY to start content below the logo with some spacing
+					currentY = contentStartY;
+				} catch (logoError) {
+					console.error('Error embedding logo:', logoError);
+					// Continue without logo if there's an error
+				}
+			}
 			// Draw document title
 			page.drawText(documentTitle, {
 				x: margin,
@@ -61,6 +99,7 @@ const PDFGenerator = (function () {
 				font: boldFont,
 				color: rgb(0, 0, 0),
 			});
+
 			currentY -= lineHeight * 1.5; // Space after title
 
 			// Draw sections
