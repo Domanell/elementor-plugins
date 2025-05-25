@@ -104,7 +104,6 @@
 
 			// Generate PDF using PDFGenerator
 			await PDFGenerator.downloadPDF(pdfData, 'net-sheet-calculator-results.pdf');
-			downloadMessageHandler.showSuccess('PDF downloaded successfully.');
 		} catch (error) {
 			downloadMessageHandler.showError('PDF generation error. Please try again.');
 		} finally {
