@@ -25,8 +25,10 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
 
     public function get_keywords() {
         return ['real estate', 'calculator', 'seller', 'net sheet'];
-    }    public function get_script_depends() {
-        return ['net-sheet-calculator-pdf-generator', 'net-sheet-calculator-script'];
+    }   
+    
+    public function get_script_depends() {
+        return ['nsc-utils', 'net-sheet-calculator-pdf-generator', 'net-sheet-calculator-email-handler', 'net-sheet-calculator-script'];
     }
 
     public function get_style_depends() {
@@ -1473,15 +1475,16 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                 $0.00
                             </div>
                         </div>
-                    </div>
-    
-                    <!-- Action Buttons -->
+                    </div>                    <!-- Action Buttons -->
                     <div class="nsc-actions">
-                        <button type="button" class="nsc-button nsc-button--download">Download PDF</button>                    
-                        <div class="nsc-email-form">
-                            <div>
+                        <div class="nsc-action" id="nsc-download-action">
+                            <button type="button" class="nsc-button nsc-button--download">Download PDF</button>                    
+                            <div class="nsc-action__message"></div>
+                        </div>
+                        <div class="nsc-action" id="nsc-email-action">
+                            <div class="nsc-action__email">
                                 <input type="email" name="email" placeholder="Enter your email address" required>
-                                <div class="nsc-email-error"></div>
+                                <div class="nsc-action__message"></div>
                             </div>
                             <button type="button" class="nsc-button nsc-button--send">Send via email</button>
                         </div>

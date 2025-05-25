@@ -92,9 +92,9 @@ class NSC_Email_Handler {
         @rmdir($unique_folder_path);
         
         if ($mail_sent) {
-            wp_send_json_success(array('message' => 'Email sent successfully!'));
+            wp_send_json_success();
         } else {
-            wp_send_json_error(array('message' => 'Failed to send email. Please try again.'));
+            wp_send_json_error();
         }
     }
     

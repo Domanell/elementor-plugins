@@ -3,6 +3,8 @@
  * Uses pdf-lib library for PDF generation
  */
 
+// TODO: Recheck
+
 const PDFGenerator = (function () {
 	'use strict';
 
@@ -30,87 +32,101 @@ const PDFGenerator = (function () {
 	];
 
 	const generatePDF = async (data, documentTitle = 'Net Sheet Calculator Results') => {
-		// Use the pdf-lib library that's loaded as a dependency
-		const { PDFDocument, rgb: rgbFunc, StandardFonts } = PDFLib;
-		rgb = rgbFunc;
-		const pdfDoc = await PDFDocument.create();
-		let page = pdfDoc.addPage([595.28, 841.89]); // A4 size
-		const { width, height } = page.getSize();
+		try {
+			// Use the pdf-lib library that's loaded as a dependency
+			const { PDFDocument, rgb: rgbFunc, StandardFonts } = PDFLib;
+			rgb = rgbFunc;
+			const pdfDoc = await PDFDocument.create();
+			let page = pdfDoc.addPage([595.28, 841.89]); // A4 size
+			const { width, height } = page.getSize();
 
-		const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-		const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold); // Page margins and spacing
-		const margin = config.margin;
-		let currentY = height - margin;
+			const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+			const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+			const margin = config.margin;
+			let currentY = height - margin;
 
-		// Using fixed sizes from config
-		const lineHeight = config.lineHeight;
+			// Using fixed sizes from config
+			const lineHeight = config.lineHeight;
 
-		// X-coordinates for labels and values
-		const labelX = margin;
-		const valueX = width / 2;
-		const titleSize = config.titleFontSize;
-		page.drawText(documentTitle, {
-			x: margin,
-			y: currentY,
-			size: titleSize,
-			font: boldFont,
-			color: rgb(0, 0, 0),
-		});
-		currentY -= lineHeight * 1.5; // Space after title
-		// Draw sections
-		for (const section of sections) {
-			// Draw section title
-			page.drawText(section.title, {
+			// X-coordinates for labels and values
+			const labelX = margin;
+			const valueX = width / 2;
+			const titleSize = config.titleFontSize;
+
+			// Draw document title
+			page.drawText(documentTitle, {
 				x: margin,
 				y: currentY,
-				size: config.sectionTitleFontSize, // Slightly smaller font
+				size: titleSize,
 				font: boldFont,
 				color: rgb(0, 0, 0),
 			});
-			currentY -= lineHeight;
-			// Draw fields
-			for (const field of section.fields) {
-				const label = data.labels[field] || field;
-				const value = data.values[field];
-				const formattedValue =
-					typeof value === 'number' ? `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : String(value || '');
+			currentY -= lineHeight * 1.5; // Space after title
 
-				page.drawText(label + ':', {
-					x: labelX + 20,
-					y: currentY,
-					size: config.contentFontSize,
-					font: font,
-					color: rgb(0, 0, 0),
-				});
+			// Draw sections
+			for (const section of sections) {
+				// Check if we need a new page
+				if (currentY < margin + section.fields.length * lineHeight + config.sectionSpacing) {
+					page = pdfDoc.addPage([595.28, 841.89]);
+					currentY = height - margin;
+				}
 
-				page.drawText(formattedValue, {
-					x: valueX,
+				// Draw section title
+				page.drawText(section.title, {
+					x: margin,
 					y: currentY,
-					size: config.contentFontSize,
+					size: config.sectionTitleFontSize,
 					font: boldFont,
 					color: rgb(0, 0, 0),
 				});
-
 				currentY -= lineHeight;
-			}
-			currentY -= config.sectionSpacing; // Spacing between sections
 
-			// Draw separator line except for last section
-			if (section.title !== 'Totals') {
-				page.drawLine({
-					start: { x: margin, y: currentY + lineHeight },
-					end: { x: width - margin, y: currentY + lineHeight },
-					thickness: 0.5,
-					color: rgb(0.7, 0.7, 0.7), // Light gray color
-				});
-				// Add more space after the separator line
-				currentY -= config.sectionSpacing;
+				// Draw fields
+				for (const field of section.fields) {
+					const label = data.labels[field] || field;
+					const value = data.values[field];
+					const formattedValue = NSCUtils.formatCurrency(value);
+
+					page.drawText(label + ':', {
+						x: labelX + 20,
+						y: currentY,
+						size: config.contentFontSize,
+						font: font,
+						color: rgb(0, 0, 0),
+					});
+
+					page.drawText(formattedValue, {
+						x: valueX,
+						y: currentY,
+						size: config.contentFontSize,
+						font: boldFont,
+						color: rgb(0, 0, 0),
+					});
+
+					currentY -= lineHeight;
+				}
+				currentY -= config.sectionSpacing; // Spacing between sections
+
+				// Draw separator line except for last section
+				if (section.title !== 'Totals') {
+					page.drawLine({
+						start: { x: margin, y: currentY + lineHeight },
+						end: { x: width - margin, y: currentY + lineHeight },
+						thickness: 0.5,
+						color: rgb(0.7, 0.7, 0.7),
+					});
+					currentY -= config.sectionSpacing;
+				}
 			}
+
+			const pdfBytes = await pdfDoc.save();
+			return new Blob([pdfBytes], { type: 'application/pdf' });
+		} catch (error) {
+			console.error('Error generating PDF:', error);
+			throw new Error(`PDF generation failed: ${error.message}`);
 		}
-
-		const pdfBytes = await pdfDoc.save();
-		return new Blob([pdfBytes], { type: 'application/pdf' });
 	};
+
 	const downloadPDF = async (data, filename = 'net-sheet-calculator-results.pdf') => {
 		try {
 			const pdfBlob = await generatePDF(data);
@@ -120,20 +136,20 @@ const PDFGenerator = (function () {
 			link.download = filename;
 			link.click();
 
+			// Clean up the blob URL after a short delay
 			setTimeout(() => {
 				URL.revokeObjectURL(blobUrl);
 			}, 100);
 
 			return true;
 		} catch (error) {
-			console.error('Error generating PDF:', error);
-			return false;
+			console.error('Error downloading PDF:', error);
+			throw error;
 		}
 	};
 
 	/**
 	 * Convert PDF to base64 string for sending via AJAX
-	 *
 	 * @param {Object} data - The calculator data
 	 * @returns {Promise<string>} - Base64 encoded PDF
 	 */
@@ -143,11 +159,9 @@ const PDFGenerator = (function () {
 
 			return new Promise((resolve, reject) => {
 				const reader = new FileReader();
-				reader.readAsDataURL(pdfBlob);
-				reader.onloadend = () => {
-					resolve(reader.result);
-				};
+				reader.onloadend = () => resolve(reader.result);
 				reader.onerror = reject;
+				reader.readAsDataURL(pdfBlob);
 			});
 		} catch (error) {
 			console.error('Error generating PDF as base64:', error);
@@ -157,7 +171,3 @@ const PDFGenerator = (function () {
 
 	return { generatePDF, downloadPDF, getPDFAsBase64 };
 })();
-
-if (typeof module !== 'undefined' && module.exports) {
-	module.exports = PDFGenerator;
-}

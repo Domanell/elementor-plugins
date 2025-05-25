@@ -32,13 +32,37 @@ function net_sheet_calculator_register_scripts() {
         array(),
         '1.17.1',
         true
+    );    
+    // Register utilities script
+    wp_register_script(
+        'nsc-utils',
+        plugins_url('assets/js/nsc-utils.js', __FILE__),
+        array('jquery'),
+        '1.0.0',
+        true
     );
 
     // Register PDF generator script
     wp_register_script(
         'net-sheet-calculator-pdf-generator',
         plugins_url('assets/js/pdf-generator.js', __FILE__),
-        array('pdf-lib'),
+        array('jquery', 'pdf-lib', 'nsc-utils'),
+        '1.0.0',
+        true
+    );    // Register email handler script
+    wp_register_script(
+        'net-sheet-calculator-email-handler',
+        plugins_url('assets/js/email-handler.js', __FILE__),
+        array('jquery', 'nsc-utils'),
+        '1.0.0',
+        true
+    );
+
+    // Register message handler script
+    wp_register_script(
+        'net-sheet-calculator-message-handler',
+        plugins_url('assets/js/message-handler.js', __FILE__),
+        array('jquery'),
         '1.0.0',
         true
     );
@@ -47,7 +71,7 @@ function net_sheet_calculator_register_scripts() {
     wp_register_script(
         'net-sheet-calculator-script', 
         plugins_url('assets/js/net-sheet-calculator.js', __FILE__), 
-        array('jquery', 'net-sheet-calculator-pdf-generator'), 
+        array('jquery', 'nsc-utils', 'net-sheet-calculator-pdf-generator', 'net-sheet-calculator-email-handler', 'net-sheet-calculator-message-handler'), 
         '1.0.0',
         true
     );

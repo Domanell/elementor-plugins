@@ -10,41 +10,9 @@
 	let $percentageInputs;
 	let $downloadBtn;
 	let $sendBtn;
-	// let fields = new Map();
-
-	//==========
-	// Utilities
-	//==========
-	const formatCurrency = (number) =>
-		`$${(isNaN(number) ? 0 : number).toLocaleString('en-US', {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2,
-		})}`;
-
-	const formatPercentage = (number) =>
-		`${(isNaN(number) ? 0 : number).toLocaleString('en-US', {
-			minimumFractionDigits: 1,
-			maximumFractionDigits: 2,
-		})}%`;
-
-	const parseValue = (value) => parseFloat(String(value).replace(/[^0-9.-]+/g, '')) || 0;
-
-	const parseInputValue = ($input) => {
-		// check if input has min and max attributes
-		const min = $input.attr('min');
-		const max = $input.attr('max');
-		const value = parseValue($input.val());
-
-		// check if value is less than min or greater than max
-		if (min && value < parseValue(min)) {
-			return parseValue(min);
-		}
-		if (max && value > parseValue(max)) {
-			return parseValue(max);
-		}
-
-		return parseValue($input.val());
-	};
+	let emailHandler; // Instance of EmailHandler
+	let downloadMessageHandler; // Instance for download messages
+	let emailMessageHandler; // Instance for email messages
 
 	const calculateHomeownersRate = (amount) => {
 		let total = 0;
@@ -64,89 +32,13 @@
 		return Math.ceil(total);
 	};
 
-	//=========
-	// Handlers
-	//=========
-	const EmailHandler = {
-		email: '',
-		init($container) {
-			this.$input = $container.find('input[name="email"]');
-			this.$error = $container.find('.nsc-email-error');
-			this.email = this.$input.val().trim();
-
-			// Bind events
-			this.$input
-				.on('input', (e) => {
-					// Update email property
-					this.email = this.$input.val().trim();
-
-					// Clear error on valid input if email is valid
-					if (this.$input.hasClass('nsc-input--error') && this.validateValue().isValid) {
-						this.$error.hide();
-						this.$input.removeClass('nsc-input--error');
-					}
-				})
-				.on('blur', (e) => {
-					const { isValid, message } = this.validateValue();
-					isValid ? this.hideError() : this.showError(message);
-				});
-
-			return this;
-		},
-
-		getEmail() {
-			return this.email;
-		},
-
-		validateValue(emailToValidate = null) {
-			// Use provided email or the email property
-			const email = emailToValidate !== null ? emailToValidate : this.email;
-
-			// Required check
-			if (!email || email.trim() === '') {
-				return { isValid: false, message: 'Email is required' };
-			}
-
-			// Format check
-			const isValid =
-				/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
-					email.toLowerCase()
-				);
-
-			return {
-				isValid,
-				message: isValid ? '' : 'Please enter a valid email address',
-			};
-		},
-
-		validate() {
-			const { isValid, message } = this.validateValue();
-
-			if (!isValid) {
-				this.showError(message);
-			}
-
-			return isValid;
-		},
-
-		showError(message) {
-			this.$error.text(message).show();
-			this.$input.addClass('nsc-input--error');
-		},
-
-		hideError() {
-			this.$error.hide();
-			this.$input.removeClass('nsc-input--error');
-		},
-	};
-
 	// Update calculated field with formatted value
 	const updateCalculatedField = (field, value = 0) => {
-		$calculator.find(`.nsc-input[data-field="${field}"]`).val(formatCurrency(value));
+		NSCUtils.updateCalculatedField($calculator, field, value);
 	};
 
 	const updateTextOutput = (dataSelector, value) => {
-		$calculator.find(`[data-field="${dataSelector}"]`).text(formatCurrency(value));
+		NSCUtils.updateTextOutput($calculator, dataSelector, value);
 	};
 
 	// Calculate all values and update fields
@@ -192,84 +84,94 @@
 		updateTextOutput('estimated_net_proceeds', values.estimated_net_proceeds);
 	};
 
-	const handleDownload = (e) => {
+	const handleDownload = async (e) => {
 		e.preventDefault();
 
 		// Create simple PDF data object with values and labels
 		const pdfData = { values, labels };
-		// Generate PDF using PDFGenerator
-		PDFGenerator.downloadPDF(pdfData, 'net-sheet-calculator-results.pdf')
-			.then((success) => {
-				if (!success) {
-					alert('There was an error generating the PDF. Please try again.');
-				}
-			})
-			.catch((error) => {
-				console.error('PDF generation error:', error);
-				alert('There was an error generating the PDF. Please try again.');
-			});
+		const $downloadBtn = $(e.currentTarget);
+
+		// Disable button to prevent multiple clicks
+		$downloadBtn.prop('disabled', true);
+
+		try {
+			if (typeof PDFGenerator === 'undefined') {
+				console.error('PDF generator not available.');
+			}
+
+			// Generate PDF using PDFGenerator
+			await PDFGenerator.downloadPDF(pdfData, 'net-sheet-calculator-results.pdf');
+			downloadMessageHandler.showSuccess('PDF downloaded successfully.');
+		} catch (error) {
+			downloadMessageHandler.showError('PDF generation error. Please try again.');
+		} finally {
+			// Enable button after operation
+			$downloadBtn.prop('disabled', false);
+		}
 	};
 
-	const handleSendEmail = (e) => {
+	const handleSendEmail = async (e) => {
 		e.preventDefault();
 
-		// Use the email handler to validate
-		const validation = EmailHandler.validateValue();
+		const validation = emailHandler.validateValue();
 
 		if (!validation.isValid) {
-			EmailHandler.showError(validation.message);
+			emailHandler.showError(validation.message);
 			return;
 		}
 
+		// Create PDF data object with values and labels
+		const pdfData = { values, labels };
 		// Show loading state
 		const $sendBtn = $(e.currentTarget);
 		const originalBtnText = $sendBtn.text();
 		$sendBtn.prop('disabled', true).text('Sending...');
 
-		// Create PDF data object with values and labels
-		const pdfData = { values, labels };
+		try {
+			// Generate the PDF as base64
+			const pdfBase64 = await PDFGenerator.getPDFAsBase64(pdfData);
 
-		// First generate the PDF as base64
-		PDFGenerator.getPDFAsBase64(pdfData)
-			.then((pdfBase64) => {
-				// Now send the PDF to the server
-				$.ajax({
-					url: nscEmailData.ajaxUrl,
-					type: 'POST',
-					data: {
-						action: 'nsc_send_email',
-						nonce: nscEmailData.nonce,
-						email: EmailHandler.getEmail(),
-						pdfBase64: pdfBase64,
-						pdfData: pdfData,
-					},
-					dataType: 'json',
-					success: function (response) {
-						$sendBtn.prop('disabled', false).text(originalBtnText);
+			// Send the PDF to the server
+			await $.ajax({
+				url: nscEmailData.ajaxUrl,
+				type: 'POST',
+				data: {
+					action: 'nsc_send_email',
+					nonce: nscEmailData.nonce,
+					email: emailHandler.getEmail(),
+					pdfBase64: pdfBase64,
+					pdfData: pdfData,
+				},
+				dataType: 'json',
+				timeout: 30000, // 30 second timeout
+				success: (response) => {
+					if (response.success) {
+						emailMessageHandler.showSuccess('Email has been sent');
+						emailHandler.reset();
+					} else {
+						emailMessageHandler.showError('There was an error sending your email. Please try again.');
+					}
+				},
+				error: (xhr, status, error) => {
+					let errorMessage = 'There was an error sending your email. Please try again.';
+					if (xhr.status === 0) {
+						errorMessage = 'Network error. Please check your connection and try again.';
+					} else if (xhr.status >= 500) {
+						errorMessage = 'Server error. Please try again in a few moments.';
+					}
 
-						if (response.success) {
-							// Show success message
-							alert('Email sent successfully!');
-
-							// Clear the email field
-							EmailHandler.$input.val('');
-						} else {
-							// Show error message
-							alert('Error: ' + (response.data.message || 'Failed to send email. Please try again.'));
-						}
-					},
-					error: function (xhr, status, error) {
-						$sendBtn.prop('disabled', false).text(originalBtnText);
-						console.error('AJAX error:', error);
-						alert('There was an error sending your email. Please try again.');
-					},
-				});
-			})
-			.catch((error) => {
-				$sendBtn.prop('disabled', false).text(originalBtnText);
-				console.error('Error generating PDF:', error);
-				alert('There was an error generating the PDF. Please try again.');
+					emailMessageHandler.showError(errorMessage);
+					console.error('Email send error:', errorMessage);
+				},
 			});
+		} catch (error) {
+			console.error('Error generating PDF:', error);
+			// Show error message if PDF generation fails
+			emailMessageHandler.showError('PDF generation failed. Please refresh and try again.');
+		} finally {
+			// Reset button text after operation
+			$sendBtn.prop('disabled', false).text(originalBtnText);
+		}
 	};
 
 	//===============
@@ -282,8 +184,12 @@
 		$downloadBtn = $calculator.find('.nsc-button--download');
 		$sendBtn = $calculator.find('.nsc-button--send');
 
-		// Initialize email handler
-		EmailHandler.init($calculator);
+		// Initialize message handlers for download and email
+		downloadMessageHandler = new MessageHandler($calculator.find('#nsc-download-action .nsc-action__message'));
+		emailMessageHandler = new MessageHandler($calculator.find('#nsc-email-action .nsc-action__message'));
+
+		// Initialize email handler with email message handler
+		emailHandler = new EmailHandler($calculator, emailMessageHandler);
 	};
 
 	const initValues = () => {
@@ -292,7 +198,7 @@
 			const $input = $(element);
 			const field = $input.data('field');
 			if (field) {
-				values[field] = parseInputValue($input);
+				values[field] = NSCUtils.parseInputValue($input);
 			}
 		});
 	};
@@ -324,33 +230,38 @@
 	// };
 
 	const initEventHandlers = () => {
-		// Handle all input changes
-		$inputs.on('input change', (e) => {
-			const $input = $(e.currentTarget);
-			const field = $input.data('field');
+		// Handle all input changes with debouncing for better performance
+		$inputs.on(
+			'input change',
+			NSCUtils.debounce((e) => {
+				const $input = $(e.currentTarget);
+				const field = $input.data('field');
 
-			if (field) {
-				const value = parseInputValue($input);
-				// Update values object based on input type
-				values[field] = value;
-				// Update input value to make sure that it is in min-max range
-				$input.val(value || '');
-				// Update calculated fields
-				calculate();
-			}
-		});
+				if (field) {
+					const value = NSCUtils.parseInputValue($input);
+					// Update values object based on input type
+					values[field] = value;
+					// Update input value to make sure that it is in min-max range
+					$input.val(value || '');
+					// Update calculated fields
+					calculate();
+				}
+			}, 250)
+		);
 
 		// Special handling for currency fields
 		$currencyInputs
 			.on('blur', (e) => {
 				const $input = $(e.currentTarget);
 				const field = $input.data('field');
-				values[field] = parseValue($input.val());
-				$input.val(formatCurrency(values[field]));
+				if (field) {
+					values[field] = NSCUtils.parseValue($input.val());
+					$input.val(NSCUtils.formatCurrency(values[field]));
+				}
 			})
 			.on('focus', (e) => {
 				const $input = $(e.currentTarget);
-				$input.val(parseValue($input.val()) || '');
+				$input.val(NSCUtils.parseValue($input.val()) || '');
 			});
 
 		// Special handling for percentage fields
@@ -358,12 +269,14 @@
 			.on('blur', (e) => {
 				const $input = $(e.currentTarget);
 				const field = $input.data('field');
-				values[field] = parseValue($input.val());
-				$input.val(formatPercentage(values[field]));
+				if (field) {
+					values[field] = NSCUtils.parseValue($input.val());
+					$input.val(NSCUtils.formatPercentage(values[field]));
+				}
 			})
 			.on('focus', (e) => {
 				const $input = $(e.currentTarget);
-				$input.val(parseValue($input.val()) || '');
+				$input.val(NSCUtils.parseValue($input.val()) || '');
 			});
 
 		// Button handlers
@@ -422,8 +335,8 @@
 		initValues();
 		initEventHandlers();
 
-		//!! TEST
-		// initFields();
+		// //!! TEST
+		// // initFields();
 
 		calculate();
 	};

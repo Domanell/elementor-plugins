@@ -145,33 +145,24 @@
 	/* Specific button styles if needed */
 }
 
-.nsc-email-form {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: flex-start;
-	gap: 10px;
-	flex: 1;
-	position: relative;
+.nsc-action__email {
+	padding-bottom: 10px;
 }
 
-.nsc-email-form input[type='email'] {
-	flex: 1;
-	min-width: 200px;
-	padding: 10px;
-	border: 1px solid #d5d5d5;
-	border-radius: 4px;
-	font-size: 16px;
-}
-
-.nsc-email-form input[type='email'].nsc-input--error {
+.nsc-action .nsc-input--error {
 	border-color: #dc3232;
 }
 
-.nsc-email-error {
-	color: #dc3232;
+.nsc-message {
 	font-size: 12px;
-	width: 100%;
-	display: none;
+}
+
+.nsc-message--error {
+	color: #dc3232;
+}
+
+.nsc-message--success {
+	color: #46b450;
 }
 
 .nsc-fields-wrap {
