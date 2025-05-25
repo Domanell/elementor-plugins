@@ -84,6 +84,8 @@
 		updateTextOutput('estimated_net_proceeds', values.estimated_net_proceeds);
 	};
 
+	const debounceCalculate = NSCUtils.debounce(calculate, 300);
+
 	const handleDownload = async (e) => {
 		e.preventDefault();
 
@@ -230,32 +232,29 @@
 	// };
 
 	const initEventHandlers = () => {
-		// Handle all input changes with debouncing for better performance
-		$inputs.on(
-			'input change',
-			NSCUtils.debounce((e) => {
-				const $input = $(e.currentTarget);
-				const field = $input.data('field');
+		$inputs.on('input change', (e) => {
+			const $input = $(e.currentTarget);
+			const field = $input.data('field');
 
-				if (field) {
-					const value = NSCUtils.parseInputValue($input);
-					// Update values object based on input type
-					values[field] = value;
-					// Update input value to make sure that it is in min-max range
-					$input.val(value || '');
-					// Update calculated fields
-					calculate();
-				}
-			}, 250)
-		);
+			if (field) {
+				const value = NSCUtils.parseInputValue($input);
+				// Update values object based on input type
+				values[field] = value;
+				// Update input value to make sure that it is in min-max range
+				$input.val(value || '');
+				// Calculate with debounce
+				debounceCalculate();
+			}
+		});
 
 		// Special handling for currency fields
 		$currencyInputs
 			.on('blur', (e) => {
 				const $input = $(e.currentTarget);
 				const field = $input.data('field');
+
+				// Format the value as currency on blur
 				if (field) {
-					values[field] = NSCUtils.parseValue($input.val());
 					$input.val(NSCUtils.formatCurrency(values[field]));
 				}
 			})
@@ -269,8 +268,8 @@
 			.on('blur', (e) => {
 				const $input = $(e.currentTarget);
 				const field = $input.data('field');
+				// Format the value as percentage on blur
 				if (field) {
-					values[field] = NSCUtils.parseValue($input.val());
 					$input.val(NSCUtils.formatPercentage(values[field]));
 				}
 			})
