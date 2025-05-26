@@ -106,11 +106,6 @@
 	box-shadow: 0 0 0 1px var(--e-global-color-secondary);
 }
 
-.nsc-input--calculated {
-	background-color: #f5f5f5;
-	font-weight: 600;
-	color: #0073aa;
-}
 
 /* Block: Actions */
 .nsc-actions {
@@ -123,7 +118,7 @@
 /* Block: Button */
 .nsc-button {
 	padding: 10px 20px;
-	background-color: #2271b1;
+	background-color: var(--e-global-color-secondary);
 	color: #fff;
 	border: none;
 	border-radius: 4px;
@@ -131,22 +126,28 @@
 	font-size: 1em;
 	font-weight: 500;
 	transition: background-color 0.2s ease;
+	width: 100%;
 }
 
 .nsc-button:hover {
-	background-color: #135e96;
+	background-color: var(--e-global-color-accent);
 }
 
 .nsc-button--download {
-	/* Specific button styles if needed */
+	width: 100%;
 }
 
 .nsc-button--send {
-	/* Specific button styles if needed */
+	padding: 10px!important;
+	align-self: baseline;
+	min-width: 140px;
+	width: 100%;
 }
 
 .nsc-action__email {
 	padding-bottom: 10px;
+	align-self: baseline;
+	width: 100%;
 }
 
 .nsc-action .nsc-input--error {
@@ -162,7 +163,7 @@
 }
 
 .nsc-message--success {
-	color: #46b450;
+	color: var(--e-global-color-primary);
 }
 
 .nsc-fields-wrap {
@@ -232,16 +233,25 @@
 		max-width: 40%;
 	}
 
-	.nsc-email-form {
-		flex: 1;
-		flex-wrap: wrap;
+	.nsc-action {
+		display: flex;
+		/* flex-wrap: wrap; */
 		justify-content: space-between;
+		
 	}
-	.nsc-email-form > div {
-		flex-grow: 1;
+
+	#nsc-email-action{
+		column-gap: 10px;
 	}
-	.nsc-email-form button {
-		flex-grow: 1;
+
+	.nsc-action__email {
+		flex: 0 0 53%;
+		max-width: 53%;
+	}
+	.nsc-button--send{
+		flex: 0 1 45%;
+		max-width: 45%;
+		min-width: 140px;
 	}
 }
 

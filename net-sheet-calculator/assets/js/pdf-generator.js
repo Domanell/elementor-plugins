@@ -52,6 +52,47 @@ const PDFGenerator = (function () {
 			const titleSize = config.titleFontSize;
 
 			// Add logo if available
+			// if (data.siteLogo && data.siteLogo.url) {
+			// 	try {
+			// 		// Fetch logo image
+			// 		const logoResponse = await fetch(data.siteLogo.url);
+			// 		const logoArrayBuffer = await logoResponse.arrayBuffer();
+
+			// 		let logoImage;
+			// 		// Check image format based on URL
+			// 		const isJpg = data.siteLogo.url.toLowerCase().endsWith('.jpg') || data.siteLogo.url.toLowerCase().endsWith('.jpeg');
+
+			// 		if (isJpg) {
+			// 			logoImage = await pdfDoc.embedJpg(logoArrayBuffer);
+			// 		} else {
+			// 			// Default to PNG
+			// 			logoImage = await pdfDoc.embedPng(logoArrayBuffer);
+			// 		}
+
+			// 		// Calculate logo dimensions while preserving aspect ratio
+			// 		const logoWidth = data.siteLogo.width || 100;
+			// 		const logoHeight = data.siteLogo.height || 52;
+
+			// 		// Set the top margin for content after the logo
+			// 		const contentStartY = height - margin - logoHeight - 20; // 20px additional space between logo and content
+
+			// 		// Draw the logo at the top of the content area, not at the very top of the page
+			// 		page.drawImage(logoImage, {
+			// 			x: margin,
+			// 			y: height - margin - logoHeight, // Position logo at the top of content area
+			// 			width: logoWidth,
+			// 			height: logoHeight,
+			// 		});
+
+			// 		// Set currentY to start content below the logo with some spacing
+			// 		currentY = contentStartY;
+			// 	} catch (logoError) {
+			// 		console.error('Error embedding logo:', logoError);
+			// 		// Continue without logo if there's an error
+			// 	}
+			// }
+
+			// Add logo if available
 			if (data.siteLogo && data.siteLogo.url) {
 				try {
 					// Fetch logo image
@@ -70,30 +111,62 @@ const PDFGenerator = (function () {
 					}
 
 					// Calculate logo dimensions while preserving aspect ratio
-					const logoWidth = data.siteLogo.width || 150;
-					const logoHeight = data.siteLogo.height || 60;
+					const logoWidth = data.siteLogo.width || 100;
+					const logoHeight = data.siteLogo.height || 52;
 
-					// Set the top margin for content after the logo
-					const contentStartY = height - margin - logoHeight - 20; // 20px additional space between logo and content
+					const logoY = height - margin - logoHeight + 6;
 
-					// Draw the logo at the top of the content area, not at the very top of the page
+					// Draw the logo at top left
 					page.drawImage(logoImage, {
 						x: margin,
-						y: height - margin - logoHeight, // Position logo at the top of content area
+						y: logoY,
 						width: logoWidth,
 						height: logoHeight,
 					});
 
-					// Set currentY to start content below the logo with some spacing
-					currentY = contentStartY;
+					// Draw address lines to the right of the logo
+					const addressLines = ['3250 W Big Beaver Rd #312,', 'Troy, MI 48084', '(248) 792-2096'];
+					const addressX = margin + logoWidth + 220; // 20px padding between logo and address
+
+					// Move address lines down slightly (e.g., 10px lower)
+					const addressYOffset = 10;
+					const addressY = logoY + logoHeight - config.contentFontSize - addressYOffset;
+
+					for (let i = 0; i < addressLines.length; i++) {
+						page.drawText(addressLines[i], {
+							x: addressX,
+							y: addressY - i * 12,
+							size: config.contentFontSize,
+							font: font,
+							color: rgb(0, 0, 0),
+						});
+					}
+
+					// Update currentY to go below both logo and address
+					const addressBlockHeight = addressLines.length * 12;
+					const contentTop = Math.max(logoHeight, addressBlockHeight);
+					currentY = height - margin - contentTop - 20;
 				} catch (logoError) {
 					console.error('Error embedding logo:', logoError);
-					// Continue without logo if there's an error
 				}
 			}
-			// Draw document title
+
+			// Draw a single separator line above the title
+			page.drawLine({
+				start: { x: margin, y: currentY + lineHeight },
+				end: { x: width - margin, y: currentY + lineHeight },
+				thickness: 1,
+				color: rgb(0.7, 0.7, 0.7),
+			});
+
+			currentY -= 10;
+
+			// Draw centered document title
+			const titleWidth = boldFont.widthOfTextAtSize(documentTitle, titleSize);
+			const titleX = (width - titleWidth) / 2;
+
 			page.drawText(documentTitle, {
-				x: margin,
+				x: titleX,
 				y: currentY,
 				size: titleSize,
 				font: boldFont,
@@ -147,15 +220,15 @@ const PDFGenerator = (function () {
 				currentY -= config.sectionSpacing; // Spacing between sections
 
 				// Draw separator line except for last section
-				if (section.title !== 'Totals') {
-					page.drawLine({
-						start: { x: margin, y: currentY + lineHeight },
-						end: { x: width - margin, y: currentY + lineHeight },
-						thickness: 0.5,
-						color: rgb(0.7, 0.7, 0.7),
-					});
-					currentY -= config.sectionSpacing;
-				}
+				// if (section.title !== 'Totals') {
+				// 	page.drawLine({
+				// 		start: { x: margin, y: currentY + lineHeight },
+				// 		end: { x: width - margin, y: currentY + lineHeight },
+				// 		thickness: 0.5,
+				// 		color: rgb(0.7, 0.7, 0.7),
+				// 	});
+				// 	currentY -= config.sectionSpacing;
+				// }
 			}
 
 			const pdfBytes = await pdfDoc.save();
