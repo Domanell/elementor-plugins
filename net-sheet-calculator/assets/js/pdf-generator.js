@@ -33,6 +33,7 @@ const PDFGenerator = (function () {
 
 	const generatePDF = async (data, documentTitle = 'Net Sheet Calculator Results') => {
 		try {
+			const { labels, values, companyInfo } = data;
 			// Use the pdf-lib library that's loaded as a dependency
 			const { PDFDocument, rgb: rgbFunc, StandardFonts } = PDFLib;
 			rgb = rgbFunc;
@@ -52,56 +53,16 @@ const PDFGenerator = (function () {
 			const titleSize = config.titleFontSize;
 
 			// Add logo if available
-			// if (data.siteLogo && data.siteLogo.url) {
-			// 	try {
-			// 		// Fetch logo image
-			// 		const logoResponse = await fetch(data.siteLogo.url);
-			// 		const logoArrayBuffer = await logoResponse.arrayBuffer();
-
-			// 		let logoImage;
-			// 		// Check image format based on URL
-			// 		const isJpg = data.siteLogo.url.toLowerCase().endsWith('.jpg') || data.siteLogo.url.toLowerCase().endsWith('.jpeg');
-
-			// 		if (isJpg) {
-			// 			logoImage = await pdfDoc.embedJpg(logoArrayBuffer);
-			// 		} else {
-			// 			// Default to PNG
-			// 			logoImage = await pdfDoc.embedPng(logoArrayBuffer);
-			// 		}
-
-			// 		// Calculate logo dimensions while preserving aspect ratio
-			// 		const logoWidth = data.siteLogo.width || 100;
-			// 		const logoHeight = data.siteLogo.height || 52;
-
-			// 		// Set the top margin for content after the logo
-			// 		const contentStartY = height - margin - logoHeight - 20; // 20px additional space between logo and content
-
-			// 		// Draw the logo at the top of the content area, not at the very top of the page
-			// 		page.drawImage(logoImage, {
-			// 			x: margin,
-			// 			y: height - margin - logoHeight, // Position logo at the top of content area
-			// 			width: logoWidth,
-			// 			height: logoHeight,
-			// 		});
-
-			// 		// Set currentY to start content below the logo with some spacing
-			// 		currentY = contentStartY;
-			// 	} catch (logoError) {
-			// 		console.error('Error embedding logo:', logoError);
-			// 		// Continue without logo if there's an error
-			// 	}
-			// }
-
-			// Add logo if available
-			if (data.siteLogo && data.siteLogo.url) {
+			if (companyInfo.logo && companyInfo.logo.url) {
 				try {
 					// Fetch logo image
-					const logoResponse = await fetch(data.siteLogo.url);
+					const url = companyInfo.logo.url;
+					const logoResponse = await fetch(url);
 					const logoArrayBuffer = await logoResponse.arrayBuffer();
 
 					let logoImage;
 					// Check image format based on URL
-					const isJpg = data.siteLogo.url.toLowerCase().endsWith('.jpg') || data.siteLogo.url.toLowerCase().endsWith('.jpeg');
+					const isJpg = url.toLowerCase().endsWith('.jpg') || url.toLowerCase().endsWith('.jpeg');
 
 					if (isJpg) {
 						logoImage = await pdfDoc.embedJpg(logoArrayBuffer);
@@ -111,8 +72,8 @@ const PDFGenerator = (function () {
 					}
 
 					// Calculate logo dimensions while preserving aspect ratio
-					const logoWidth = data.siteLogo.width || 100;
-					const logoHeight = data.siteLogo.height || 52;
+					const logoWidth = companyInfo.logo.width || 100;
+					const logoHeight = companyInfo.logo.height || 52;
 
 					const logoY = height - margin - logoHeight + 6;
 
@@ -125,7 +86,7 @@ const PDFGenerator = (function () {
 					});
 
 					// Draw address lines to the right of the logo
-					const addressLines = ['3250 W Big Beaver Rd #312,', 'Troy, MI 48084', '(248) 792-2096'];
+					const addressLines = [companyInfo.address1, companyInfo.address2, companyInfo.phone];
 					const addressX = margin + logoWidth + 220; // 20px padding between logo and address
 
 					// Move address lines down slightly (e.g., 10px lower)
@@ -195,9 +156,13 @@ const PDFGenerator = (function () {
 
 				// Draw fields
 				for (const field of section.fields) {
-					const label = data.labels[field] || field;
-					const value = data.values[field];
-					const formattedValue = NSCUtils.formatCurrency(value);
+					const label = labels[field] || field;
+					const value = values[field];
+
+					const formattedValue =
+						field === 'commission_realtor'
+							? `${NSCUtils.formatCurrency(values.commission_realtor_amount)} (${NSCUtils.formatPercentage(value)})`
+							: NSCUtils.formatCurrency(value);
 
 					page.drawText(label + ':', {
 						x: labelX + 20,

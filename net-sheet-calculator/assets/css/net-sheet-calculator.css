@@ -81,6 +81,20 @@
 	position: relative;
 }
 
+.nsc-field__group{
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 2%;
+}
+.nsc-field__group .nsc-input--percentage{
+	flex: 1 0 30%;
+	max-width: 30%;
+}
+.nsc-field__group .nsc-input--calculated {
+	flex: 0 0 70;
+	max-width: 70%;
+}
+
 /* Block: Input */
 .nsc-field__input-wrap input[type='date'],
 .nsc-field__input-wrap input[type='email'],
@@ -252,6 +266,15 @@
 		flex: 0 1 45%;
 		max-width: 45%;
 		min-width: 140px;
+	}
+
+	.nsc-field__group .nsc-input--percentage{
+		flex: 0 0 25%;
+		max-width: 25%;
+	}
+	.nsc-field__group .nsc-input--calculated {
+		flex: 1 0 73%;
+		max-width: 73%;
 	}
 }
 

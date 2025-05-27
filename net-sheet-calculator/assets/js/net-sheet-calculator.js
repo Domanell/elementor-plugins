@@ -13,7 +13,7 @@
 	let emailHandler; // Instance of EmailHandler
 	let downloadMessageHandler; // Instance for download messages
 	let emailMessageHandler; // Instance for email messages
-	let siteLogo = null; // Store site logo information
+	let companyInfo = {}; // Store company information
 
 	const calculateHomeownersRate = (amount) => {
 		let total = 0;
@@ -76,7 +76,7 @@
 		values.estimated_net_proceeds = values.gross_proceeds - values.total_closing_costs < 0 ? 0 : values.gross_proceeds - values.total_closing_costs;
 
 		// Update input display for calculated fields (readonly fields)
-		['gross_proceeds', 'michigan_transfer_tax', 'revenue_stamps', 'title_insurance_policy'].forEach((field) => {
+		['gross_proceeds', 'michigan_transfer_tax', 'revenue_stamps', 'title_insurance_policy', 'commission_realtor_amount'].forEach((field) => {
 			updateCalculatedField(field, values[field]);
 		});
 
@@ -91,7 +91,7 @@
 		e.preventDefault();
 
 		// Create simple PDF data object with values and labels
-		const pdfData = { values, labels, siteLogo };
+		const pdfData = { values, labels, companyInfo };
 		const $downloadBtn = $(e.currentTarget);
 
 		// Disable button to prevent multiple clicks
@@ -123,7 +123,7 @@
 		}
 
 		// Create PDF data object with values and labels
-		const pdfData = { values, labels, siteLogo };
+		const pdfData = { values, labels, companyInfo };
 		// Show loading state
 		const $sendBtn = $(e.currentTarget);
 		const originalBtnText = $sendBtn.text();
@@ -322,9 +322,13 @@
 		}));
 	};
 
-	const initSiteLogo = () => {
-		// Get logo data directly from the localized script data
-		siteLogo = nscEmailData?.siteLogo || null;
+	const initCompanyInfo = (settings) => {
+		companyInfo = {
+			logo: nscEmailData?.siteLogo || null, // object with logo URL
+			address1: settings.address_line1,
+			address2: settings.address_line2,
+			phone: settings.phone_number,
+		};
 	};
 
 	const init = (calculatorElement) => {
@@ -337,7 +341,7 @@
 		initElements();
 		initValues();
 		initEventHandlers();
-		initSiteLogo(); // Initialize site logo from localized data
+		initCompanyInfo(settings);
 		calculate();
 	};
 

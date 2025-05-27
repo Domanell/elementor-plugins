@@ -36,7 +36,47 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
     }
 
     protected function register_controls() {
-        $repeater = new \Elementor\Repeater();
+        // Section for Default Values
+        $this->start_controls_section(
+            'section_company_info',
+            [
+                'label' => esc_html__('Company Information', 'net-sheet-calculator'),
+                'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'address_line1',
+            [
+                'label'       => esc_html__('Address Line 1', 'net-sheet-calculator'),
+                'type'        => \Elementor\Controls_Manager::TEXT,
+                'default'     => '3250 W Big Beaver Rd #312,',
+                'frontend_available' => true,
+            ]
+        );
+
+        $this->add_control(
+            'address_line2',
+            [
+                'label'       => esc_html__('Address Line 2', 'net-sheet-calculator'),
+                'type'        => \Elementor\Controls_Manager::TEXT,
+                'default'     => 'Troy, MI 48084',
+                'frontend_available' => true,
+            ]
+        );
+
+        $this->add_control(
+            'phone_number',
+            [
+                'label'       => esc_html__('Phone Number', 'net-sheet-calculator'),
+                'type'        => \Elementor\Controls_Manager::TEXT,
+                'default'     => '(248) 792-2096',
+                'frontend_available' => true,
+            ]
+        );
+
+        $this->end_controls_section();
+
         // Section for Default Values
         $this->start_controls_section(
             'section_defaults',
@@ -158,6 +198,8 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                 'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
             ]
         );
+
+        $repeater = new \Elementor\Repeater();
 
         $repeater->add_control('insurance_range_from', [
             'label' => 'From ($)',
@@ -1303,7 +1345,7 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     <div class="nsc-field__description"><?php echo esc_html($settings['commission_realtor_description']); ?></div>
                                     <?php endif; ?>
                                 </label>
-                                <div class="nsc-field__input-wrap">
+                                <div class="nsc-field__input-wrap nsc-field__group">
                                     <input type="text"
                                     class="nsc-input nsc-input--percentage"
                                     id="<?php echo esc_attr($calculator_id); ?>-commission-realtor"
@@ -1311,6 +1353,14 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                                     data-field="commission_realtor"
                                     value="<?php echo esc_attr($settings['default_realtor_commission']); ?>%"
                                     max="100"
+                                    >
+                                    <input type="text"
+                                    class="nsc-input nsc-input--calculated"
+                                    id="<?php echo esc_attr($calculator_id); ?>-commission-realtor-amount"
+                                    name="commission_realtor_amount"
+                                    data-field="commission_realtor_amount"
+                                    placeholder="$0"
+                                    readonly
                                     >
                             </div>
                         </div>
