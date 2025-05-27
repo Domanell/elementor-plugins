@@ -49,7 +49,7 @@
 		values.michigan_transfer_tax = Math.ceil(values.purchase_price / 500) * (values.michigan_transfer_tax_rate || 3.75);
 		values.revenue_stamps = Math.ceil(values.purchase_price / 500) * (values.revenue_stamps_rate || 0.55);
 		values.gross_proceeds = values.purchase_price + (values.other_credits || 0);
-		values.homeowners_rate = calculateHomeownersRate(values.title_insurance_policy);
+		values.title_insurance_policy = calculateHomeownersRate(values.purchase_price);
 
 		values.total_closing_costs = [
 			values.commission_realtor_amount,
@@ -62,7 +62,7 @@
 			values.property_taxes_due,
 			values.settlement_fee,
 			values.security_fee,
-			values.homeowners_rate,
+			values.title_insurance_policy,
 			values.commission_realtor_extra,
 			values.current_water,
 			values.hoa_assessment,
@@ -75,8 +75,8 @@
 
 		values.estimated_net_proceeds = values.gross_proceeds - values.total_closing_costs < 0 ? 0 : values.gross_proceeds - values.total_closing_costs;
 
-		// Update input display for calculated fields
-		['gross_proceeds', 'michigan_transfer_tax', 'revenue_stamps'].forEach((field) => {
+		// Update input display for calculated fields (readonly fields)
+		['gross_proceeds', 'michigan_transfer_tax', 'revenue_stamps', 'title_insurance_policy'].forEach((field) => {
 			updateCalculatedField(field, values[field]);
 		});
 

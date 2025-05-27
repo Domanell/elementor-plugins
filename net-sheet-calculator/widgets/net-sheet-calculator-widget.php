@@ -1283,11 +1283,12 @@ class Net_Sheet_Calculator_Widget extends \Elementor\Widget_Base {
                             </label>
                             <div class="nsc-field__input-wrap">
                                 <input type="text"
-                                    class="nsc-input nsc-input--currency"
+                                    class="nsc-input nsc-input--calculated"
                                     id="<?php echo esc_attr($calculator_id); ?>-title-insurance-policy"
                                     name="title_insurance_policy"
                                     data-field="title_insurance_policy"
-                                    placeholder="$0">
+                                    placeholder="$0"
+                                    readonly>
                             </div>
                         </div>
                     </div>
