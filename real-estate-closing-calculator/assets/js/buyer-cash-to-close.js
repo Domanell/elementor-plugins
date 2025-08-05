@@ -29,23 +29,28 @@
 			this.values.mortgage_recording_fee = parseFloat(mortgageFee) || 0;
 			this.values.warranty_deed_recording_fee = parseFloat(warrantyFee) || 0;
 
-			this.values.total_closing_costs = [
-				this.values.loan_amount,
+			// Calculate total closing costs using the formula:
+			// ( Purchase Price − Loan Amount ) + (Loan Policy + Settlement Fee + Security Fee + eRecording Fee + Mortgage Recording Fee + Warranty Deed Recording Fee + Tax Proration Estimate + Realtor Compliance Fee + HOA Transfer Fee + HOA Prepaid Assessment + Other ) − (Earnest Money Deposit + Seller Credit + Agent Credit + Transaction Credits)
+
+			const downPayment = (this.values.purchase_price || 0) - (this.values.loan_amount || 0);
+
+			const additionalCosts = [
 				this.values.loan_insurance_policy,
-				this.values.earnest_money_deposit,
-				this.values.seller_credit,
-				this.values.agent_credit,
 				this.values.settlement_fee,
 				this.values.security_fee,
 				this.values.erecording_fee,
-				this.values.mortgage_recording_fee, //based on county
-				this.values.warranty_deed_recording_fee, //based on county
+				this.values.mortgage_recording_fee,
+				this.values.warranty_deed_recording_fee,
 				this.values.tax_proration_estimate,
 				this.values.realtor_compliance_fee,
 				this.values.hoa_transfer_fee,
 				this.values.hoa_prepaid_assessment,
 				this.values.other_fees,
 			].reduce((sum, val) => sum + (val || 0), 0);
+
+			const credits = [this.values.earnest_money_deposit, this.values.seller_credit, this.values.agent_credit].reduce((sum, val) => sum + (val || 0), 0);
+
+			this.values.total_closing_costs = downPayment + additionalCosts - credits;
 
 			this.values.estimated_net_proceeds = this.values.total_closing_costs < 0 ? 0 : this.values.total_closing_costs;
 
