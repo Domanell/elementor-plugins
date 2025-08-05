@@ -12,6 +12,7 @@ class RECalculator {
 	emailHandler; // Instance of EmailHandler
 	downloadMessageHandler; // Instance for download messages
 	emailMessageHandler; // Instance for email messages
+	emailTemplate = 'net-sheet-template'; // Default email template
 
 	pdfConfig = {
 		documentTitle: '',
@@ -140,14 +141,17 @@ class RECalculator {
 					email: this.emailHandler.getEmail(),
 					pdfBase64: pdfBase64,
 					pdfData: this.pdfData,
+					templateName: this.emailTemplate,
 				},
 				dataType: 'json',
 				timeout: 30000, // 30 second timeout
 				success: (response) => {
+					console.log('🚀 ~ response:', response);
 					if (response.success) {
 						this.emailMessageHandler.showSuccess('Email has been sent');
 						this.emailHandler.reset();
 					} else {
+						console.error(response.data);
 						this.emailMessageHandler.showError('There was an error sending your email. Please try again.');
 					}
 				},

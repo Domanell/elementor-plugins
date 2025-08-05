@@ -1,13 +1,15 @@
 (function ($) {
 	'use strict';
 	class NSCCalculator extends RECalculator {
-		constructor($calculator, labels, pdfConfig) {
+		constructor($calculator, labels, pdfConfig, emailTemplate) {
 			// Call parent constructor with only the required element
 			super($calculator);
 
 			// Initialize child-specific properties
 			this.labels = labels;
 			this.pdfConfig = pdfConfig;
+			this.emailTemplate = emailTemplate;
+
 			this.insuranceRates = this._defineInsuranceRates();
 		}
 
@@ -112,7 +114,8 @@
 		try {
 			const settings = $calculator.data('settings');
 			const labels = createLabelDefinitions(settings);
-			const calculator = new NSCCalculator($calculator, labels, pdfConfig);
+			const emailTemplate = 'net-sheet-template';
+			const calculator = new NSCCalculator($calculator, labels, pdfConfig, emailTemplate);
 
 			// Perform initial calculation
 			calculator.calculate();
