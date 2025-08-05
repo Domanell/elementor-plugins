@@ -20,9 +20,9 @@ const PDFGenerator = (function () {
 		margin: 40,
 	};
 
-	const generatePDF = async (data, config) => {
+	const generatePDF = async (data, params) => {
 		try {
-			const { documentTitle, filename, sections } = config;
+			const { documentTitle, sections } = params;
 			const { labels, values, companyInfo } = data;
 			// Use the pdf-lib library that's loaded as a dependency
 			const { PDFDocument, rgb: rgbFunc, StandardFonts } = PDFLib;
@@ -194,9 +194,9 @@ const PDFGenerator = (function () {
 		}
 	};
 
-	const downloadPDF = async (data, config) => {
+	const downloadPDF = async (data, params) => {
 		try {
-			const pdfBlob = await generatePDF(data, config);
+			const pdfBlob = await generatePDF(data, params);
 			const blobUrl = URL.createObjectURL(pdfBlob);
 			const link = document.createElement('a');
 			link.href = blobUrl;
@@ -218,15 +218,15 @@ const PDFGenerator = (function () {
 	/**
 	 * Convert PDF to base64 string for sending via AJAX
 	 * @param {Object} data - The calculator data
-	 * @param {Object} config - PDF configuration
-	 * @param {string} config.documentTitle - Title of the PDF document
-	 * @param {string} config.filename - Name of the PDF file
-	 * @param {Array} config.sections - Sections to include in the PDF
+	 * @param {Object} params - PDF parameters
+	 * @param {string} params.documentTitle - Title of the PDF document
+	 * @param {string} params.filename - Name of the PDF file
+	 * @param {Array} params.sections - Sections to include in the PDF
 	 * @returns {Promise<string>} - Base64 encoded PDF
 	 */
-	const getPDFAsBase64 = async (data, config) => {
+	const getPDFAsBase64 = async (data, params) => {
 		try {
-			const pdfBlob = await generatePDF(data, config);
+			const pdfBlob = await generatePDF(data, params);
 
 			return new Promise((resolve, reject) => {
 				const reader = new FileReader();
