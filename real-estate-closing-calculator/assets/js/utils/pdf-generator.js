@@ -194,12 +194,13 @@ const PDFGenerator = (function () {
 	};
 
 	const downloadPDF = async (data) => {
+		console.log(data);
 		try {
 			const pdfBlob = await generatePDF(data);
 			const blobUrl = URL.createObjectURL(pdfBlob);
 			const link = document.createElement('a');
 			link.href = blobUrl;
-			link.download = config.filename || 'calcualtor-result.pdf';
+			link.download = data.filename || 'calculator-result.pdf';
 			link.click();
 
 			// Clean up the blob URL after a short delay

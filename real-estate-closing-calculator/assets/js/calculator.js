@@ -53,6 +53,7 @@ class RECalculator {
 			companyInfo: this.companyInfo,
 			documentTitle: this.pdfConfig.documentTitle,
 			sections: this.pdfConfig.sections,
+			filename: this.pdfConfig.filename,
 		};
 	}
 

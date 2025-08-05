@@ -79,7 +79,7 @@ function net_sheet_calculator_register_scripts() {
 add_action('wp_enqueue_scripts', 'net_sheet_calculator_register_scripts');
 
 function net_sheet_calculator_register_styles() {
-    wp_register_style('net-sheet-calculator-style', plugins_url('assets/css/net-sheet-calculator.css', __FILE__));
+    wp_register_style('recc-style', plugins_url('assets/css/net-sheet-calculator.css', __FILE__));
 }
 add_action('elementor/frontend/before_enqueue_styles', 'net_sheet_calculator_register_styles');
 
