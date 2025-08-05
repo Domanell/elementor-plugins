@@ -8,8 +8,10 @@
 !elementor-impact-calculator/
 !elementor-price-calculator/
 !net-sheet-calculator/
+!real-estate-closing-calculator/
 
 # Do not ignore everything inside those folders
 !elementor-impact-calculator/**
 !elementor-price-calculator/**
 !net-sheet-calculator/**
+!real-estate-closing-calculator/**

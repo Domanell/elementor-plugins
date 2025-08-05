@@ -1,0 +1,290 @@
+/* Main wrapper */
+.recc-calculator {
+	font-family: Poppins, sans-serif;
+	max-width: 100%;
+	margin: 0 auto;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+.recc-form {
+	display: flex;
+	gap: 20px;
+	flex-direction: row;
+	justify-content: space-between;
+}
+/* Block: Section */
+.recc-section {
+	margin-bottom: 12px;
+	padding: 20px;
+	background-color: #f9fbfb;
+	&:last-child {
+		margin-bottom: 0;
+	}
+}
+
+.recc-form .recc-section__title {
+	margin: 0;
+	padding-bottom: 10px;
+	font-size: 16px;
+	font-weight: 700;
+	text-transform: uppercase;
+	color: var(--e-global-color-primary);
+	font-size: 16px;
+	font-weight: 700;
+	font-family: 'Poppins', sans-serif;
+}
+
+/* Block: Field */
+.recc-field {
+	margin-bottom: 8px;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+.recc-field__label {
+	flex: 0 0 100%;
+	max-width: 100%;
+	margin-bottom: 5px;
+	font-weight: 400;
+	color: var(--e-global-color-primary);
+	position: relative;
+}
+
+.recc-field__label small {
+	display: block;
+	font-weight: 400;
+	font-size: 14px;
+	color: var(--e-global-color-secondary);
+	margin-top: 2px;
+}
+
+.recc-field__description {
+	display: block;
+	font-weight: 400;
+	font-size: 12px;
+	color: var(--e-global-color-secondary);
+	margin-top: 2px;
+}
+.recc-field__description a {
+	text-decoration: underline;
+	color: inherit;
+	&:hover {
+		text-decoration: none;
+	}
+}
+
+.recc-field__input-wrap {
+	flex: 0 0 100%;
+	max-width: 100%;
+	position: relative;
+}
+
+.recc-field__group{
+	display: flex;
+	flex-wrap: nowrap;
+	gap: 2%;
+}
+.recc-field__group .recc-input--percentage{
+	flex: 1 0 30%;
+	max-width: 30%;
+}
+.recc-field__group .recc-input--calculated {
+	flex: 0 0 70;
+	max-width: 70%;
+}
+
+/* Block: Input */
+.recc-field__input-wrap input[type='date'],
+.recc-field__input-wrap input[type='email'],
+.recc-field__input-wrap input[type='number'],
+.recc-field__input-wrap input[type='search'],
+.recc-field__input-wrap input[type='tel'],
+.recc-field__input-wrap input[type='text'],
+.recc-field__input-wrap input[type='url'] {
+	width: 100%;
+	padding: 7px;
+	border: 1px solid var(--e-global-color-primary);
+	border-radius: 4px;
+	font-size: 1rem;
+	color: var(--e-global-color-primary);
+	background-color: #fff;
+	box-sizing: border-box;
+	transition: border-color 0.2s ease;
+}
+
+.recc-input:focus {
+	border-color: var(--e-global-color-secondary);
+	outline: none;
+	box-shadow: 0 0 0 1px var(--e-global-color-secondary);
+}
+
+
+/* Block: Actions */
+.recc-actions {
+	margin-top: 30px;
+	display: flex;
+	flex-direction: column;
+	gap: 15px;
+}
+
+/* Block: Button */
+.recc-button {
+	padding: 10px 20px;
+	background-color: var(--e-global-color-secondary);
+	color: #fff;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 1em;
+	font-weight: 500;
+	transition: background-color 0.2s ease;
+	width: 100%;
+}
+
+.recc-button:hover {
+	background-color: var(--e-global-color-accent);
+}
+
+.recc-button--download {
+	width: 100%;
+}
+
+.recc-button--send {
+	padding: 10px!important;
+	align-self: baseline;
+	min-width: 140px;
+	width: 100%;
+}
+
+.recc-action__email {
+	padding-bottom: 10px;
+	align-self: baseline;
+	width: 100%;
+}
+
+.recc-action .recc-input--error {
+	border-color: #dc3232;
+}
+
+.recc-message {
+	font-size: 12px;
+}
+
+.recc-message--error {
+	color: #dc3232;
+}
+
+.recc-message--success {
+	color: var(--e-global-color-primary);
+}
+
+.recc-fields-wrap {
+	width: 61%;
+}
+.recc-total-wrap {
+	width: 39%;
+	align-self: baseline;
+	background: var(--e-global-color-0016fc9);
+	padding: 30px;
+	position: sticky;
+	top: 20px;
+}
+
+.recc-total-wrap .recc-field {
+	margin-bottom: 20px;
+}
+.recc-total-wrap .recc-section__title {
+	font-size: 24px;
+	padding-bottom: 20px;
+}
+.recc-total-wrap .recc-section {
+	background: transparent;
+	border: 0;
+	padding: 0;
+}
+.recc-total-wrap .recc-field__label {
+	font-weight: 700;
+	flex: 0 0 60%;
+	max-width: 60%;
+}
+.recc-total-wrap .recc-field__output {
+	flex: 0 0 40%;
+	max-width: 40%;
+	text-align: right;
+	font-size: 18px;
+	font-weight: 700;
+	color: var(--e-global-color-primary);
+}
+.recc-disclaimer {
+	margin-top: 40px;
+}
+
+/* Responsive styling */
+@media screen and (max-width: 1024px) {
+	.recc-form {
+		flex-direction: column;
+	}
+	.recc-fields-wrap,
+	.recc-total-wrap {
+		width: 100%;
+	}
+	.recc-total-wrap {
+		position: unset;
+	}
+}
+@media screen and (min-width: 768px) {
+	.recc-field__label {
+		flex: 0 0 60%;
+		max-width: 60%;
+		margin-bottom: 0;
+		padding-right: 15px;
+	}
+
+	.recc-field__input-wrap {
+		flex: 0 0 40%;
+		max-width: 40%;
+	}
+
+	.recc-action {
+		display: flex;
+		/* flex-wrap: wrap; */
+		justify-content: space-between;
+		
+	}
+
+	#recc-email-action{
+		column-gap: 10px;
+	}
+
+	.recc-action__email {
+		flex: 0 0 53%;
+		max-width: 53%;
+	}
+	.recc-button--send{
+		flex: 0 1 45%;
+		max-width: 45%;
+		min-width: 140px;
+	}
+
+	.recc-field__group .recc-input--percentage{
+		flex: 0 0 25%;
+		max-width: 25%;
+	}
+	.recc-field__group .recc-input--calculated {
+		flex: 1 0 73%;
+		max-width: 73%;
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.recc-actions {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.recc-email-form {
+		flex-direction: column;
+	}
+}
