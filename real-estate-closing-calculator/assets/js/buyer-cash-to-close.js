@@ -24,6 +24,10 @@
 		calculate() {
 			// Perform all calculations
 			this.values.loan_insurance_policy = this.calculateTieredRate(this.values.purchase_price, this.loanPolicyRates);
+			const [countyName, mortgageFee, warrantyFee] = (this.values.county_rates || '').split('_');
+
+			this.values.mortgage_recording_fee = parseFloat(mortgageFee) || 0;
+			this.values.warranty_deed_recording_fee = parseFloat(warrantyFee) || 0;
 
 			this.values.total_closing_costs = [
 				this.values.loan_amount,
