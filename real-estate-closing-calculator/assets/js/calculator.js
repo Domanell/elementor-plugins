@@ -4,6 +4,7 @@ class RECalculator {
 	values = {};
 	labels = {};
 	$inputs;
+	$selects;
 	$currencyInputs;
 	$percentageInputs;
 	$downloadBtn;
@@ -171,6 +172,7 @@ class RECalculator {
 	//===============
 	initElements() {
 		this.$inputs = this.$calculator.find('.recc-fields-wrap input');
+		this.$selects = this.$calculator.find('.recc-fields-wrap select');
 		this.$currencyInputs = this.$calculator.find('.recc-input--currency');
 		this.$percentageInputs = this.$calculator.find('.recc-input--percentage');
 		this.$downloadBtn = this.$calculator.find('.recc-button--download');
@@ -193,6 +195,14 @@ class RECalculator {
 				this.values[field] = RECCUtils.parseInputValue($input);
 			}
 		});
+		// Initialize all select values
+		this.$selects.each((index, element) => {
+			const $select = jQuery(element);
+			const field = $select.data('field');
+			if (field) {
+				this.values[field] = $select.val();
+			}
+		});
 	}
 
 	initEventHandlers() {
@@ -206,6 +216,21 @@ class RECalculator {
 				this.values[field] = value;
 				// Update input value to make sure that it is in min-max range
 				// $input.val(value || '');
+				// Calculate with debounce
+				this.debounceCalculate();
+			}
+		});
+
+		// Handle select changes
+		this.$selects.on('change', (e) => {
+			const $select = jQuery(e.currentTarget);
+			const field = $select.data('field');
+
+			if (field) {
+				// Get selected value and update values object
+				const value = $select.val();
+				this.values[field] = value;
+
 				// Calculate with debounce
 				this.debounceCalculate();
 			}
