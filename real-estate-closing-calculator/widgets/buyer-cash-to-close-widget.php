@@ -35,6 +35,97 @@ class Buyer_Cash_To_Close_Widget extends \Elementor\Widget_Base {
         return ['recc-style'];
     }
 
+    /**
+     * Get default Michigan counties data
+     */
+    private function get_default_michigan_counties() {
+        return [
+            ['county_name' => 'Alcona', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Alger', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Allegan', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Alpena', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Antrim', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Arenac', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Baraga', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Barry', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Bay', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Benzie', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Berrien', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Branch', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Calhoun', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Cass', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Charlevoix', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Cheboygan', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Chippewa', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Clare', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Clinton', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Crawford', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Delta', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Dickinson', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Eaton', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Emmet', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Genesee', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Gladwin', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Gogebic', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Grand Traverse', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Gratiot', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Hillsdale', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Houghton', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Huron', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Ingham', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Ionia', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Iosco', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Iron', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Isabella', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Jackson', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Kalamazoo', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Kalkaska', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Kent', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Keweenaw', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Lake', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Lapeer', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Leelanau', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Lenawee', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Livingston', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Luce', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Mackinac', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Macomb', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Manistee', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Marquette', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Mason', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Mecosta', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Menominee', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Midland', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Missaukee', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Monroe', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Montcalm', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Montmorency', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Muskegon', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Newaygo', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Oakland', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Oceana', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Ogemaw', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Ontonagon', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Osceola', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Oscoda', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Otsego', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Ottawa', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Presque Isle', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Roscommon', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Saginaw', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Sanilac', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Schoolcraft', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Shiawassee', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'St. Clair', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'St. Joseph', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Tuscola', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Van Buren', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Washtenaw', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+            ['county_name' => 'Wayne', 'mortgage_recording_fee' => 96, 'warranty_deed_fee' => 23],
+            ['county_name' => 'Wexford', 'mortgage_recording_fee' => 30, 'warranty_deed_fee' => 35],
+        ];
+    }
+
     protected function register_controls() {
         // Section for Default Values
         $this->start_controls_section(
@@ -207,6 +298,50 @@ class Buyer_Cash_To_Close_Widget extends \Elementor\Widget_Base {
         ]);
         $this->end_controls_section();
 
+        // Counties Configuration Section
+        $this->start_controls_section(
+            'section_counties_config',
+            [
+                'label' => esc_html__('Counties Configuration', 'real-estate-closing-calculator'),
+                'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $counties_repeater = new \Elementor\Repeater();
+
+        $counties_repeater->add_control('county_name', [
+            'label' => 'County Name',
+            'type' => \Elementor\Controls_Manager::TEXT,
+            'default' => '',
+        ]);
+
+        $counties_repeater->add_control('mortgage_recording_fee', [
+            'label' => 'Mortgage Recording Fee ($)',
+            'type' => \Elementor\Controls_Manager::NUMBER,
+            'min' => 0,
+            'step' => 1,
+            'default' => 30,
+        ]);
+
+        $counties_repeater->add_control('warranty_deed_fee', [
+            'label' => 'Warranty Deed Recording Fee ($)',
+            'type' => \Elementor\Controls_Manager::NUMBER,
+            'min' => 0,
+            'step' => 1,
+            'default' => 35,
+        ]);
+
+        $this->add_control('counties_list', [
+            'label' => 'Counties',
+            'type' => \Elementor\Controls_Manager::REPEATER,
+            'fields' => $counties_repeater->get_controls(),
+            'title_field' => '{{ county_name }}',
+            'prevent_empty' => false,
+            'frontend_available' => true,
+            'default' => $this->get_default_michigan_counties(),
+        ]);
+
+        $this->end_controls_section();
 
         // Transaction Summary Fields
         $this->start_controls_section(
@@ -823,6 +958,7 @@ class Buyer_Cash_To_Close_Widget extends \Elementor\Widget_Base {
         $settlement_fee = $settings['default_settlement_fee'];
         $security_fee = $settings['default_security_fee'];
         $erecording_fee = $settings['default_erecording_fee'];
+        $counties_list = $settings['counties_list'] ?? [];
         
         // Unique ID for this instance
         $buyer_calculator_id = 'recc-' . uniqid();?>
@@ -858,432 +994,10 @@ class Buyer_Cash_To_Close_Widget extends \Elementor\Widget_Base {
                                 <?php echo esc_html($settings['county_label']); ?>
                             </label>
                             <div class="recc-field__input-wrap">       
-                            <?php 
-                                $counties = [
-                                    'alcona' => [
-                                        'name' => 'Alcona',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'alger' => [
-                                        'name' => 'Alger',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'allegan' => [
-                                        'name' => 'Allegan',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'alpena' => [
-                                        'name' => 'Alpena',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'antrim' => [
-                                        'name' => 'Antrim',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'arena' => [
-                                        'name' => 'Arenac',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'baraga' => [
-                                        'name' => 'Baraga',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'barry' => [
-                                        'name' => 'Barry',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'bay' => [
-                                        'name' => 'Bay',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'benzie' => [
-                                        'name' => 'Benzie',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'berrien' => [
-                                        'name' => 'Berrien',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'branch' => [
-                                        'name' => 'Branch',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'calhoun' => [
-                                        'name' => 'Calhoun',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'cass' => [
-                                        'name' => 'Cass',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'charlevoix' => [
-                                        'name' => 'Charlevoix',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'cheboygan' => [
-                                        'name' => 'Cheboygan',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'chippewa' => [
-                                        'name' => 'Chippewa',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'clare' => [
-                                        'name' => 'Clare',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'clinton' => [
-                                        'name' => 'Clinton',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'crawford' => [
-                                        'name' => 'Crawford',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'delta' => [
-                                        'name' => 'Delta',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'dickinson' => [
-                                        'name' => 'Dickinson',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'eaton' => [
-                                        'name' => 'Eaton',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'emmet' => [
-                                        'name' => 'Emmet',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'genesee' => [
-                                        'name' => 'Genesee',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'gladwin' => [
-                                        'name' => 'Gladwin',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'gogebic' => [
-                                        'name' => 'Gogebic',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'grand_traverse' => [
-                                        'name' => 'Grand Traverse',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'gratiot' => [
-                                        'name' => 'Gratiot',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'hillsdale' => [
-                                        'name' => 'Hillsdale',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'houghton' => [
-                                        'name' => 'Houghton',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'hu ron' => [
-                                        'name' => 'Huron',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'ingham' => [
-                                        'name' => 'Ingham',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'ionia' => [
-                                        'name' => 'Ionia',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'iosco' => [
-                                        'name' => 'Iosco',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'iron' => [
-                                        'name' => 'Iron',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'isabella' => [
-                                        'name' => 'Isabella',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'jackson' => [
-                                        'name' => 'Jackson',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'kalamazoo' => [
-                                        'name' => 'Kalamazoo',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'kalkaska' => [
-                                        'name' => 'Kalkaska',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'kent' => [
-                                        'name' => 'Kent',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'keweenaw' => [
-                                        'name' => 'Keweenaw',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'lake' => [
-                                        'name' => 'Lake',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'lapeer' => [
-                                        'name' => 'Lapeer',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'leelanau' => [
-                                        'name' => 'Leelanau',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'lenawee' => [
-                                        'name' => 'Lenawee',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'livingston' => [
-                                        'name' => 'Livingston',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'luce' => [
-                                        'name' => 'Luce',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'mackinac' => [
-                                        'name' => 'Mackinac',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'macomb' => [
-                                        'name' => 'Macomb',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'manistee' => [
-                                        'name' => 'Manistee',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'marquette' => [
-                                        'name' => 'Marquette',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'mason' => [
-                                        'name' => 'Mason',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'mecosta' => [
-                                        'name' => 'Mecosta',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'menominee' => [
-                                        'name' => 'Menominee',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'midland' => [
-                                        'name' => 'Midland',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'missaukee' => [
-                                        'name' => 'Missaukee',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'monroe' => [
-                                        'name' => 'Monroe',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'montcalm' => [
-                                        'name' => 'Montcalm',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'montmorency' => [
-                                        'name' => 'Montmorency',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'muskegon' => [
-                                        'name' => 'Muskegon',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'newaygo' => [
-                                        'name' => 'Newaygo',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'oakland' => [
-                                        'name' => 'Oakland',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'oceana' => [
-                                        'name' => 'Oceana',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'ogemaw' => [
-                                        'name' => 'Ogemaw',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'ontonagon' => [
-                                        'name' => 'Ontonagon',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'osceola' => [
-                                        'name' => 'Osceola',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'oscoda' => [
-                                        'name' => 'Oscoda',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'otsego' => [
-                                        'name' => 'Otsego',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'ottawa' => [
-                                        'name' => 'Ottawa',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'presque_isle' => [
-                                        'name' => 'Presque Isle',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'roscommon' => [
-                                        'name' => 'Roscommon',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'saginaw' => [
-                                        'name' => 'Saginaw',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'sanilac' => [
-                                        'name' => 'Sanilac',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'schoolcraft' => [
-                                        'name' => 'Schoolcraft',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'shiawassee' => [
-                                        'name' => 'Shiawassee',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'st_clair' => [
-                                        'name' => 'St. Clair',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'st_joseph' => [
-                                        'name' => 'St. Joseph',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'tuscola' => [
-                                        'name' => 'Tuscola',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'van_buren' => [
-                                        'name' => 'Van Buren',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'washtenaw' => [
-                                        'name' => 'Washtenaw',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                    'wayne' => [
-                                        'name' => 'Wayne',
-                                        'mortgage_fee' => 96,
-                                        'warranty_fee' => 23
-                                    ],
-                                    'wexford' => [
-                                        'name' => 'Wexford',
-                                        'mortgage_fee' => 30,
-                                        'warranty_fee' => 35
-                                    ],
-                                ];
-                            ?>
-                                <select id="county-select" name="county">
-                                    <?php foreach ($counties as $slug => $data) {
-                                        // Pass fees in data attributes so JS can use them
-                                        echo '<option value="' . esc_attr($slug) . '" 
-                                            data-mortgage="' . esc_attr($data['mortgage_fee']) . '" 
-                                            data-warranty="' . esc_attr($data['warranty_fee']) . '">'
-                                            . esc_html($data['name']) . 
+                                <select id="county-select" name="county" class="recc-input recc-input--select"  data-field="county_rates">
+                                    <?php foreach ($counties_list as $county) {
+                                        echo '<option value="' . esc_attr($county['county_name'] . '_' . esc_attr($county['mortgage_recording_fee']) . '_' . esc_attr($county['warranty_deed_fee'])) . '">'
+                                            . esc_html($county['county_name']) . 
                                             '</option>';
                                     }?>
                                 </select>
