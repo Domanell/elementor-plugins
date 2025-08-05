@@ -62,16 +62,23 @@ function real_estate_closing_calculator_register_scripts() {
         true
     );
     wp_register_script(
+        'recc-calculator',
+        plugins_url('assets/js/calculator.js', __FILE__),
+        array('jquery'),
+        '1.0.0',
+        true
+    );
+    wp_register_script(
         'net-sheet-calculator-script', 
         plugins_url('assets/js/net-sheet-calculator.js', __FILE__), 
-        array('jquery', 'recc-utils', 'recc-pdf-generator', 'recc-email-handler', 'recc-message-handler'), 
+        array('jquery', 'recc-utils', 'recc-pdf-generator', 'recc-email-handler',  'recc-message-handler', 'recc-calculator',), 
         '1.0.0',
         true
     );
     wp_register_script(
         'buyer-cash-to-close-script',
         plugins_url('assets/js/buyer-cash-to-close.js', __FILE__),
-        array('jquery', 'recc-utils', 'recc-pdf-generator', 'recc-email-handler', 'recc-message-handler'), 
+        array('jquery', 'recc-utils', 'recc-pdf-generator', 'recc-email-handler', 'recc-message-handler', 'recc-calculator'), 
         '1.0.0',
         true
     );
@@ -121,8 +128,7 @@ function real_estate_closing_calculator_add_localized_data() {
         }
     }
 
-        // Localize script with all necessary data
-  
+    // Localize script with all necessary data
     wp_localize_script('net-sheet-calculator-script', 'reccEmailData', array(
         'ajaxUrl' => admin_url('admin-ajax.php'),
         'nonce' => wp_create_nonce('recc_email_nonce'),

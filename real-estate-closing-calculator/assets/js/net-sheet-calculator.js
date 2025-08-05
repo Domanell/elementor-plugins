@@ -1,19 +1,69 @@
 (function ($) {
 	'use strict';
+	class NSCCalculator extends RECalculator {
+		constructor($calculator, labels, pdfConfig) {
+			// Call parent constructor with only the required element
+			super($calculator);
 
-	let $calculator;
-	let values = {};
-	let labels = {};
-	let insuranceRates = [];
-	let $inputs;
-	let $currencyInputs;
-	let $percentageInputs;
-	let $downloadBtn;
-	let $sendBtn;
-	let emailHandler; // Instance of EmailHandler
-	let downloadMessageHandler; // Instance for download messages
-	let emailMessageHandler; // Instance for email messages
-	let companyInfo = {}; // Store company information
+			// Initialize child-specific properties
+			this.labels = labels;
+			this.pdfConfig = pdfConfig;
+			this.insuranceRates = this._defineInsuranceRates();
+		}
+
+		_defineInsuranceRates() {
+			const rates = this.settings.insurance_rates || [];
+			return rates.map(({ insurance_is_fixed, insurance_range_from, insurance_range_to, insurance_rate }) => ({
+				isFixed: insurance_is_fixed === 'yes',
+				min: insurance_range_from || 0,
+				max: insurance_range_to || Infinity,
+				rate: insurance_rate || 0,
+			}));
+		}
+
+		calculate() {
+			// Perform all calculations
+			this.values.commission_realtor_amount = this.values.purchase_price * ((this.values.commission_realtor || 0) / 100);
+			this.values.michigan_transfer_tax = Math.ceil(this.values.purchase_price / 500) * (this.values.michigan_transfer_tax_rate || 3.75);
+			this.values.revenue_stamps = Math.ceil(this.values.purchase_price / 500) * (this.values.revenue_stamps_rate || 0.55);
+			this.values.gross_proceeds = this.values.purchase_price + (this.values.other_credits || 0);
+			this.values.title_insurance_policy = this.calculateTieredRate(this.values.purchase_price, this.insuranceRates);
+
+			this.values.total_closing_costs = [
+				this.values.commission_realtor_amount,
+				this.values.michigan_transfer_tax,
+				this.values.revenue_stamps,
+				this.values.mortgage_payoff,
+				this.values.other_mortgage_payoff,
+				this.values.special_assessment_payoff,
+				this.values.lien_release_tracking_fee,
+				this.values.property_taxes_due,
+				this.values.settlement_fee,
+				this.values.security_fee,
+				this.values.title_insurance_policy,
+				this.values.commission_realtor_extra,
+				this.values.current_water,
+				this.values.hoa_assessment,
+				this.values.water_escrow,
+				this.values.home_warranty,
+				this.values.fha,
+				this.values.misc_cost_seller,
+				this.values.seller_attorney_fee,
+			].reduce((sum, val) => sum + (val || 0), 0);
+
+			this.values.estimated_net_proceeds =
+				this.values.gross_proceeds - this.values.total_closing_costs < 0 ? 0 : this.values.gross_proceeds - this.values.total_closing_costs;
+
+			// Update input display for calculated fields (readonly fields)
+			['gross_proceeds', 'michigan_transfer_tax', 'revenue_stamps', 'title_insurance_policy', 'commission_realtor_amount'].forEach((field) => {
+				this.updateCalculatedField(field, this.values[field]);
+			});
+
+			// Update text output fields
+			this.updateTextOutput('total_closing_costs', this.values.total_closing_costs);
+			this.updateTextOutput('estimated_net_proceeds', this.values.estimated_net_proceeds);
+		}
+	}
 
 	const pdfConfig = {
 		documentTitle: 'Net Sheet Calculator Results',
@@ -29,250 +79,8 @@
 		],
 	};
 
-	const calculateHomeownersRate = (amount) => {
-		let total = 0;
-
-		for (const { min, max, rate, isFixed } of insuranceRates) {
-			if (amount >= min) {
-				if (isFixed) {
-					total += rate;
-				} else {
-					const upperBound = Math.min(amount, max);
-					const thousands = Math.ceil((upperBound - min) / 1000);
-					total += thousands * rate;
-				}
-			}
-		}
-
-		return Math.ceil(total);
-	};
-
-	// Update calculated field with formatted value
-	const updateCalculatedField = (field, value = 0) => {
-		RECCUtils.updateCalculatedField($calculator, field, value);
-	};
-
-	const updateTextOutput = (dataSelector, value) => {
-		RECCUtils.updateTextOutput($calculator, dataSelector, value);
-	};
-
-	// Calculate all values and update fields
-	const calculate = () => {
-		// Perform all calculations
-		values.commission_realtor_amount = values.purchase_price * ((values.commission_realtor || 0) / 100);
-		values.michigan_transfer_tax = Math.ceil(values.purchase_price / 500) * (values.michigan_transfer_tax_rate || 3.75);
-		values.revenue_stamps = Math.ceil(values.purchase_price / 500) * (values.revenue_stamps_rate || 0.55);
-		values.gross_proceeds = values.purchase_price + (values.other_credits || 0);
-		values.title_insurance_policy = calculateHomeownersRate(values.purchase_price);
-
-		values.total_closing_costs = [
-			values.commission_realtor_amount,
-			values.michigan_transfer_tax,
-			values.revenue_stamps,
-			values.mortgage_payoff,
-			values.other_mortgage_payoff,
-			values.special_assessment_payoff,
-			values.lien_release_tracking_fee,
-			values.property_taxes_due,
-			values.settlement_fee,
-			values.security_fee,
-			values.title_insurance_policy,
-			values.commission_realtor_extra,
-			values.current_water,
-			values.hoa_assessment,
-			values.water_escrow,
-			values.home_warranty,
-			values.fha,
-			values.misc_cost_seller,
-			values.seller_attorney_fee,
-		].reduce((sum, val) => sum + (val || 0), 0);
-
-		values.estimated_net_proceeds = values.gross_proceeds - values.total_closing_costs < 0 ? 0 : values.gross_proceeds - values.total_closing_costs;
-
-		// Update input display for calculated fields (readonly fields)
-		['gross_proceeds', 'michigan_transfer_tax', 'revenue_stamps', 'title_insurance_policy', 'commission_realtor_amount'].forEach((field) => {
-			updateCalculatedField(field, values[field]);
-		});
-
-		// Update text output fields
-		updateTextOutput('total_closing_costs', values.total_closing_costs);
-		updateTextOutput('estimated_net_proceeds', values.estimated_net_proceeds);
-	};
-
-	const debounceCalculate = RECCUtils.debounce(calculate, 300);
-
-	const handleDownload = async (e) => {
-		e.preventDefault();
-
-		// Create simple PDF data object with values and labels
-		const pdfData = { values, labels, companyInfo };
-		const $downloadBtn = $(e.currentTarget);
-
-		// Disable button to prevent multiple clicks
-		$downloadBtn.prop('disabled', true);
-
-		try {
-			if (typeof PDFGenerator === 'undefined') {
-				console.error('PDF generator not available.');
-			}
-
-			// Generate PDF using PDFGenerator
-			await PDFGenerator.downloadPDF(pdfData, pdfConfig);
-		} catch (error) {
-			downloadMessageHandler.showError('PDF generation error. Please try again.');
-		} finally {
-			// Enable button after operation
-			$downloadBtn.prop('disabled', false);
-		}
-	};
-
-	const handleSendEmail = async (e) => {
-		e.preventDefault();
-
-		const validation = emailHandler.validateValue();
-
-		if (!validation.isValid) {
-			emailHandler.showError(validation.message);
-			return;
-		}
-
-		// Create PDF data object with values and labels
-		const pdfData = { values, labels, companyInfo };
-		// Show loading state
-		const $sendBtn = $(e.currentTarget);
-		const originalBtnText = $sendBtn.text();
-		$sendBtn.prop('disabled', true).text('Sending...');
-
-		try {
-			// Generate the PDF as base64
-			const pdfBase64 = await PDFGenerator.getPDFAsBase64(pdfData, pdfConfig);
-
-			// Send the PDF to the server
-			await $.ajax({
-				url: reccEmailData.ajaxUrl,
-				type: 'POST',
-				data: {
-					action: 'recc_send_email',
-					nonce: reccEmailData.nonce,
-					email: emailHandler.getEmail(),
-					pdfBase64: pdfBase64,
-					pdfData: pdfData,
-				},
-				dataType: 'json',
-				timeout: 30000, // 30 second timeout
-				success: (response) => {
-					if (response.success) {
-						emailMessageHandler.showSuccess('Email has been sent');
-						emailHandler.reset();
-					} else {
-						emailMessageHandler.showError('There was an error sending your email. Please try again.');
-					}
-				},
-				error: (xhr, status, error) => {
-					let errorMessage = 'There was an error sending your email. Please try again.';
-					if (xhr.status === 0) {
-						errorMessage = 'Network error. Please check your connection and try again.';
-					} else if (xhr.status >= 500) {
-						errorMessage = 'Server error. Please try again in a few moments.';
-					}
-
-					emailMessageHandler.showError(errorMessage);
-					console.error('Email send error:', errorMessage);
-				},
-			});
-		} catch (error) {
-			console.error('Error generating PDF:', error);
-			// Show error message if PDF generation fails
-			emailMessageHandler.showError('PDF generation failed. Please refresh and try again.');
-		} finally {
-			// Reset button text after operation
-			$sendBtn.prop('disabled', false).text(originalBtnText);
-		}
-	};
-
-	//===============
-	// Initialization
-	//===============
-	const initElements = () => {
-		$inputs = $calculator.find('.recc-fields-wrap input');
-		$currencyInputs = $calculator.find('.recc-input--currency');
-		$percentageInputs = $calculator.find('.recc-input--percentage');
-		$downloadBtn = $calculator.find('.recc-button--download');
-		$sendBtn = $calculator.find('.recc-button--send');
-
-		// Initialize message handlers for download and email
-		downloadMessageHandler = new MessageHandler($calculator.find('#recc-download-action .recc-action__message'));
-		emailMessageHandler = new MessageHandler($calculator.find('#recc-email-action .recc-action__message'));
-
-		// Initialize email handler with email message handler
-		emailHandler = new EmailHandler($calculator, emailMessageHandler);
-	};
-
-	const initValues = () => {
-		// Initialize all input values
-		$inputs.each((index, element) => {
-			const $input = $(element);
-			const field = $input.data('field');
-			if (field) {
-				values[field] = RECCUtils.parseInputValue($input);
-			}
-		});
-	};
-
-	const initEventHandlers = () => {
-		$inputs.on('input change', (e) => {
-			const $input = $(e.currentTarget);
-			const field = $input.data('field');
-
-			if (field) {
-				const value = RECCUtils.parseInputValue($input);
-				// Update values object based on input type
-				values[field] = value;
-				// Update input value to make sure that it is in min-max range
-				// $input.val(value || '');
-				// Calculate with debounce
-				debounceCalculate();
-			}
-		});
-
-		// Special handling for currency fields
-		$currencyInputs
-			.on('blur', (e) => {
-				const $input = $(e.currentTarget);
-				const field = $input.data('field');
-
-				// Format the value as currency on blur
-				if (field) {
-					$input.val(RECCUtils.formatCurrency(values[field]));
-				}
-			})
-			.on('focus', (e) => {
-				const $input = $(e.currentTarget);
-				$input.val(RECCUtils.parseValue($input.val()) || '');
-			});
-
-		// Special handling for percentage fields
-		$percentageInputs
-			.on('blur', (e) => {
-				const $input = $(e.currentTarget);
-				const field = $input.data('field');
-				// Format the value as percentage on blur
-				if (field) {
-					$input.val(RECCUtils.formatPercentage(values[field]));
-				}
-			})
-			.on('focus', (e) => {
-				const $input = $(e.currentTarget);
-				$input.val(RECCUtils.parseValue($input.val()) || '');
-			});
-
-		// Button handlers
-		$downloadBtn.on('click', handleDownload);
-		$sendBtn.on('click', handleSendEmail);
-	};
-
-	const initLabels = (settings) => {
-		labels = {
+	const createLabelDefinitions = (settings) => {
+		return {
 			purchase_price: settings.purchase_price_label,
 			other_credits: settings.other_credits_label,
 			gross_proceeds: settings.gross_proceeds_label,
@@ -300,37 +108,17 @@
 		};
 	};
 
-	const initInsuranceRates = (settings) => {
-		const rates = settings.insurance_rates || [];
-		insuranceRates = rates.map(({ insurance_is_fixed, insurance_range_from, insurance_range_to, insurance_rate }) => ({
-			isFixed: insurance_is_fixed === 'yes',
-			min: insurance_range_from || 0,
-			max: insurance_range_to || Infinity,
-			rate: insurance_rate || 0,
-		}));
-	};
+	const init = ($calculator) => {
+		try {
+			const settings = $calculator.data('settings');
+			const labels = createLabelDefinitions(settings);
+			const calculator = new NSCCalculator($calculator, labels, pdfConfig);
 
-	const initCompanyInfo = (settings) => {
-		companyInfo = {
-			logo: reccEmailData?.siteLogo || null, // object with logo URL
-			address1: settings.address_line1,
-			address2: settings.address_line2,
-			phone: settings.phone_number,
-		};
-	};
-
-	const init = (calculatorElement) => {
-		$calculator = calculatorElement;
-
-		// Get settings directly from Elementor widget
-		const settings = { ...$calculator.data('settings') };
-		initLabels(settings);
-		initInsuranceRates(settings);
-		initElements();
-		initValues();
-		initEventHandlers();
-		initCompanyInfo(settings);
-		calculate();
+			// Perform initial calculation
+			calculator.calculate();
+		} catch (error) {
+			console.error('NSCCalculator initialization failed:', error);
+		}
 	};
 
 	// Initialize calculator when Elementor is ready
