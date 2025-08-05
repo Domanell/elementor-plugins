@@ -2,7 +2,6 @@ class RECalculator {
 	$calculator;
 	settings = {};
 	values = {};
-	labels = {};
 	$inputs;
 	$selects;
 	$currencyInputs;
@@ -20,7 +19,7 @@ class RECalculator {
 		sections: [],
 	};
 
-	constructor($calculator) {
+	constructor($calculator, pdfConfig) {
 		// Validate required parameter
 		if (!$calculator) {
 			throw new Error('RECalculator: $calculator is required');
@@ -29,6 +28,7 @@ class RECalculator {
 		// Initialize core properties
 		this.$calculator = $calculator;
 		this.settings = $calculator.data('settings') || {};
+		this.pdfConfig = pdfConfig;
 
 		// Initialize the calculator
 		this.init();
@@ -48,11 +48,9 @@ class RECalculator {
 
 	get pdfData() {
 		return {
-			values: this.values,
-			labels: this.labels,
 			companyInfo: this.companyInfo,
 			documentTitle: this.pdfConfig.documentTitle,
-			sections: this.pdfConfig.sections,
+			sections: this.configurePdfSections(),
 			filename: this.pdfConfig.filename,
 		};
 	}
@@ -80,6 +78,28 @@ class RECalculator {
 		return Math.ceil(total);
 	}
 
+	configurePdfSections() {
+		const sections = this.pdfConfig.sections.map((section) => {
+			const fields = section.fields.map((field) => {
+				const label = this.settings[field.label] || field.label;
+				let value = this.values[field.name] || '';
+
+				if (field.name === 'commission_realtor') {
+					value = `${RECCUtils.formatCurrency(values.commission_realtor_amount)} (${RECCUtils.formatPercentage(value)})`;
+				} else if (field.type === 'currency') {
+					value = RECCUtils.formatCurrency(value);
+				} else if (field.type === 'percentage') {
+					value = RECCUtils.formatPercentage(value);
+				}
+
+				return { label, value };
+			});
+			return { ...section, fields };
+		});
+
+		return sections;
+	}
+
 	// Update calculated field with formatted value
 	updateCalculatedField(field, value = 0) {
 		RECCUtils.updateCalculatedField(this.$calculator, field, value);
@@ -92,7 +112,6 @@ class RECalculator {
 	async handleDownload(e) {
 		e.preventDefault();
 
-		// Create simple PDF data object with values and labels
 		const $downloadBtn = jQuery(e.currentTarget);
 
 		// Disable button to prevent multiple clicks
@@ -106,6 +125,7 @@ class RECalculator {
 			// Generate PDF using PDFGenerator
 			await PDFGenerator.downloadPDF(this.pdfData);
 		} catch (error) {
+			console.error(error);
 			this.downloadMessageHandler.showError('PDF generation error. Please try again.');
 		} finally {
 			// Enable button after operation
@@ -147,7 +167,6 @@ class RECalculator {
 				dataType: 'json',
 				timeout: 30000, // 30 second timeout
 				success: (response) => {
-					console.log('🚀 ~ response:', response);
 					if (response.success) {
 						this.emailMessageHandler.showSuccess('Email has been sent');
 						this.emailHandler.reset();

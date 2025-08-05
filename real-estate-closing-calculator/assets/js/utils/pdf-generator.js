@@ -22,7 +22,7 @@ const PDFGenerator = (function () {
 
 	const generatePDF = async (data) => {
 		try {
-			const { labels, values, companyInfo, documentTitle, sections } = data;
+			const { companyInfo, documentTitle, sections } = data;
 			// Use the pdf-lib library that's loaded as a dependency
 			const { PDFDocument, rgb: rgbFunc, StandardFonts } = PDFLib;
 			rgb = rgbFunc;
@@ -145,13 +145,7 @@ const PDFGenerator = (function () {
 
 				// Draw fields
 				for (const field of section.fields) {
-					const label = labels[field] || field;
-					const value = values[field];
-
-					const formattedValue =
-						field === 'commission_realtor'
-							? `${RECCUtils.formatCurrency(values.commission_realtor_amount)} (${RECCUtils.formatPercentage(value)})`
-							: RECCUtils.formatCurrency(value);
+					const { label, value } = field;
 
 					page.drawText(label + ':', {
 						x: labelX + 20,
@@ -161,7 +155,7 @@ const PDFGenerator = (function () {
 						color: rgb(0, 0, 0),
 					});
 
-					page.drawText(formattedValue, {
+					page.drawText(value, {
 						x: valueX,
 						y: currentY,
 						size: config.contentFontSize,

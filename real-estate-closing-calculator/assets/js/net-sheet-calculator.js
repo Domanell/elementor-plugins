@@ -1,15 +1,12 @@
 (function ($) {
 	'use strict';
 	class NSCCalculator extends RECalculator {
-		constructor($calculator, labels, pdfConfig, emailTemplate) {
+		constructor($calculator, pdfConfig, emailTemplate) {
 			// Call parent constructor with only the required element
-			super($calculator);
+			super($calculator, pdfConfig);
 
 			// Initialize child-specific properties
-			this.labels = labels;
-			this.pdfConfig = pdfConfig;
 			this.emailTemplate = emailTemplate;
-
 			this.insuranceRates = this._defineInsuranceRates();
 		}
 
@@ -71,51 +68,73 @@
 		documentTitle: 'Net Sheet Calculator Results',
 		filename: 'net-sheet-calculator-results.pdf',
 		sections: [
-			{ title: 'Purchase Information', fields: ['purchase_price', 'other_credits', 'gross_proceeds'] },
-			{ title: 'Mortgage Payoffs', fields: ['mortgage_payoff', 'other_mortgage_payoff', 'special_assessment_payoff', 'lien_release_tracking_fee'] },
-			{ title: 'Taxes', fields: ['property_taxes_due', 'michigan_transfer_tax', 'revenue_stamps'] },
-			{ title: 'Title Fees', fields: ['settlement_fee', 'security_fee', 'title_insurance_policy'] },
-			{ title: 'Commission Fees', fields: ['commission_realtor', 'commission_realtor_extra'] },
-			{ title: 'Other Fees', fields: ['current_water', 'hoa_assessment', 'water_escrow', 'home_warranty', 'fha', 'misc_cost_seller', 'seller_attorney_fee'] },
-			{ title: 'Totals', fields: ['total_closing_costs', 'estimated_net_proceeds'] },
+			{
+				title: 'Purchase Information',
+				fields: [
+					{ name: 'purchase_price', label: 'purchase_price_label', type: 'currency' },
+					{ name: 'other_credits', label: 'other_credits_label', type: 'currency' },
+					{ name: 'gross_proceeds', label: 'gross_proceeds_label', type: 'currency' },
+				],
+			},
+			{
+				title: 'Mortgage Payoffs',
+				fields: [
+					{ name: 'mortgage_payoff', label: 'mortgage_payoff_label', type: 'currency' },
+					{ name: 'other_mortgage_payoff', label: 'other_mortgage_payoff_label', type: 'currency' },
+					{ name: 'special_assessment_payoff', label: 'special_assessment_payoff_label', type: 'currency' },
+					{ name: 'lien_release_tracking_fee', label: 'lien_release_tracking_fee_label', type: 'currency' },
+				],
+			},
+			{
+				title: 'Taxes',
+				fields: [
+					{ name: 'property_taxes_due', label: 'property_taxes_due_label', type: 'currency' },
+					{ name: 'michigan_transfer_tax', label: 'michigan_transfer_tax_label', type: 'currency' },
+					{ name: 'revenue_stamps', label: 'revenue_stamps_label', type: 'currency' },
+				],
+			},
+			{
+				title: 'Title Fees',
+				fields: [
+					{ name: 'settlement_fee', label: 'settlement_fee_label', type: 'currency' },
+					{ name: 'security_fee', label: 'security_fee_label', type: 'currency' },
+					{ name: 'title_insurance_policy', label: 'title_insurance_policy_label', type: 'currency' },
+				],
+			},
+			{
+				title: 'Commission Fees',
+				fields: [
+					{ name: 'commission_realtor', label: 'commission_realtor_label', type: 'percentage' },
+					{ name: 'commission_realtor_extra', label: 'commission_realtor_extra_label', type: 'currency' },
+					{ name: 'commission_realtor_amount', label: 'commission_realtor_amount_label', type: 'currency' },
+				],
+			},
+			{
+				title: 'Other Fees',
+				fields: [
+					{ name: 'current_water', label: 'current_water_label', type: 'currency' },
+					{ name: 'hoa_assessment', label: 'hoa_assessment_label', type: 'currency' },
+					{ name: 'water_escrow', label: 'water_escrow_label', type: 'currency' },
+					{ name: 'home_warranty', label: 'home_warranty_label', type: 'currency' },
+					{ name: 'fha', label: 'fha_label', type: 'currency' },
+					{ name: 'misc_cost_seller', label: 'misc_cost_seller_label', type: 'currency' },
+					{ name: 'seller_attorney_fee', label: 'seller_attorney_fee_label', type: 'currency' },
+				],
+			},
+			{
+				title: 'Totals',
+				fields: [
+					{ name: 'total_closing_costs', label: 'total_closing_costs_label', type: 'currency' },
+					{ name: 'estimated_net_proceeds', label: 'estimated_net_proceeds_label', type: 'currency' },
+				],
+			},
 		],
-	};
-
-	const createLabelDefinitions = (settings) => {
-		return {
-			purchase_price: settings.purchase_price_label,
-			other_credits: settings.other_credits_label,
-			gross_proceeds: settings.gross_proceeds_label,
-			mortgage_payoff: settings.mortgage_payoff_label,
-			other_mortgage_payoff: settings.other_mortgage_payoff_label,
-			special_assessment_payoff: settings.special_assessment_payoff_label,
-			lien_release_tracking_fee: settings.lien_release_tracking_fee_label,
-			property_taxes_due: settings.property_taxes_due_label,
-			michigan_transfer_tax: settings.michigan_transfer_tax_label,
-			revenue_stamps: settings.revenue_stamps_label,
-			settlement_fee: settings.settlement_fee_label,
-			security_fee: settings.security_fee_label,
-			title_insurance_policy: settings.title_insurance_policy_label,
-			commission_realtor: settings.commission_realtor_label,
-			commission_realtor_extra: settings.commission_realtor_extra_label,
-			current_water: settings.current_water_label,
-			hoa_assessment: settings.hoa_assessment_label,
-			water_escrow: settings.water_escrow_label,
-			home_warranty: settings.home_warranty_label,
-			fha: settings.fha_label,
-			misc_cost_seller: settings.misc_cost_seller_label,
-			seller_attorney_fee: settings.seller_attorney_fee_label,
-			total_closing_costs: settings.total_closing_costs_label,
-			estimated_net_proceeds: settings.estimated_net_proceeds_label,
-		};
 	};
 
 	const init = ($calculator) => {
 		try {
-			const settings = $calculator.data('settings');
-			const labels = createLabelDefinitions(settings);
 			const emailTemplate = 'net-sheet-template';
-			const calculator = new NSCCalculator($calculator, labels, pdfConfig, emailTemplate);
+			const calculator = new NSCCalculator($calculator, pdfConfig, emailTemplate);
 
 			// Perform initial calculation
 			calculator.calculate();

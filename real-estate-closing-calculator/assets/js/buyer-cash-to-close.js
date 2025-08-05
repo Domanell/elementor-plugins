@@ -1,13 +1,11 @@
 (function ($) {
 	'use strict';
 	class BCCalculator extends RECalculator {
-		constructor($calculator, labels, pdfConfig, emailTemplate) {
+		constructor($calculator, pdfConfig, emailTemplate) {
 			// Call parent constructor with only the required element
-			super($calculator);
+			super($calculator, pdfConfig);
 
 			// Initialize child-specific properties
-			this.labels = labels;
-			this.pdfConfig = pdfConfig;
 			this.emailTemplate = emailTemplate;
 			this.loanPolicyRates = this._defineLoanPolicyRates();
 		}
@@ -26,7 +24,7 @@
 			// Perform all calculations
 			this.values.loan_insurance_policy = this.calculateTieredRate(this.values.purchase_price, this.loanPolicyRates);
 			const [countyName, mortgageFee, warrantyFee] = (this.values.county_rates || '').split('_');
-
+			this.values.county = countyName || '';
 			this.values.mortgage_recording_fee = parseFloat(mortgageFee) || 0;
 			this.values.warranty_deed_recording_fee = parseFloat(warrantyFee) || 0;
 
@@ -70,48 +68,62 @@
 		documentTitle: 'Buyer Cash to Close Calculator Results',
 		filename: 'buyer_cash_to_close_results.pdf',
 		sections: [
-			{ title: 'Transaction Summary', fields: ['purchase_price'] },
-			{ title: 'Transaction Credits', fields: ['loan_amount', 'earnest_money_deposit', 'seller_credit', 'agent_credit'] },
-			{ title: 'Title/Settlement costs', fields: ['loan_insurance_policy', 'settlement_fee', 'security_fee'] },
-			{ title: 'Recording Costs', fields: ['erecording_fee', 'mortgage_recording_fee', 'warranty_deed_recording_fee'] },
+			{
+				title: 'Transaction Summary',
+				fields: [
+					{ name: 'purchase_price', label: 'purchase_price_label', type: 'currency' },
+					{ name: 'county', label: 'county_label', type: 'text' },
+				],
+			},
+			{
+				title: 'Transaction Credits',
+				fields: [
+					{ name: 'loan_amount', label: 'loan_amount_label', type: 'currency' },
+					{ name: 'earnest_money_deposit', label: 'earnest_money_deposit_label', type: 'currency' },
+					{ name: 'seller_credit', label: 'seller_credit_label', type: 'currency' },
+					{ name: 'agent_credit', label: 'agent_credit_label', type: 'currency' },
+				],
+			},
+			{
+				title: 'Title/Settlement costs',
+				fields: [
+					{ name: 'loan_insurance_policy', label: 'loan_insurance_policy_label', type: 'currency' },
+					{ name: 'settlement_fee', label: 'settlement_fee_label', type: 'currency' },
+					{ name: 'security_fee', label: 'security_fee_label', type: 'currency' },
+				],
+			},
+			{
+				title: 'Recording Costs',
+				fields: [
+					{ name: 'erecording_fee', label: 'erecording_fee_label', type: 'currency' },
+					{ name: 'mortgage_recording_fee', label: 'mortgage_recording_fee_label', type: 'currency' },
+					{ name: 'warranty_deed_recording_fee', label: 'warranty_deed_recording_fee_label', type: 'currency' },
+				],
+			},
 			{
 				title: 'Other closing costs',
-				fields: ['tax_proration_estimate', 'realtor_compliance_fee', 'hoa_transfer_fee', 'hoa_prepaid_assessment', 'other_fees'],
+				fields: [
+					{ name: 'tax_proration_estimate', label: 'tax_proration_estimate_label', type: 'currency' },
+					{ name: 'realtor_compliance_fee', label: 'realtor_compliance_fee_label', type: 'currency' },
+					{ name: 'hoa_transfer_fee', label: 'hoa_transfer_fee_label', type: 'currency' },
+					{ name: 'hoa_prepaid_assessment', label: 'hoa_prepaid_assessment_label', type: 'currency' },
+					{ name: 'other_fees', label: 'other_fees_label', type: 'currency' },
+				],
 			},
-			{ title: 'Totals', fields: ['total_closing_costs', 'estimated_net_proceeds'] },
+			{
+				title: 'Totals',
+				fields: [
+					{ name: 'total_closing_costs', label: 'total_closing_costs_label', type: 'currency' },
+					{ name: 'estimated_net_proceeds', label: 'estimated_net_proceeds_label', type: 'currency' },
+				],
+			},
 		],
-	};
-
-	const createLabelDefinitions = (settings) => {
-		return {
-			purchase_price: settings.purchase_price_label,
-			county: settings.county_label,
-			loan_amount: settings.loan_amount_label,
-			earnest_money_deposit: settings.earnest_money_deposit_label,
-			seller_credit: settings.seller_credit_label,
-			agent_credit: settings.agent_credit_label,
-			loan_insurance_policy: settings.loan_insurance_policy_label,
-			settlement_fee: settings.settlement_fee_label,
-			security_fee: settings.security_fee_label,
-			erecording_fee: settings.erecording_fee_label,
-			mortgage_recording_fee: settings.mortgage_recording_fee_label,
-			warranty_deed_recording_fee: settings.warranty_deed_recording_fee_label,
-			tax_proration_estimate: settings.tax_proration_estimate_label,
-			realtor_compliance_fee: settings.realtor_compliance_fee_label,
-			hoa_transfer_fee: settings.hoa_transfer_fee_label,
-			hoa_prepaid_assessment: settings.hoa_prepaid_assessment_label,
-			other_fees: settings.other_fees_label,
-			total_closing_costs: settings.total_closing_costs_label,
-			estimated_net_proceeds: settings.estimated_net_proceeds_label,
-		};
 	};
 
 	const init = ($calculator) => {
 		try {
-			const settings = $calculator.data('settings');
-			const labels = createLabelDefinitions(settings);
 			const emailTemplate = 'buyer-cash-template';
-			const calculator = new BCCalculator($calculator, labels, pdfConfig, emailTemplate);
+			const calculator = new BCCalculator($calculator, pdfConfig, emailTemplate);
 
 			// Perform initial calculation
 			calculator.calculate();
