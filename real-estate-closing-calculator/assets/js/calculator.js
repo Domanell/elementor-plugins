@@ -12,7 +12,6 @@ class RECalculator {
 	emailHandler; // Instance of EmailHandler
 	downloadMessageHandler; // Instance for download messages
 	emailMessageHandler; // Instance for email messages
-	companyInfo = {}; // Store company information
 
 	pdfConfig = {
 		documentTitle: '',
@@ -28,7 +27,7 @@ class RECalculator {
 
 		// Initialize core properties
 		this.$calculator = $calculator;
-		this.settings = this.$calculator.data('settings') || {};
+		this.settings = $calculator.data('settings') || {};
 
 		// Initialize the calculator
 		this.init();
@@ -43,6 +42,16 @@ class RECalculator {
 			address1: this.settings.address_line1,
 			address2: this.settings.address_line2,
 			phone: this.settings.phone_number,
+		};
+	}
+
+	get pdfData() {
+		return {
+			values: this.values,
+			labels: this.labels,
+			companyInfo: this.companyInfo,
+			documentTitle: this.pdfConfig.documentTitle,
+			sections: this.pdfConfig.sections,
 		};
 	}
 
@@ -82,7 +91,6 @@ class RECalculator {
 		e.preventDefault();
 
 		// Create simple PDF data object with values and labels
-		const pdfData = { values: this.values, labels: this.labels, companyInfo: this.companyInfo };
 		const $downloadBtn = jQuery(e.currentTarget);
 
 		// Disable button to prevent multiple clicks
@@ -94,7 +102,7 @@ class RECalculator {
 			}
 
 			// Generate PDF using PDFGenerator
-			await PDFGenerator.downloadPDF(pdfData, this.pdfConfig);
+			await PDFGenerator.downloadPDF(this.pdfData);
 		} catch (error) {
 			this.downloadMessageHandler.showError('PDF generation error. Please try again.');
 		} finally {
@@ -113,8 +121,6 @@ class RECalculator {
 			return;
 		}
 
-		// Create PDF data object with values and labels
-		const pdfData = { values: this.values, labels: this.labels, companyInfo: this.companyInfo };
 		// Show loading state
 		const $sendBtn = jQuery(e.currentTarget);
 		const originalBtnText = $sendBtn.text();
@@ -122,7 +128,7 @@ class RECalculator {
 
 		try {
 			// Generate the PDF as base64
-			const pdfBase64 = await PDFGenerator.getPDFAsBase64(pdfData, this.pdfConfig);
+			const pdfBase64 = await PDFGenerator.getPDFAsBase64(this.pdfData);
 
 			// Send the PDF to the server
 			await jQuery.ajax({
@@ -133,7 +139,7 @@ class RECalculator {
 					nonce: reccEmailData.nonce,
 					email: this.emailHandler.getEmail(),
 					pdfBase64: pdfBase64,
-					pdfData: pdfData,
+					pdfData: this.pdfData,
 				},
 				dataType: 'json',
 				timeout: 30000, // 30 second timeout
