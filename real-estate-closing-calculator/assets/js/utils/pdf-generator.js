@@ -20,19 +20,9 @@ const PDFGenerator = (function () {
 		margin: 40,
 	};
 
-	// Sections in order of appearance
-	const sections = [
-		{ title: 'Purchase Information', fields: ['purchase_price', 'other_credits', 'gross_proceeds'] },
-		{ title: 'Mortgage Payoffs', fields: ['mortgage_payoff', 'other_mortgage_payoff', 'special_assessment_payoff', 'lien_release_tracking_fee'] },
-		{ title: 'Taxes', fields: ['property_taxes_due', 'michigan_transfer_tax', 'revenue_stamps'] },
-		{ title: 'Title Fees', fields: ['settlement_fee', 'security_fee', 'title_insurance_policy'] },
-		{ title: 'Commission Fees', fields: ['commission_realtor', 'commission_realtor_extra'] },
-		{ title: 'Other Fees', fields: ['current_water', 'hoa_assessment', 'water_escrow', 'home_warranty', 'fha', 'misc_cost_seller', 'seller_attorney_fee'] },
-		{ title: 'Totals', fields: ['total_closing_costs', 'estimated_net_proceeds'] },
-	];
-
-	const generatePDF = async (data, documentTitle = 'Net Sheet Calculator Results') => {
+	const generatePDF = async (data, config) => {
 		try {
+			const { documentTitle, filename, sections } = config;
 			const { labels, values, companyInfo } = data;
 			// Use the pdf-lib library that's loaded as a dependency
 			const { PDFDocument, rgb: rgbFunc, StandardFonts } = PDFLib;
@@ -204,13 +194,13 @@ const PDFGenerator = (function () {
 		}
 	};
 
-	const downloadPDF = async (data, filename = 'net-sheet-calculator-results.pdf') => {
+	const downloadPDF = async (data, config) => {
 		try {
-			const pdfBlob = await generatePDF(data);
+			const pdfBlob = await generatePDF(data, config);
 			const blobUrl = URL.createObjectURL(pdfBlob);
 			const link = document.createElement('a');
 			link.href = blobUrl;
-			link.download = filename;
+			link.download = config.filename || 'calcualtor-result.pdf';
 			link.click();
 
 			// Clean up the blob URL after a short delay
@@ -228,11 +218,15 @@ const PDFGenerator = (function () {
 	/**
 	 * Convert PDF to base64 string for sending via AJAX
 	 * @param {Object} data - The calculator data
+	 * @param {Object} config - PDF configuration
+	 * @param {string} config.documentTitle - Title of the PDF document
+	 * @param {string} config.filename - Name of the PDF file
+	 * @param {Array} config.sections - Sections to include in the PDF
 	 * @returns {Promise<string>} - Base64 encoded PDF
 	 */
-	const getPDFAsBase64 = async (data) => {
+	const getPDFAsBase64 = async (data, config) => {
 		try {
-			const pdfBlob = await generatePDF(data);
+			const pdfBlob = await generatePDF(data, config);
 
 			return new Promise((resolve, reject) => {
 				const reader = new FileReader();

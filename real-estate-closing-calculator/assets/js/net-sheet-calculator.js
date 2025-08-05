@@ -15,6 +15,20 @@
 	let emailMessageHandler; // Instance for email messages
 	let companyInfo = {}; // Store company information
 
+	const pdfConfig = {
+		documentTitle: 'Net Sheet Calculator Results',
+		filename: 'net-sheet-calculator-results.pdf',
+		sections: [
+			{ title: 'Purchase Information', fields: ['purchase_price', 'other_credits', 'gross_proceeds'] },
+			{ title: 'Mortgage Payoffs', fields: ['mortgage_payoff', 'other_mortgage_payoff', 'special_assessment_payoff', 'lien_release_tracking_fee'] },
+			{ title: 'Taxes', fields: ['property_taxes_due', 'michigan_transfer_tax', 'revenue_stamps'] },
+			{ title: 'Title Fees', fields: ['settlement_fee', 'security_fee', 'title_insurance_policy'] },
+			{ title: 'Commission Fees', fields: ['commission_realtor', 'commission_realtor_extra'] },
+			{ title: 'Other Fees', fields: ['current_water', 'hoa_assessment', 'water_escrow', 'home_warranty', 'fha', 'misc_cost_seller', 'seller_attorney_fee'] },
+			{ title: 'Totals', fields: ['total_closing_costs', 'estimated_net_proceeds'] },
+		],
+	};
+
 	const calculateHomeownersRate = (amount) => {
 		let total = 0;
 
@@ -103,7 +117,7 @@
 			}
 
 			// Generate PDF using PDFGenerator
-			await PDFGenerator.downloadPDF(pdfData, 'net-sheet-calculator-results.pdf');
+			await PDFGenerator.downloadPDF(pdfData, pdfConfig);
 		} catch (error) {
 			downloadMessageHandler.showError('PDF generation error. Please try again.');
 		} finally {
@@ -131,7 +145,7 @@
 
 		try {
 			// Generate the PDF as base64
-			const pdfBase64 = await PDFGenerator.getPDFAsBase64(pdfData);
+			const pdfBase64 = await PDFGenerator.getPDFAsBase64(pdfData, pdfConfig);
 
 			// Send the PDF to the server
 			await $.ajax({
