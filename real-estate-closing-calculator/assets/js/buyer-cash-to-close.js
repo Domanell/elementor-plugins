@@ -112,10 +112,7 @@
 			},
 			{
 				title: 'Totals',
-				fields: [
-					{ name: 'total_closing_costs', label: 'total_closing_costs_label', type: 'currency' },
-					{ name: 'estimated_net_proceeds', label: 'estimated_net_proceeds_label', type: 'currency' },
-				],
+				fields: [{ name: 'total_closing_costs', label: 'total_closing_costs_label', type: 'currency' }],
 			},
 		],
 	};

@@ -1280,15 +1280,8 @@ class Buyer_Cash_To_Close_Widget extends \Elementor\Widget_Base {
                                 $0.00
                             </div>
                         </div>
-                        <div class="recc-field">
-                            <div class="recc-field__label">
-                                <?php echo esc_html($settings['estimated_net_proceeds_label']); ?>
-                            </div>
-                            <div class="recc-field__output" data-field="estimated_net_proceeds">
-                                $0.00
-                            </div>
-                        </div>
-                    </div>                    <!-- Action Buttons -->
+                    </div>                    
+                    <!-- Action Buttons -->
                     <div class="recc-actions">
                         <div class="recc-action" id="recc-download-action">
                             <button type="button" class="recc-button recc-button--download">Download PDF</button>                    

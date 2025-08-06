@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 
 // Extract buyer-specific data with fallbacks
 $purchase_price = isset($pdf_data['values']['purchase_price']) ? '$' . number_format($pdf_data['values']['purchase_price'], 2) : 'N/A';
-$estimated_net = isset($pdf_data['values']['estimated_net_proceeds']) ? '$' . number_format($pdf_data['values']['estimated_net_proceeds'], 2) : 'N/A';
+$total_closing_costs = isset($pdf_data['values']['total_closing_costs']) ? '$' . number_format($pdf_data['values']['total_closing_costs'], 2) : 'N/A';
 ?>
 <!DOCTYPE html>
 <html>
@@ -37,7 +37,7 @@ $estimated_net = isset($pdf_data['values']['estimated_net_proceeds']) ? '$' . nu
         <div style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin: 20px 0;">
             <h3 style="margin-top: 0;">Summary:</h3>
             <p><strong>Purchase Price:</strong> <?php echo esc_html($purchase_price); ?></p>
-            <p><strong>Estimated Net Proceeds:</strong> <?php echo esc_html($estimated_net); ?></p>
+            <p><strong>Total Closing Costs:</strong> <?php echo esc_html($total_closing_costs); ?></p>
         </div>
         
         <p>For a detailed breakdown of all costs and calculations, please review the attached PDF.</p>
