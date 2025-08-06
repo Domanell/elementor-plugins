@@ -44,10 +44,16 @@ class RECC_Email_Handler {
         // Get PDF data and template name
         $pdf_base64 = isset($_POST['pdfBase64']) ? $_POST['pdfBase64'] : '';
         $pdf_data = isset($_POST['pdfData']) ? $_POST['pdfData'] : null;
+        $fieldValues = isset($_POST['values']) ? $_POST['values'] : array();
         $template_name = isset($_POST['templateName']) ? sanitize_text_field($_POST['templateName']) : 'net-sheet-template';
         
-        if (empty($pdf_base64) || !$pdf_data || !isset($pdf_data['values'])) {
-            wp_send_json_error(array('message' => 'Invalid PDF data provided.'));
+        if (empty($pdf_base64) || !$pdf_data ) {
+            wp_send_json_error(array('message' => 'Missing PDF data.'));
+            return;
+        }
+
+        if (!$fieldValues || !is_array($fieldValues)) {
+            wp_send_json_error(array('message' => 'Invalid field values.'));
             return;
         }
 
@@ -61,7 +67,7 @@ class RECC_Email_Handler {
 
         // Set up email
         $subject = apply_filters('recc_email_subject', 'Your Real Estate Closing Calculator Results');
-        $message = self::get_email_body($pdf_data, $template_name);
+        $message = self::get_email_body($pdf_data, $template_name, $fieldValues);
         
         // Check if template loading failed
         if ($message === false) {
@@ -79,7 +85,7 @@ class RECC_Email_Handler {
             wp_mkdir_p($unique_folder_path);
         }
         
-        $pdf_filename = 'real-estate-closing-calculator.pdf';
+        $pdf_filename = 'everest-title-calculator-results.pdf';
         $pdf_path = $unique_folder_path . '/' . $pdf_filename;
         
         // Save PDF file temporarily
@@ -110,9 +116,10 @@ class RECC_Email_Handler {
      * 
      * @param array $pdf_data The calculator data
      * @param string $template_name The template name to use
+     * @param array $fieldValues The field values from the calculator
      * @return string Email body HTML
      */
-    private static function get_email_body($pdf_data, $template_name = 'net-sheet-template') {
+    private static function get_email_body($pdf_data, $template_name = 'net-sheet-template', $fieldValues = array()) {
         // Pass all available data to template
         $template_data = array(
             'pdf_data' => $pdf_data,
@@ -120,7 +127,8 @@ class RECC_Email_Handler {
             'site_url' => get_bloginfo('url'),
             'site_admin_email' => get_bloginfo('admin_email'),
             'current_year' => date('Y'),
-            'template_name' => $template_name
+            'template_name' => $template_name,
+            'fieldValues' => $fieldValues
         );
         
         // Load the template

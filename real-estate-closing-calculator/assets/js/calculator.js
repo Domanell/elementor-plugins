@@ -162,6 +162,7 @@ class RECalculator {
 					email: this.emailHandler.getEmail(),
 					pdfBase64: pdfBase64,
 					pdfData: this.pdfData,
+					values: this.values,
 					templateName: this.emailTemplate,
 				},
 				dataType: 'json',

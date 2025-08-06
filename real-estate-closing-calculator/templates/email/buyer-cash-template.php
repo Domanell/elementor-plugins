@@ -17,8 +17,8 @@ if (!defined('ABSPATH')) {
 }
 
 // Extract buyer-specific data with fallbacks
-$purchase_price = isset($pdf_data['values']['purchase_price']) ? '$' . number_format($pdf_data['values']['purchase_price'], 2) : 'N/A';
-$total_closing_costs = isset($pdf_data['values']['total_closing_costs']) ? '$' . number_format($pdf_data['values']['total_closing_costs'], 2) : 'N/A';
+$purchase_price = isset($variables['fieldValues']['purchase_price']) ? '$' . number_format($variables['fieldValues']['purchase_price'], 2) : 'N/A';
+$total_closing_costs = isset($variables['fieldValues']['total_closing_costs']) ? '$' . number_format($variables['fieldValues']['total_closing_costs'], 2) : 'N/A';
 ?>
 <!DOCTYPE html>
 <html>

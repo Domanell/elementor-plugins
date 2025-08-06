@@ -17,12 +17,8 @@ if (!defined('ABSPATH')) {
 }
 
 // Extract seller-specific data with fallbacks
-$estimated_net = isset($pdf_data['values']['estimated_net_proceeds']) ? '$' . number_format($pdf_data['values']['estimated_net_proceeds'], 2) : 'N/A';
-$purchase_price = isset($pdf_data['values']['purchase_price']) ? '$' . number_format($pdf_data['values']['purchase_price'], 2) : 'N/A';
-
-// Additional seller data that might be available
-$commission_rate = isset($pdf_data['values']['commission_rate']) ? $pdf_data['values']['commission_rate'] . '%' : '6%';
-$closing_costs = isset($pdf_data['values']['closing_costs']) ? '$' . number_format($pdf_data['values']['closing_costs'], 2) : 'N/A';
+$estimated_net = isset($variables['fieldValues']['estimated_net_proceeds']) ? '$' . number_format($variables['fieldValues']['estimated_net_proceeds'], 2) : 'N/A';
+$purchase_price = isset($variables['fieldValues']['purchase_price']) ? '$' . number_format($variables['fieldValues']['purchase_price'], 2) : 'N/A';
 ?>
 <!DOCTYPE html>
 <html>
