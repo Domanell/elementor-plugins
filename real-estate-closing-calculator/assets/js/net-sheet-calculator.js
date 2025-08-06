@@ -106,7 +106,6 @@
 				fields: [
 					{ name: 'commission_realtor', label: 'commission_realtor_label', type: 'percentage' },
 					{ name: 'commission_realtor_extra', label: 'commission_realtor_extra_label', type: 'currency' },
-					{ name: 'commission_realtor_amount', label: 'commission_realtor_amount_label', type: 'currency' },
 				],
 			},
 			{

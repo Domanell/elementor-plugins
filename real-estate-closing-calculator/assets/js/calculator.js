@@ -85,7 +85,7 @@ class RECalculator {
 				let value = this.values[field.name] || '';
 
 				if (field.name === 'commission_realtor') {
-					value = `${RECCUtils.formatCurrency(values.commission_realtor_amount)} (${RECCUtils.formatPercentage(value)})`;
+					value = `${RECCUtils.formatCurrency(this.values.commission_realtor_amount)} (${RECCUtils.formatPercentage(value)})`;
 				} else if (field.type === 'currency') {
 					value = RECCUtils.formatCurrency(value);
 				} else if (field.type === 'percentage') {

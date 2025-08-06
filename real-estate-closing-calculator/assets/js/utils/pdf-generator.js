@@ -188,7 +188,6 @@ const PDFGenerator = (function () {
 	};
 
 	const downloadPDF = async (data) => {
-		console.log(data);
 		try {
 			const pdfBlob = await generatePDF(data);
 			const blobUrl = URL.createObjectURL(pdfBlob);
