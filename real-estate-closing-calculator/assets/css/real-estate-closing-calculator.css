@@ -102,7 +102,8 @@
 .recc-field__input-wrap input[type='search'],
 .recc-field__input-wrap input[type='tel'],
 .recc-field__input-wrap input[type='text'],
-.recc-field__input-wrap input[type='url'] {
+.recc-field__input-wrap input[type='url'],
+.recc-field__input-wrap select {
 	width: 100%;
 	padding: 7px;
 	border: 1px solid var(--e-global-color-primary);
@@ -249,9 +250,11 @@
 
 	.recc-action {
 		display: flex;
-		/* flex-wrap: wrap; */
+		flex-direction: column;
 		justify-content: space-between;
-		
+	}
+	.recc-action__row{
+		flex-direction: row;
 	}
 
 	#recc-email-action{

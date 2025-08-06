@@ -1,8 +1,8 @@
 <?php
 /**
  * Plugin Name: Real Estate Closing Calculator
- * Description: An Elementor widget that calculates estimated proceeds from a real estate transaction.
- * Version: 1.0.0
+ * Description: Adds two custom Elementor widgets - Net Sheet Calculator and Buyer Cash to Close Calculator.
+ * Version: 2.0
  * Author: MKDev
  * Text Domain: real-estate-closing-calculator
  */

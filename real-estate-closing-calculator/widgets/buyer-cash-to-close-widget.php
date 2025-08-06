@@ -1268,7 +1268,7 @@ class Buyer_Cash_To_Close_Widget extends \Elementor\Widget_Base {
                             <button type="button" class="recc-button recc-button--download">Download PDF</button>                    
                             <div class="recc-action__message"></div>
                         </div>
-                        <div class="recc-action" id="recc-email-action">
+                        <div class="recc-action recc-action__row" id="recc-email-action">
                             <div class="recc-action__email">
                                 <input type="email" name="email" placeholder="Enter your email address" required>
                                 <div class="recc-action__message"></div>
