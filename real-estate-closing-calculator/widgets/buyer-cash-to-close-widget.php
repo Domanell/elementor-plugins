@@ -841,25 +841,6 @@ class Buyer_Cash_To_Close_Widget extends \Elementor\Widget_Base {
             ]
         );
 
-
-        $this->add_control(
-            'estimated_net_proceeds_heading',
-            [
-                'label'       => esc_html__('Estimated Net Proceeds', 'real-estate-closing-calculator'),
-                'type'        => \Elementor\Controls_Manager::HEADING,
-                'separator'   => 'before',
-            ]
-        );
-
-        $this->add_control(
-            'estimated_net_proceeds_label',
-            [
-                'label'       => esc_html__('Label', 'real-estate-closing-calculator'),
-                'type'        => \Elementor\Controls_Manager::TEXT,
-                'default'     => esc_html__('Estimated Net Proceeds', 'real-estate-closing-calculator'),
-                'frontend_available' => true,
-            ]
-        );
         $this->add_control(
             'total_disclaimer_text_heading',
             [
