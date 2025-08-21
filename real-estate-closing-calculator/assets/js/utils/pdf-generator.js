@@ -145,23 +145,37 @@ const PDFGenerator = (function () {
 
 				// Draw fields
 				for (const field of section.fields) {
-					const { label, value } = field;
+					const { label, value, type } = field;
 
-					page.drawText(label + ':', {
-						x: labelX + 20,
-						y: currentY,
-						size: config.contentFontSize,
-						font: font,
-						color: rgb(0, 0, 0),
-					});
+					// Handle different field types
+					if (type === 'customText') {
+						// For customText, display just the value as a paragraph without any label
+						page.drawText(value, {
+							x: labelX + 20,
+							y: currentY,
+							size: config.contentFontSize,
+							font: font,
+							color: rgb(0, 0, 0),
+							maxWidth: width - (labelX + 20) - margin, // Allow text to wrap within margins
+						});
+					} else {
+						// Standard field rendering with label and value
+						page.drawText(label + ':', {
+							x: labelX + 20,
+							y: currentY,
+							size: config.contentFontSize,
+							font: font,
+							color: rgb(0, 0, 0),
+						});
 
-					page.drawText(value, {
-						x: valueX,
-						y: currentY,
-						size: config.contentFontSize,
-						font: boldFont,
-						color: rgb(0, 0, 0),
-					});
+						page.drawText(value, {
+							x: valueX,
+							y: currentY,
+							size: config.contentFontSize,
+							font: boldFont,
+							color: rgb(0, 0, 0),
+						});
+					}
 
 					currentY -= lineHeight;
 				}

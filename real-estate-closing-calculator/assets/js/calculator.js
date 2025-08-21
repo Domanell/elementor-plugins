@@ -90,9 +90,11 @@ class RECalculator {
 					value = RECCUtils.formatCurrency(value);
 				} else if (field.type === 'percentage') {
 					value = RECCUtils.formatPercentage(value);
+				} else if (field.type === 'customText') {
+					value = field.value;
 				}
 
-				return { label, value };
+				return { label, value, type: field.type };
 			});
 			return { ...section, fields };
 		});

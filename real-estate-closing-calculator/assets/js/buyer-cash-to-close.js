@@ -119,8 +119,8 @@
 				fields: [
 					{
 						name: 'disclaimer',
-						label: 'For refinances, a $47.25 Lien Release Tracking Fee applies, in addition to other applicable fees.',
-						type: 'text',
+						value: 'For refinances, a $47.25 Lien Release Tracking Fee applies, in addition to other applicable fees.',
+						type: 'customText',
 					},
 				],
 			},
