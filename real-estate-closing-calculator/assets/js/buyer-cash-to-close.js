@@ -119,7 +119,7 @@
 				fields: [
 					{
 						name: 'disclaimer',
-						value: 'For refinances, a $47.25 Lien Release Tracking Fee applies, in addition to other applicable fees.',
+						value: '',
 						type: 'customText',
 					},
 				],
@@ -130,6 +130,8 @@
 	const init = ($calculator) => {
 		try {
 			const emailTemplate = 'buyer-cash-template';
+			// Update disclaimer value
+			pdfConfig.sections.find((section) => section.title === 'Disclaimer').fields[0].value = $calculator.data('settings').disclaimer || '';
 			const calculator = new BCCalculator($calculator, pdfConfig, emailTemplate);
 
 			// Perform initial calculation

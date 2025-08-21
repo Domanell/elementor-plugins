@@ -927,6 +927,28 @@ class Buyer_Cash_To_Close_Widget extends \Elementor\Widget_Base {
         );
 
         $this->end_controls_section();
+
+        // Section for PDF Content
+        $this->start_controls_section(
+            'section_pdf_content',
+            [
+                'label' => esc_html__('PDF Content', 'real-estate-closing-calculator'),
+                'tab'   => \Elementor\Controls_Manager::TAB_CONTENT,
+            ]
+        );
+
+        $this->add_control(
+            'disclaimer',
+            [
+                'label'       => esc_html__('Disclaimer Text', 'real-estate-closing-calculator'),
+                'type'        => \Elementor\Controls_Manager::TEXTAREA,
+                'default'     => 'For refinances, a $47.25 Lien Release Tracking Fee applies, in addition to other applicable fees.',
+                'description' => esc_html__('This text will appear in the PDF disclaimer section.', 'real-estate-closing-calculator'),
+                'frontend_available' => true,
+            ]
+        );
+
+        $this->end_controls_section();
     }
 
     /**

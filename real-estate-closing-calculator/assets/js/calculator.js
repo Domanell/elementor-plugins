@@ -305,6 +305,14 @@ class RECalculator {
 		this.$sendBtn.on('click', this.handleSendEmail.bind(this));
 	}
 
+	getSettingsValue(name) {
+		const value = this.settings[name];
+		if (value === undefined || value === null) {
+			return '';
+		}
+		return value;
+	}
+
 	init() {
 		// Get settings directly from Elementor widget
 		this.settings = this.$calculator.data('settings');
