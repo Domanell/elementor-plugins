@@ -18,6 +18,7 @@ if (!defined('ABSPATH')) {
 
 // Extract buyer-specific data with fallbacks
 $purchase_price = isset($variables['fieldValues']['purchase_price']) ? '$' . number_format($variables['fieldValues']['purchase_price'], 2) : 'N/A';
+$loan_amount = isset($variables['fieldValues']['loan_amount']) ? '$' . number_format($variables['fieldValues']['loan_amount'], 2) : 'N/A';
 $total_closing_costs = isset($variables['fieldValues']['total_closing_costs']) ? '$' . number_format($variables['fieldValues']['total_closing_costs'], 2) : 'N/A';
 ?>
 <!DOCTYPE html>
@@ -37,7 +38,10 @@ $total_closing_costs = isset($variables['fieldValues']['total_closing_costs']) ?
         <div style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 15px; margin: 20px 0;">
             <h3 style="margin-top: 0;">Summary:</h3>
             <p><strong>Purchase Price:</strong> <?php echo esc_html($purchase_price); ?></p>
+            <p><strong>Loan Amount:</strong> <?php echo esc_html($loan_amount); ?></p>
             <p><strong>Total Closing Costs:</strong> <?php echo esc_html($total_closing_costs); ?></p>
+            <p><strong>Disclaimer:</strong><br/>
+            For refinances, a $47.25 Lien Release Tracking Fee applies, in addition to other applicable fees.</p>
         </div>
         
         <p>For a detailed breakdown of all costs and calculations, please review the attached PDF.</p>

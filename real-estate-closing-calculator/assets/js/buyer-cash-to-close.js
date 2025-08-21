@@ -22,7 +22,7 @@
 
 		calculate() {
 			// Perform all calculations
-			this.values.loan_insurance_policy = this.calculateTieredRate(this.values.purchase_price, this.loanPolicyRates);
+			this.values.loan_insurance_policy = this.calculateTieredRate(this.values.loan_amount, this.loanPolicyRates);
 			const [countyName, mortgageFee, warrantyFee] = (this.values.county_rates || '').split('_');
 			this.values.county = countyName || '';
 			this.values.mortgage_recording_fee = parseFloat(mortgageFee) || 0;
@@ -113,6 +113,16 @@
 			{
 				title: 'Totals',
 				fields: [{ name: 'total_closing_costs', label: 'total_closing_costs_label', type: 'currency' }],
+			},
+			{
+				title: 'Disclaimer',
+				fields: [
+					{
+						name: 'disclaimer',
+						label: 'For refinances, a $47.25 Lien Release Tracking Fee applies, in addition to other applicable fees.',
+						type: 'text',
+					},
+				],
 			},
 		],
 	};
